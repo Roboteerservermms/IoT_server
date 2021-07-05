@@ -1,0 +1,124 @@
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+<script type="text/javascript" charset="utf-8">
+	$(document).ready(function() {
+	});
+
+</script>
+
+<div class="container-fluid">
+  <div class="row">
+	<div class="col">
+		<input class="form-check-input" type="checkbox" value="1" data-target="GPIO-IN">
+		<label class="form-check-label" for="flexCheckDefault">
+		GPIO 1
+		</label>
+		<input class="form-check-input" type="checkbox" value="2" data-target="GPIO-IN">
+		<label class="form-check-label" for="flexCheckDefault">
+		GPIO 2
+		</label>
+		<input class="form-check-input" type="checkbox" value="3" data-target="GPIO-IN">
+		<label class="form-check-label" for="flexCheckDefault">
+		GPIO 3
+		</label>
+		<input class="form-check-input" type="checkbox" value="4" data-target="GPIO-IN">
+		<label class="form-check-label" for="flexCheckDefault">
+		GPIO 4
+		</label>
+		<input class="form-check-input" type="checkbox" value="5" data-target="GPIO-IN">
+		<label class="form-check-label" for="flexCheckDefault">
+		GPIO 5
+		</label>
+		<input class="form-check-input" type="checkbox" value="6" data-target="GPIO-IN">
+		<label class="form-check-label" for="flexCheckDefault">
+		GPIO 6
+		</label>
+		<input class="form-check-input" type="checkbox" value="7" data-target="GPIO-IN">
+		<label class="form-check-label" for="flexCheckDefault">
+		GPIO 7
+		</label>
+		<input class="form-check-input" type="checkbox" value="8" data-target="GPIO-IN">
+		<label class="form-check-label" for="flexCheckDefault">
+		GPIO 8
+		</label>
+	</div>
+	<div class="col">
+		<input class="form-check-input" type="checkbox" value="1" data-target="GPIO-OUT">
+		<label class="form-check-label" for="flexCheckDefault">
+		OUT-1
+		</label>
+
+		<input class="form-check-input" type="checkbox" value="2" data-target="GPIO-OUT">
+		<label class="form-check-label" for="flexCheckDefault">
+		OUT-2
+		</label>
+
+		<input class="form-check-input" type="checkbox" value="3" data-target="GPIO-OUT">
+		<label class="form-check-label" for="flexCheckDefault">
+		OUT-3
+		</label>
+
+		<input class="form-check-input" type="checkbox" value="4" data-target="GPIO-OUT">
+		<label class="form-check-label" for="flexCheckDefault">
+		OUT-4
+		</label>
+
+		<input class="form-check-input" type="checkbox" value="5" data-target="GPIO-OUT">
+		<label class="form-check-label" for="flexCheckDefault">
+		OUT-5
+		</label>
+		<input class="form-check-input" type="checkbox" value="6" data-target="GPIO-OUT">
+		<label class="form-check-label" for="flexCheckDefault">
+		OUT-6
+		</label>
+
+		<input class="form-check-input" type="checkbox" value="7" data-target="GPIO-OUT">
+		<label class="form-check-label" for="flexCheckDefault">
+		OUT-7
+		</label>
+
+		<input class="form-check-input" type="checkbox" value="8" data-target="GPIO-OUT">
+		<label class="form-check-label" for="flexCheckDefault">
+		OUT-8
+		</label>
+	</div>
+	<div class="container"> 
+		<button type="button" class="btn btn-info" data-toggle="text" data-target="#broadcast_text">메시지내용 </button>
+		<button type="button" class="btn btn-info" data-toggle="text" data-target="#broadcast_text">RTSP </button>
+		<button type="button" class="btn btn-info" data-toggle="file" data-target="#broadcast_file">음원파일설정</button>
+
+		<div id="broadcast_text" class="collapse">
+			<textarea class="form-control" id="exampleFormControlTextarea1" rows="5"></textarea>
+			<button class="btn btn-primary" data-target="#layerpop" data-toggle="modal" type="submit">활성화</button>
+		</div>
+		<div id="broadcast_file" class="collapse">
+			<input type="file" class="form-control-file" id="exampleFormControlFile1">
+			<button class="btn btn-primary" data-target="#layerpop" data-toggle="modal" type="submit">활성화</button>
+		</div>
+
+		<div class="modal fade" id="layerpop" >
+			<div class="modal-dialog">
+			  <div class="modal-content">
+				<!-- header -->
+				<div class="modal-header">
+				  <!-- 닫기(x) 버튼 -->
+				  <button type="button" class="close" data-dismiss="modal">×</button>
+				  <!-- header title -->
+				  <h4 class="modal-title">Header</h4>
+				</div>
+				<!-- body -->
+				<div class="modal-body">
+					  Body
+				</div>
+				<!-- Footer -->
+				<div class="modal-footer">
+				  Footer
+				  <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+				</div>
+			  </div>
+			</div>
+		  </div>
+	</div>
+
+  </div>
+</div>
