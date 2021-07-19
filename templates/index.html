@@ -14,10 +14,20 @@
     var IN = new Array();
     var OUT = new Array();
     var GPIO_OUT = "";
-    var category = "";
-    $('#broadcast').click(function(event){
+    function category(event){
+      switch(event){
+        case "text":  
+          document.getElementById("BroadcastText").style.display = "block";
+          document.getElementById("BroadcastFile").style.display = "none";
 
-    });
+          break;
+        case "file": 
+          document.getElementById("BroadcastText").style.display = "block";
+          document.getElementById("BroadcastFile").style.display = "none";
+          break;
+      }
+    }
+
 
     $('#publish').click(function(event) {
       var topic = [];
@@ -32,27 +42,23 @@
         console.log("Please check INPUT GPIO!");  
       }
       else{
-        console.log("")
+        var log_text = "GPIO IN" + IN.join() + "setup";
+        console.log(log_text);
       }
 
       $("input[name='OUT[]']:checked").each(function() {
         var OUT_m = $(this).val();
         OUT.push(OUT_m);
       });
-      $("input[name='broadcast']:checked").each(function() {
-        var OUT_m = $(this).val();
-        OUT.push(OUT_m);
-      });
-
-
       if(OUT.length < 1){
           console.log("Please check INPUT GPIO!");  
           return 1;
+      }else{
+        for(var i = 0; i < OUT.length; i++){
+          GPIO_OUT = OUT.join();
+        }
       }
 
-      for(var i = 0; i < OUT.length; i++){
-        GPIO_OUT = OUT.join();
-      }
 
       for(var i = 0; i < IN.length; i++){
         topic.push("Broadcast" + "/" + IN[i]);
@@ -165,11 +171,11 @@
                 <input type="button" id=broadcast name=broadcast class="btn btn-info" value="text" data-toggle="collapse" data-target="#broadcast_text">RTSP </button>
                 <input type="button" id=broadcast name=broadcast class="btn btn-info" value="file" data-toggle="collapse" data-target="#broadcast_file">음원파일설정</button>
             
-                <div id="broadcast_text" class="collapse">
+                <div id="broadcast_text" style="display: none;">
                   <textarea id="text" class="form-control" id="BroadcastText" rows="5"></textarea>
                   <button id="publish" class="btn btn-primary" data-target="#layerpop" data-toggle="modal" type="submit">활성화</button>
                 </div>
-                <div id="broadcast_file" class="collapse">
+                <div id="broadcast_file" style="display: none;">
                   <input type="file" class="form-control-file" id="BroadcastFile" accept=".jpg,.jpeg,.mp3,.avi,.mp4">
                   <button id="publish" class="btn btn-primary" data-target="#layerpop" data-toggle="modal" type="submit">활성화</button>
                 </div>
