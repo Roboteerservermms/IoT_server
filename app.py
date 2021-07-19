@@ -48,7 +48,8 @@ def index():
 @socketio.on('publish')
 def handle_publish(json_str):
     data = json.loads(json_str)
-    mqtt.publish(data['topic'], data['GPIO_OUT'], data['data'])
+    print(data)
+    mqtt.publish(data['topic'], data['data'], data['qos'])
 
 
 @socketio.on('subscribe')

@@ -7,18 +7,17 @@
 
 {% block scripts %}
 {{ super() }}
-<script type="text/javascript" src="socket.io.min.js"></script>
+<script type="text/javascript" src="static/js/socket.io.min.js"></script>
 <script type="text/javascript" charset="utf-8">
   $(document).ready(function() {
     var socket = io.connect('http://' + document.domain + ':' + location.port);
     var IN = new Array();
     var OUT = new Array();
-    var GPIO_OUT = "";
+    var GPIO_OUT;
+    var GPIO_IN;
     var category = "";
-    $('#broadcast').click(function(event){
-
-    });
-
+    var mqtt_data = null;
+    var qos = 1;
     $('#publish').click(function(event) {
       var topic = [];
       var GPIO_OUT = "";
@@ -32,36 +31,65 @@
         console.log("Please check INPUT GPIO!");  
       }
       else{
-        console.log("")
+        GPIO_IN = IN.join("-");
+        console.log("IN_GPIO is open! " + GPIO_IN);
       }
 
       $("input[name='OUT[]']:checked").each(function() {
         var OUT_m = $(this).val();
         OUT.push(OUT_m);
       });
-      $("input[name='broadcast']:checked").each(function() {
-        var OUT_m = $(this).val();
-        OUT.push(OUT_m);
-      });
-
 
       if(OUT.length < 1){
           console.log("Please check INPUT GPIO!");  
           return 1;
       }
-
-      for(var i = 0; i < OUT.length; i++){
-        GPIO_OUT = OUT.join();
+      else{
+        GPIO_OUT = OUT.join("-");
+        console.log("GPIO_OUT is open! " + GPIO_OUT);
       }
+      $('#message').click(function(event) {
+        category = "message";
 
+      });
+      $('#RTSP').click(function(event) {
+        category = "rtsp";
+      });
+
+      $('#file').click(function(event) {
+        category = "file";
+        
+      });
+      switch(category){
+        case "message":
+          mqtt_data = $('#text_data').text()
+          console.log("sending data is " + mqtt_data );
+          break;
+        case "rtsp":
+          mqtt_data = $('#text_data').text()
+          console.log("sending data is " + mqtt_data );
+          break;
+        case "file":
+          $.get('BroadcastFile', function (response) {
+            mqtt_data = response;
+          });
+          break;
+      }
       for(var i = 0; i < IN.length; i++){
-        topic.push("Broadcast" + "/" + IN[i]);
-        var data = '{"topic": "' + topic[i] + ' GPIO: '+ GPIO_OUT + ' data: ' + data + '}';
-        socket.emit('publish', data=data);
+        for(var j = 0; j < OUT.length; j++){
+          topic.push("Broadcast" + "/" + IN[i] + "/" + OUT[j]);
+          var data = '{"topic": "' + topic[j] + '","data": "' + mqtt_data + '", "qos": ' + qos +'}';
+          console.log(data);
+          socket.emit('publish', data=data);
+        }
+
       }
+      IN = new Array();
+      OUT = new Array();
+      GPIO_OUT = "";
+      GPIO_IN = "";
 
     });
-
     socket.on('mqtt_message', function(data) {
       console.log(data);
     })
@@ -121,7 +149,7 @@
                   </label>
                 </div>
                 <div class="col">
-                  <input type="checkbox"  id="OUT" name="OUT[]"  class="form-check-input" value="1" data-target="GPIO-OUT">
+                  <input type="checkbox" id="OUT" name="OUT[]"  class="form-check-input" value="1" data-target="GPIO-OUT">
                   <label class="form-check-label" for="flexCheckDefault">
                   OUT-1
                   </label>
@@ -160,17 +188,18 @@
                   OUT-8
                   </label>
                 </div>
-                
-                <input type="button" id=broadcast name=broadcast class="btn btn-info" value="text" data-toggle="collapse" data-target="#broadcast_text">메시지내용 </button>
-                <input type="button" id=broadcast name=broadcast class="btn btn-info" value="text" data-toggle="collapse" data-target="#broadcast_text">RTSP </button>
-                <input type="button" id=broadcast name=broadcast class="btn btn-info" value="file" data-toggle="collapse" data-target="#broadcast_file">음원파일설정</button>
+
+
+                <input type="button" id="message" name="broadcast" class="btn btn-info" value="message" data-toggle="collapse" data-target="#broadcast_text">메시지내용 </button>
+                <input type="button" id="RTSP" name="broadcast" class="btn btn-info" value="rtsp" data-toggle="collapse" data-target="#broadcast_text">RTSP </button>
+                <input type="button" id="file" name="broadcast" class="btn btn-info" value="file" data-toggle="collapse" data-target="#broadcast_file">음원파일설정</button>
             
                 <div id="broadcast_text" class="collapse">
-                  <textarea id="text" class="form-control" id="BroadcastText" rows="5"></textarea>
+                  <textarea id="text_data" name="BroadcastText" class="form-control" rows="5"></textarea>
                   <button id="publish" class="btn btn-primary" data-target="#layerpop" data-toggle="modal" type="submit">활성화</button>
                 </div>
                 <div id="broadcast_file" class="collapse">
-                  <input type="file" class="form-control-file" id="BroadcastFile" accept=".jpg,.jpeg,.mp3,.avi,.mp4">
+                  <input type="file_data" id="BroadcastFile" name="BroadcastFile" class="form-control-file"  accept=".jpg,.jpeg,.mp3,.avi,.mp4">
                   <button id="publish" class="btn btn-primary" data-target="#layerpop" data-toggle="modal" type="submit">활성화</button>
                 </div>
             
