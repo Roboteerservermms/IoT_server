@@ -18,6 +18,39 @@
     var category = "";
     var mqtt_data = null;
     var qos = 1;
+    $("#BroadcastText").hide();
+    $("#BroadcastFile").hide();
+    $("#publish").hide();
+    $('#message').click(function(event) {
+      category = "message";
+      $("#BroadcastText").show(); 
+      $("#BroadcastFile").hide();
+      $("#publish").show();
+    });
+    $('#RTSP').click(function(event) {
+      category = "rtsp";
+      $("#BroadcastText").show();
+      $("#BroadcastFile").hide();
+      $("#publish").show();
+    });
+
+    $('#file').click(function(event) {
+      category = "file"; 
+      console.log("broadcast file");
+      $("#BroadcastText").hide();
+      $("#BroadcastFile").show();
+      $("#publish").show();
+    });
+
+    function getBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+      });
+    }
+    
     $('#publish').click(function(event) {
       var topic = [];
       var GPIO_OUT = "";
@@ -31,8 +64,7 @@
         console.log("Please check INPUT GPIO!");  
       }
       else{
-        GPIO_IN = IN.join("-");
-        console.log("IN_GPIO is open! " + GPIO_IN);
+        console.log("IN_GPIO is open! " + IN.join("-"));
       }
 
       $("input[name='OUT[]']:checked").each(function() {
@@ -45,34 +77,24 @@
           return 1;
       }
       else{
-        GPIO_OUT = OUT.join("-");
-        console.log("GPIO_OUT is open! " + GPIO_OUT);
+        console.log("GPIO_OUT is open! " + OUT.join("-"));
       }
-      $('#message').click(function(event) {
-        category = "message";
 
-      });
-      $('#RTSP').click(function(event) {
-        category = "rtsp";
-      });
-
-      $('#file').click(function(event) {
-        category = "file";
-        
-      });
       switch(category){
         case "message":
-          mqtt_data = $('#text_data').text()
+          mqtt_data = $("textarea#BroadcastText").val()
           console.log("sending data is " + mqtt_data );
           break;
         case "rtsp":
-          mqtt_data = $('#text_data').text()
+          mqtt_data = $("textarea#BroadcastText").val()
           console.log("sending data is " + mqtt_data );
           break;
         case "file":
-          $.get('BroadcastFile', function (response) {
-            mqtt_data = response;
-          });
+          var fileInput = $('#BroadcastFile').files;
+          console.log(fileInput);
+          var reader = new FileReader();
+          reader.readAsBinaryString(file);
+          mqtt_data = reader.result;
           break;
       }
       for(var i = 0; i < IN.length; i++){
@@ -82,13 +104,11 @@
           console.log(data);
           socket.emit('publish', data=data);
         }
-
       }
       IN = new Array();
       OUT = new Array();
       GPIO_OUT = "";
       GPIO_IN = "";
-
     });
     socket.on('mqtt_message', function(data) {
       console.log(data);
@@ -115,75 +135,75 @@
             <div class="row">
               <div class="form-horizontal">
                 <div class="col">
-                  <input  type="checkbox" id="IN" name="IN[]" class="form-check-input" value="1" data-target="GPIO-IN">
+                  <input  type="checkbox" id="IN1" name="IN[]" class="form-check-input" value="1" data-target="GPIO-IN">
                   <label class="form-check-label" for="flexCheckDefault">
                   GPIO 1
                   </label>
-                  <input type="checkbox" id="IN" name="IN[]" class="form-check-input" value="2" data-target="GPIO-IN">
+                  <input type="checkbox" id="IN2" name="IN[]" class="form-check-input" value="2" data-target="GPIO-IN">
                   <label class="form-check-label" for="flexCheckDefault">
                   GPIO 2
                   </label>
-                  <input type="checkbox" id="IN" name="IN[]" class="form-check-input" value="3" data-target="GPIO-IN">
+                  <input type="checkbox" id="IN3" name="IN[]" class="form-check-input" value="3" data-target="GPIO-IN">
                   <label class="form-check-label" for="flexCheckDefault">
                   GPIO 3
                   </label>
-                  <input type="checkbox" id="IN" name="IN[]" class="form-check-input" value="4" data-target="GPIO-IN">
+                  <input type="checkbox" id="IN4" name="IN[]" class="form-check-input" value="4" data-target="GPIO-IN">
                   <label id="GPIO" class="form-check-label" for="flexCheckDefault">
                   GPIO 4
                   </label>
-                  <input type="checkbox" id="IN" name="IN[]" class="form-check-input" value="5" data-target="GPIO-IN">
+                  <input type="checkbox" id="IN5" name="IN[]" class="form-check-input" value="5" data-target="GPIO-IN">
                   <label class="form-check-label" for="flexCheckDefault">
                   GPIO 5
                   </label>
-                  <input type="checkbox" id="IN" name="IN[]" class="form-check-input" value="6" data-target="GPIO-IN">
+                  <input type="checkbox" id="IN6" name="IN[]" class="form-check-input" value="6" data-target="GPIO-IN">
                   <label class="form-check-label" for="flexCheckDefault">
                   GPIO 6
                   </label>
-                  <input type="checkbox" id="IN" name="IN[]" class="form-check-input" value="7" data-target="GPIO-IN">
+                  <input type="checkbox" id="IN7" name="IN[]" class="form-check-input" value="7" data-target="GPIO-IN">
                   <label class="form-check-label" for="flexCheckDefault">
                   GPIO 7
                   </label>
-                  <input type="checkbox" id="IN" name="IN[]" class="form-check-input" value="8" data-target="GPIO-IN">
+                  <input type="checkbox" id="IN8" name="IN[]" class="form-check-input" value="8" data-target="GPIO-IN">
                   <label class="form-check-label" for="flexCheckDefault">
                   GPIO 8
                   </label>
                 </div>
                 <div class="col">
-                  <input type="checkbox" id="OUT" name="OUT[]"  class="form-check-input" value="1" data-target="GPIO-OUT">
+                  <input type="checkbox" id="OUT1" name="OUT[]"  class="form-check-input" value="1" data-target="GPIO-OUT">
                   <label class="form-check-label" for="flexCheckDefault">
                   OUT-1
                   </label>
               
-                  <input type="checkbox"  id="OUT" name="OUT[]"  class="form-check-input" value="2" data-target="GPIO-OUT">
+                  <input type="checkbox"  id="OUT2" name="OUT[]"  class="form-check-input" value="2" data-target="GPIO-OUT">
                   <label class="form-check-label" for="flexCheckDefault">
                   OUT-2
                   </label>
               
-                  <input type="checkbox"  id="OUT" name="OUT[]"  class="form-check-input" value="3" data-target="GPIO-OUT">
+                  <input type="checkbox"  id="OUT3" name="OUT[]"  class="form-check-input" value="3" data-target="GPIO-OUT">
                   <label class="form-check-label" for="flexCheckDefault">
                   OUT-3
                   </label>
               
-                  <input type="checkbox"  id="OUT" name="OUT[]"  class="form-check-input" value="4" data-target="GPIO-OUT">
+                  <input type="checkbox"  id="OUT4" name="OUT[]"  class="form-check-input" value="4" data-target="GPIO-OUT">
                   <label class="form-check-label" for="flexCheckDefault">
                   OUT-4
                   </label>
               
-                  <input type="checkbox"  id="OUT" name="OUT[]"  class="form-check-input" value="5" data-target="GPIO-OUT">
+                  <input type="checkbox"  id="OUT5" name="OUT[]"  class="form-check-input" value="5" data-target="GPIO-OUT">
                   <label class="form-check-label" for="flexCheckDefault">
                   OUT-5
                   </label>
-                  <input type="checkbox"  id="OUT" name="OUT[]"  class="form-check-input" value="6" data-target="GPIO-OUT">
+                  <input type="checkbox"  id="OUT6" name="OUT[]"  class="form-check-input" value="6" data-target="GPIO-OUT">
                   <label class="form-check-label" for="flexCheckDefault">
                   OUT-6
                   </label>
               
-                  <input type="checkbox"  id="OUT" name="OUT[]"  class="form-check-input" value="7" data-target="GPIO-OUT">
+                  <input type="checkbox"  id="OUT7" name="OUT[]"  class="form-check-input" value="7" data-target="GPIO-OUT">
                   <label class="form-check-label" for="flexCheckDefault">
                   OUT-7
                   </label>
               
-                  <input type="checkbox"  id="OUT" name="OUT[]"  class="form-check-input" value="8" data-target="GPIO-OUT">
+                  <input type="checkbox"  id="OUT8" name="OUT[]"  class="form-check-input" value="8" data-target="GPIO-OUT">
                   <label class="form-check-label" for="flexCheckDefault">
                   OUT-8
                   </label>
@@ -194,14 +214,11 @@
                 <input type="button" id="RTSP" name="broadcast" class="btn btn-info" value="rtsp" data-toggle="collapse" data-target="#broadcast_text">RTSP </button>
                 <input type="button" id="file" name="broadcast" class="btn btn-info" value="file" data-toggle="collapse" data-target="#broadcast_file">음원파일설정</button>
             
-                <div id="broadcast_text" class="collapse">
-                  <textarea id="text_data" name="BroadcastText" class="form-control" rows="5"></textarea>
-                  <button id="publish" class="btn btn-primary" data-target="#layerpop" data-toggle="modal" type="submit">활성화</button>
-                </div>
-                <div id="broadcast_file" class="collapse">
-                  <input type="file_data" id="BroadcastFile" name="BroadcastFile" class="form-control-file"  accept=".jpg,.jpeg,.mp3,.avi,.mp4">
-                  <button id="publish" class="btn btn-primary" data-target="#layerpop" data-toggle="modal" type="submit">활성화</button>
-                </div>
+                <textarea id="BroadcastText" name="BroadcastText" class="form-control" rows="5" ></textarea>
+                <input type="file" id="BroadcastFile" name="BroadcastFile" class="form-control-file"  accept=".jpg,.jpeg,.mp3,.avi,.mp4" >
+                <button id="publish" class="btn btn-primary" data-target="#layerpop" data-toggle="modal" type="submit" >활성화</button>
+
+                  
             
                 
               </div>
