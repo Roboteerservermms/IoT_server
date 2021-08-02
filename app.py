@@ -19,15 +19,10 @@ app.config['SECRET'] = 'my secret key'
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.config['MQTT_BROKER_URL'] = 'localhost'
 app.config['MQTT_BROKER_PORT'] = 1883
-app.config['MQTT_CLIENT_ID'] = 'flask_mqtt'
-app.config['MQTT_CLEAN_SESSION'] = True
 app.config['MQTT_USERNAME'] = ''
 app.config['MQTT_PASSWORD'] = ''
 app.config['MQTT_KEEPALIVE'] = 5
 app.config['MQTT_TLS_ENABLED'] = False
-app.config['MQTT_LAST_WILL_TOPIC'] = 'home/lastwill'
-app.config['MQTT_LAST_WILL_MESSAGE'] = 'bye'
-app.config['MQTT_LAST_WILL_QOS'] = 2
 
 # Parameters for SSL enabled
 # app.config['MQTT_BROKER_PORT'] = 8883
@@ -55,7 +50,7 @@ def handle_publish(json_str):
 @socketio.on('subscribe')
 def handle_subscribe(json_str):
     data = json.loads(json_str)
-    mqtt.subscribe(data['topic'], data['qos'])
+    mqtt.publish(data['topic'], data['data'], data['qos'])
 
 
 @socketio.on('unsubscribe_all')
@@ -75,8 +70,7 @@ def handle_mqtt_message(client, userdata, message):
 
 @mqtt.on_log()
 def handle_logging(client, userdata, level, buf):
-    # print(level, buf)
-    pass
+    print(level, buf)
 
 
 if __name__ == '__main__':
