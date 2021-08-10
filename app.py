@@ -7,11 +7,12 @@ import logging
 
 import eventlet
 import json
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask_mqtt import Mqtt
 from flask_socketio import SocketIO
 from flask_bootstrap import Bootstrap
-
+from werkzeug.utils import secure_filename
+import os
 eventlet.monkey_patch()
 
 app = Flask(__name__)
@@ -38,7 +39,14 @@ bootstrap = Bootstrap(app)
 @app.route('/')
 def index():
     return render_template('index.html')
-
+    
+@app.route('/fileupload', methods=['POST'])
+def file_upload():
+    file = request.files['file']
+    filename = secure_filename(file.filename)
+    os.makedirs(image_path, exists_ok=True)
+    file.save(os.path.join(image_path, filename))
+    return
 
 @socketio.on('publish')
 def handle_publish(json_str):

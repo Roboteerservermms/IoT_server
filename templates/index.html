@@ -8,6 +8,7 @@
 {% block scripts %}
 {{ super() }}
 <script type="text/javascript" src="static/js/socket.io.min.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script> 
 <script type="text/javascript" charset="utf-8">
   $(document).ready(function() {
     var socket = io.connect('http://' + document.domain + ':' + location.port);
@@ -92,14 +93,12 @@
         case "file":
           var fileInput = $('#BroadcastFile').files;
           console.log(fileInput);
-          var reader = new FileReader();
-          reader.readAsBinaryString(file);
-          mqtt_data = reader.result;
+          
           break;
       }
       for(var i = 0; i < IN.length; i++){
         for(var j = 0; j < OUT.length; j++){
-          topic.push("Broadcast" + "/" + IN[i] + "/" + OUT[j]);
+          topic.push("Broadcast" + "/" + category + "/"+ IN[i] + "/" + OUT[j]);
           var data = '{"topic": "' + topic[j] + '","data": "' + mqtt_data + '", "qos": ' + qos +'}';
           console.log(data);
           socket.emit('publish', data=data);
