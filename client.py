@@ -24,10 +24,9 @@ class UDPClient:
         self.conn_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.printwt('Socket created')
 
-    def interact_with_server(self, msg=None):
+    def interact_with_server(self, data_dic=None):
         ''' Connect and interact with a UDP Server. '''
         try:
-            data_dic = {"GPIO_IN": 65, "GPIO_OUT": 111,"data": "video.mp4"}
             msg = json.dumps(data_dic)
             self.conn_sock.sendto(bytes(msg, "utf-8"), (self.host,self.port))
             self.printwt('[ SENT ]')
@@ -41,7 +40,7 @@ def main():
 
     tcp_client = UDPClient('127.0.0.1', 8080)
     tcp_client.create_socket()
-    tcp_client.interact_with_server()
+    tcp_client.interact_with_server(data_dic={"GPIO_IN": 65, "GPIO_OUT": 111,"data": "video.mp4"})
 
 
 if __name__ == '__main__':
