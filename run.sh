@@ -1,5 +1,10 @@
+export PYTHONPATH="/home/orangepi/IoT_target"
+export PYTHONIOENCODING=UTF-8
+cd $PYTHONPATH
+git pull
 chmod 775 /sys/class/gpio/export
 chmod 775 /sys/class/gpio/unexport
+git pull
 for gpio in "65" "68" "70" "71" "72" "73" "74" "76"; do
     GPIO_DIR=$(ls /sys/class/gpio/ | grep ${gpio})
     if [ -n "$GPIO_DIR" ]; then
@@ -12,7 +17,7 @@ for gpio in "65" "68" "70" "71" "72" "73" "74" "76"; do
     echo "out" > /sys/class/gpio/gpio${gpio}/direction
 done
 
-for gpio in "111" "112" "113" "114" "117" "118" "75"; do
+for gpio in "111" "112" "113" "114" "229" "117" "118" "75"; do
     GPIO_DIR=$(ls /sys/class/gpio/ | grep ${gpio})
     if [ -n "$GPIO_DIR" ]; then
             echo "GPIO already exist from past error"
@@ -23,3 +28,4 @@ for gpio in "111" "112" "113" "114" "117" "118" "75"; do
     sleep 1
     echo "in" > /sys/class/gpio/gpio${gpio}/direction
 done
+python3 app.py
