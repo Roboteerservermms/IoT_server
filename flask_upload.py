@@ -1,4 +1,3 @@
-import json
 from flask import Flask, render_template, request
 from werkzeug.utils import secure_filename
 import os, subprocess
@@ -22,24 +21,57 @@ def list_page():
     return html
 
 #업로드 HTML 렌더링
-@app.route('/upload')
-def upload_page():
-    return render_template('upload.html')
+@app.route('/file')
+def fileupload_page():
+    return render_template('file.html')
+
+@app.route('/tts')
+def ttsupload_page():
+    return render_template('tts.html')
+
+@app.route('/rtsp')
+def rtspupload_page():
+    return render_template('rtsp.html')
 
 #파일 업로드 처리
 @app.route('/<ip>/fileUpload', methods = ['GET', 'POST'])
 def upload_file(ip):
     if request.method == 'POST':
-        req =  request.get_json()
-        if req["category"] == "File":
-            f = request.files['file']
-            data_dic={**req , "data": f"{secure_filename(f.filename)}"}
-            print(f"sendto {ip} {data_dic}")
-            client.interact_with_server(ip, 8080, data_dic)
-            #저장할 경로 + 파일명
-            f.save(f'./uploads/{secure_filename(f.filename)}')
-            subprocess.getoutput(f"sshpass -p orangepi scp ./uploads/{secure_filename(f.filename)} orangepi@{ip}:/home/orangepi/IoT_target/ ")
+        f = request.files['file']
+        out =  int(request.form.getlist("GPIOOUT")[0])
+        i = int(request.form.getlist("GPIOIN")[0])
+        data_dic={"category": "File", "GPIO_IN": i, "GPIO_OUT": out,"data": f"{secure_filename(f.filename)}"}
+        print(f"sendto {ip} {data_dic}")
+        client.interact_with_server(ip, 8080, data_dic)
+        #저장할 경로 + 파일명
+        f.save('./uploads/' + secure_filename(f.filename))
+        subprocess.getoutput(f"sshpass -p orangepi scp ./uploads/{secure_filename(f.filename)} orangepi@{ip}:/home/orangepi/IoT_target/ ")
     return render_template('check.html')
+
+#파일 업로드 처리
+@app.route('/<ip>/TTSUpload', methods = ['GET', 'POST'])
+def upload_tts(ip):
+    if request.method == 'POST':
+        f = str(request.form.getlist("text")[0])
+        out =  int(request.form.getlist("GPIOOUT")[0])
+        i = int(request.form.getlist("GPIOIN")[0])
+        data_dic={"category": "TTS", "GPIO_IN": i, "GPIO_OUT": out,"data": f"{f}"}
+        client.interact_with_server(ip, 8080, data_dic)
+        #저장할 경로 + 파일명
+    return render_template('check.html')
+
+#파일 업로드 처리
+@app.route('/<ip>/RTSPUpload', methods = ['GET', 'POST'])
+def upload_rtsp(ip):
+    if request.method == 'POST':
+        f = str(request.form.getlist("text")[0])
+        out =  int(request.form.getlist("GPIOOUT")[0])
+        i = int(request.form.getlist("GPIOIN")[0])
+        data_dic={"category": 'rtsp', "GPIO_IN": i, "GPIO_OUT": out,"data": f"{f}"}
+        client.interact_with_server(ip, 8080, data_dic)
+        #저장할 경로 + 파일명
+    return render_template('check.html')
+
 
 #서버 실행
 if __name__ == '__main__':

@@ -1,8 +1,13 @@
 <!DOCTYPE html>
-<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script> 
 <meta charset="UTF-8">
 <html>
   <script language=javascript>
+    var category = null
+    function category (){
+      var x = document.getElementById("broadcast_text");
+      var y = document.getElementById("broadcast_file");
+
+    }
     function checkOnlyOne_IN(element) {
       const checkboxes 
           = document.getElementsByName("GPIOIN");
@@ -20,33 +25,6 @@
       element.checked = true;
     }
 
-    function onFileUpload(event) {
-      let file = event.target.files[0];
-      var GPIOIN_length = document.getElementsByName("GPIOIN").length;
-      var GPIOIN = null
-      var GPIOOUT = null
-      for (var i=0; i<GPIOIN_length; i++) {
-          if (document.getElementsByName("GPIOIN")[i].checked == true) {
-              GPIO_IN = document.getElementsByName("GPIOIN")[i].value;
-          }
-      }
-      var GPIOOUT_length = document.getElementsByName("GPIOIN").length;
-      for (var i=0; i<GPIOOUT_length; i++) {
-          if (document.getElementsByName("GPIOOUT")[i].checked == true) {
-              GPIO_OUT = document.getElementsByName("GPIOOUT")[i].value;
-          }
-      }
-      const upload = () => {
-        const temp = JSON.stringify({
-          category: "File",
-          GPIO_IN: GPIOIN,
-          GPIO_OUT: GPIOOUT,
-        });
-        let formData = new FormData();
-        formData.append('body', temp);
-        formData.append('files', file);
-      }
-    }
   </script>
   <head>
     <title>pyftp</title>
@@ -64,7 +42,7 @@
 
     <br><br>
     <center>
-    <form action = "http://localhost:5000/192.168.0.27/fileUpload" method = "POST"
+    <form action = "http://localhost:5000/192.168.0.12/TTSUpload" method = "POST"
          enctype = "multipart/form-data">
       <div class="container-fluid">
         <div class="row">
@@ -142,17 +120,7 @@
         OUT-8
         </label>
       </div>
-      <div class="col">
-        <input type="button" id="message" name="broadcast" class="btn btn-info" value="message" data-toggle="collapse" data-target="#broadcast_text">메시지내용 </button>
-        <input type="button" id="RTSP" name="broadcast" class="btn btn-info" value="rtsp" data-toggle="collapse" data-target="#broadcast_text">RTSP </button>
-        <input type="button" id="file" name="broadcast" class="btn btn-info" value="file" data-toggle="collapse" data-target="#broadcast_file">음원파일설정</button>
-      </div>
-      
-      <div class="col">
-        <input type = "text" name = "file" />
-        <input type = "file" name = "file" />
-      </div>
-      
+      <input type = "text" name = "text" />
       <input type = "submit"/>
     </form>
   </center>
