@@ -1,32 +1,5 @@
 <!DOCTYPE html>
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script> 
-<script type="text/javascript" charset="utf-8">
-  $(document).ready(function() {
-    $("#BroadcastText").hide();
-    $("#BroadcastFile").hide();
-    $("#publish").hide();
-    $('#message').click(function(event) {
-      category = "message";
-      $("#BroadcastText").show(); 
-      $("#BroadcastFile").hide();
-      $("#publish").show();
-    });
-    $('#RTSP').click(function(event) {
-      category = "rtsp";
-      $("#BroadcastText").show();
-      $("#BroadcastFile").hide();
-      $("#publish").show();
-    });
-
-    $('#file').click(function(event) {
-      category = "file"; 
-      console.log("broadcast file");
-      $("#BroadcastText").hide();
-      $("#BroadcastFile").show();
-      $("#publish").show();
-    });
-  });
-</script>
 <meta charset="UTF-8">
 <html>
   <script language=javascript>
@@ -98,7 +71,6 @@
     <center>
     <form action = "http://localhost:5000/192.168.0.27/fileUpload" method = "POST"
          enctype = "multipart/form-data">
-      <input type = "file" name = "file" />
       <div class="container-fluid">
         <div class="row">
         <div class="col">
@@ -175,6 +147,10 @@
         OUT-8
         </label>
       </div>
+      <div class="col">
+        <input type = "file" name = "file" />
+      </div>
+      
       <input type = "submit"/>
     </form>
   </center>

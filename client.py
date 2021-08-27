@@ -16,7 +16,6 @@ class UDPClient:
 
     def create_socket(self):
         ''' Create a socket that uses IPv4 and UDP '''
-
         self.printwt('1 Creating connection socket ...')
         self.conn_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.printwt('Socket created')

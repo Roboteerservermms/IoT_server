@@ -1,3 +1,4 @@
+import json
 from flask import Flask, render_template, request
 from werkzeug.utils import secure_filename
 import os, subprocess
@@ -29,15 +30,15 @@ def upload_page():
 @app.route('/<ip>/fileUpload', methods = ['GET', 'POST'])
 def upload_file(ip):
     if request.method == 'POST':
-        f = request.files['file']
-        out =  int(request.form.getlist("GPIOOUT")[0])
-        i = int(request.form.getlist("GPIOIN"))
-        data_dic={"GPIO_IN": i, "GPIO_OUT": out,"data": f"{secure_filename(f.filename)}"}
-        print(f"sendto {ip} {data_dic}")
-        client.interact_with_server(ip, 8080, data_dic)
-        #저장할 경로 + 파일명
-        f.save('./uploads/' + secure_filename(f.filename))
-        subprocess.getoutput(f"sshpass -p orangepi scp {secure_filename(f.filename)} orangepi@{ip}:/home/orangepi/IoT_target/ ")
+        req =  request.get_json()
+        if req["category"] == "File":
+            f = request.files['file']
+            data_dic={**req , "data": f"{secure_filename(f.filename)}"}
+            print(f"sendto {ip} {data_dic}")
+            client.interact_with_server(ip, 8080, data_dic)
+            #저장할 경로 + 파일명
+            f.save(f'./uploads/{secure_filename(f.filename)}')
+            subprocess.getoutput(f"sshpass -p orangepi scp ./uploads/{secure_filename(f.filename)} orangepi@{ip}:/home/orangepi/IoT_target/ ")
     return render_template('check.html')
 
 #서버 실행
