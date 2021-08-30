@@ -33,10 +33,15 @@ def ttsupload_page():
 def rtspupload_page():
     return render_template('rtsp.html')
 
+@app.route('/schedule')
+def scheduleupload_page():
+    return render_template('schedule.html')
+
 #파일 업로드 처리
 @app.route('/<ip>/fileUpload', methods = ['GET', 'POST'])
 def upload_file(ip):
     if request.method == 'POST':
+        print("upload file!")
         f = request.files['file']
         out =  int(request.form.getlist("GPIOOUT")[0])
         i = int(request.form.getlist("GPIOIN")[0])
@@ -72,6 +77,21 @@ def upload_rtsp(ip):
         #저장할 경로 + 파일명
     return render_template('check.html')
 
+#파일 업로드 처리
+@app.route('/<ip>/scheduleUpload', methods = ['GET', 'POST'])
+def upload_schedule(ip):
+    if request.method == 'POST':
+        print("upload schedule!")
+        f = request.files['file']
+        day =  str(request.form.getlist("DAY")[0])
+        time = str(request.form.getlist("TIME")[0])
+        data_dic={"category": "schedule", "day": day, "time": time, "data": f"{secure_filename(f.filename)}"}
+        print(f"sendto {ip} {data_dic}")
+        client.interact_with_server(ip, 8080, data_dic)
+        #저장할 경로 + 파일명
+        f.save('./uploads/' + secure_filename(f.filename))
+        subprocess.getoutput(f"sshpass -p orangepi scp ./uploads/{secure_filename(f.filename)} orangepi@{ip}:/home/orangepi/IoT_target/ ")
+    return render_template('check.html')
 
 #서버 실행
 if __name__ == '__main__':
