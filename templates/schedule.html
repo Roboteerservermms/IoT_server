@@ -10,6 +10,15 @@
       })
       element.checked = true;
     }
+
+    function checkOnlyOne_week(form) {
+      if(form.checkbox.checked == true){
+        form.time.disabled == true;
+      }
+      else{
+        form.time.disabled = false;
+      }
+    }
   </script>
   <head>
     <title>pyftp</title>
@@ -29,9 +38,17 @@
     <center>
     <form action = "http://localhost:5000/192.168.0.12/scheduleUpload" method = "POST"
          enctype = "multipart/form-data">
-	  <input type="date" id="start" name="trip-start">
-	  <input type="time" name="TIME" id="appt" required>
       <div class="col">
+        <input class="form-check-input" name="DAY" type="checkbox" value="everyday" onclick='checkOnlyOne_OUT(this)' data-target="GPIO-OUT">
+        <label class="form-check-label" for="flexCheckDefault">
+        매일
+        </label>
+
+        <input class="form-check-input" name="WEEK" type="checkbox" value="everyweek" data-target="GPIO-OUT">
+        <label class="form-check-label" for="flexCheckDefault">
+        매주
+        </label>
+
         <input class="form-check-input" name="DAY" type="checkbox" value="mon" onclick='checkOnlyOne_OUT(this)' data-target="GPIO-OUT">
         <label class="form-check-label" for="flexCheckDefault">
         월
@@ -66,6 +83,7 @@
         일
         </label>
       </div>
+      <input type="time" name="TIME" id="TIME">
       <input type = "file" name = "file" />
       <input type = "submit"/>
     </form>
