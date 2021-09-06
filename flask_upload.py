@@ -84,13 +84,9 @@ def upload_schedule(ip):
         print("upload schedule!")
         f = request.files['file']
         data_dic = {}
-        if str(request.form.get("WEEK")) :
-            day = request.form.get("WEEK")
-            data_dic={"category": "schedule", "day": day, "data": f"{secure_filename(f.filename)}"}
-        else:
-            day =  str(request.form.getlist("DAY")[0])
-            time = str(request.form.getlist("TIME")[0])
-            data_dic={"category": "schedule", "day": day, "time": time, "data": f"{secure_filename(f.filename)}"}
+        day =  str(request.form.getlist("DAY")[0])
+        time = str(request.form.getlist("TIME")[0])
+        data_dic={"category": "schedule", "day": day, "time": time, "data": f"{secure_filename(f.filename)}"}
         print(f"sendto {ip} {data_dic}")
         client.interact_with_server(ip, 8080, data_dic)
         #저장할 경로 + 파일명
