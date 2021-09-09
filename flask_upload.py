@@ -43,7 +43,7 @@ def upload_file(ip):
     if request.method == 'POST':
         print("upload file!")
         f = request.files['file']
-        out =  int(request.form.getlist("GPIOOUT")[0])
+        out =  request.form.getlist("GPIOOUT")
         i = int(request.form.getlist("GPIOIN")[0])
         data_dic={"category": "File", "GPIO_IN": i, "GPIO_OUT": out,"data": f"{secure_filename(f.filename)}"}
         print(f"sendto {ip} {data_dic}")
@@ -58,7 +58,7 @@ def upload_file(ip):
 def upload_tts(ip):
     if request.method == 'POST':
         f = str(request.form.getlist("text")[0])
-        out =  int(request.form.getlist("GPIOOUT")[0])
+        out =  request.form.getlist("GPIOOUT")
         i = int(request.form.getlist("GPIOIN")[0])
         data_dic={"category": "TTS", "GPIO_IN": i, "GPIO_OUT": out,"data": f"{f}"}
         client.interact_with_server(ip, 8080, data_dic)
@@ -70,7 +70,7 @@ def upload_tts(ip):
 def upload_rtsp(ip):
     if request.method == 'POST':
         f = str(request.form.getlist("text")[0])
-        out =  int(request.form.getlist("GPIOOUT")[0])
+        out =  request.form.getlist("GPIOOUT")
         i = int(request.form.getlist("GPIOIN")[0])
         data_dic={"category": 'rtsp', "GPIO_IN": i, "GPIO_OUT": out,"data": f"{f}"}
         client.interact_with_server(ip, 8080, data_dic)
