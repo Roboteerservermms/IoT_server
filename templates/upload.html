@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script> 
+<meta charset="UTF-8">
+<html>
+  <script language=javascript>
+    function checkOnlyOne_IN(element) {
+      const checkboxes 
+          = document.getElementsByName("GPIOIN");
+      checkboxes.forEach((cb) => {
+        cb.checked = false;
+      })
+      element.checked = true;
+    }
+    function checkOnlyOne_OUT(element) {
+      const checkboxes 
+          = document.getElementsByName("GPIOOUT");
+      checkboxes.forEach((cb) => {
+        cb.checked = false;
+      })
+      element.checked = true;
+    }
+
+    function onFileUpload(event) {
+      let file = event.target.files[0];
+      var GPIOIN_length = document.getElementsByName("GPIOIN").length;
+      var GPIOIN = null
+      var GPIOOUT = null
+      for (var i=0; i<GPIOIN_length; i++) {
+          if (document.getElementsByName("GPIOIN")[i].checked == true) {
+              GPIO_IN = document.getElementsByName("GPIOIN")[i].value;
+          }
+      }
+      var GPIOOUT_length = document.getElementsByName("GPIOIN").length;
+      for (var i=0; i<GPIOOUT_length; i++) {
+          if (document.getElementsByName("GPIOOUT")[i].checked == true) {
+              GPIO_OUT = document.getElementsByName("GPIOOUT")[i].value;
+          }
+      }
+      const upload = () => {
+        const temp = JSON.stringify({
+          category: "File",
+          GPIO_IN: GPIOIN,
+          GPIO_OUT: GPIOOUT,
+        });
+        let formData = new FormData();
+        formData.append('body', temp);
+        formData.append('files', file);
+      }
+    }
+  </script>
+  <head>
+    <title>pyftp</title>
+  </head>
+
+  <body>
+    <center><h1>Upload Page</h1></center>
+    <center><a href="/">홈페이지</a><br><center>
+    <hr width="100%" color="black"/>
+    <center><h3>Upload File!</h3></center>
+    <hr width="100%" color="black"/>
+
+    <img src="{{ url_for('static',filename='images/upload.png') }}", width="100" 
+        style="margin-left: auto; margin-right: auto; display: block;")/>
+
+    <br><br>
+    <center>
+    <form action = "http://localhost:5000/192.168.0.27/fileUpload" method = "POST"
+         enctype = "multipart/form-data">
+      <div class="container-fluid">
+        <div class="row">
+        <div class="col">
+        <input class="form-check-input" name=GPIOIN type="checkbox" value="111" onclick='checkOnlyOne_IN(this)' data-target="GPIO-IN">
+        <label class="form-check-label" for="flexCheckDefault">
+        GPIO 1
+        </label>
+        <input class="form-check-input" name=GPIOIN type="checkbox" value="112" onclick='checkOnlyOne_IN(this)' data-target="GPIO-IN">
+        <label class="form-check-label" for="flexCheckDefault">
+        GPIO 2
+        </label>
+        <input class="form-check-input" name=GPIOIN type="checkbox" value="113" onclick='checkOnlyOne_IN(this)' data-target="GPIO-IN">
+        <label class="form-check-label" for="flexCheckDefault">
+        GPIO 3
+        </label>
+        <input class="form-check-input" name=GPIOIN type="checkbox" value="114" onclick='checkOnlyOne_IN(this)' data-target="GPIO-IN">
+        <label class="form-check-label" for="flexCheckDefault">
+        GPIO 4
+        </label>
+        <input class="form-check-input" name=GPIOIN type="checkbox" value="229" onclick='checkOnlyOne_IN(this)' data-target="GPIO-IN">
+        <label class="form-check-label" for="flexCheckDefault">
+        GPIO 5
+        </label>
+        <input class="form-check-input" name=GPIOIN type="checkbox" value="117" onclick='checkOnlyOne_IN(this)' data-target="GPIO-IN">
+        <label class="form-check-label" for="flexCheckDefault">
+        GPIO 6
+        </label>
+        <input class="form-check-input" name=GPIOIN type="checkbox" value="118" onclick='checkOnlyOne_IN(this)' data-target="GPIO-IN">
+        <label class="form-check-label" for="flexCheckDefault">
+        GPIO 7
+        </label>
+        <input class="form-check-input" name=GPIOIN type="checkbox" value="75" onclick='checkOnlyOne_IN(this)' data-target="GPIO-IN">
+        <label class="form-check-label" for="flexCheckDefault">
+        GPIO 8
+        </label>
+      </div>
+      <div class="col">
+        <input class="form-check-input" name=GPIOOUT type="checkbox" value="65" onclick='checkOnlyOne_OUT(this)' data-target="GPIO-OUT">
+        <label class="form-check-label" for="flexCheckDefault">
+        OUT-1
+        </label>
+
+        <input class="form-check-input" name=GPIOOUT type="checkbox" value="68" onclick='checkOnlyOne_OUT(this)' data-target="GPIO-OUT">
+        <label class="form-check-label" for="flexCheckDefault">
+        OUT-2
+        </label>
+
+        <input class="form-check-input" name=GPIOOUT type="checkbox" value="70" onclick='checkOnlyOne_OUT(this)' data-target="GPIO-OUT">
+        <label class="form-check-label" for="flexCheckDefault">
+        OUT-3
+        </label>
+
+        <input class="form-check-input" name=GPIOOUT type="checkbox" value="71" onclick='checkOnlyOne_OUT(this)' data-target="GPIO-OUT">
+        <label class="form-check-label" for="flexCheckDefault">
+        OUT-4
+        </label>
+
+        <input class="form-check-input" name=GPIOOUT type="checkbox" value="72" onclick='checkOnlyOne_OUT(this)' data-target="GPIO-OUT">
+        <label class="form-check-label" for="flexCheckDefault">
+        OUT-5
+        </label>
+        <input class="form-check-input" name=GPIOOUT type="checkbox" value="73" onclick='checkOnlyOne_OUT(this)' data-target="GPIO-OUT">
+        <label class="form-check-label" for="flexCheckDefault">
+        OUT-6
+        </label>
+
+        <input class="form-check-input" name=GPIOOUT type="checkbox" value="74" onclick='checkOnlyOne_OUT(this)' data-target="GPIO-OUT">
+        <label class="form-check-label" for="flexCheckDefault">
+        OUT-7
+        </label>
+
+        <input class="form-check-input" name=GPIOOUT type="checkbox" value="76" onclick='checkOnlyOne_OUT(this)' data-target="GPIO-OUT">
+        <label class="form-check-label" for="flexCheckDefault">
+        OUT-8
+        </label>
+      </div>
+      <div class="col">
+        <input type="button" id="message" name="broadcast" class="btn btn-info" value="message" data-toggle="collapse" data-target="#broadcast_text">메시지내용 </button>
+        <input type="button" id="RTSP" name="broadcast" class="btn btn-info" value="rtsp" data-toggle="collapse" data-target="#broadcast_text">RTSP </button>
+        <input type="button" id="file" name="broadcast" class="btn btn-info" value="file" data-toggle="collapse" data-target="#broadcast_file">음원파일설정</button>
+      </div>
+      
+      <div class="col">
+        <input type = "text" name = "file" />
+        <input type = "file" name = "file" />
+      </div>
+      
+      <input type = "submit"/>
+    </form>
+  </center>
+
+</html>

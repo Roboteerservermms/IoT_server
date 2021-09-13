@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<html>
+  <script language=javascript>
+    var category = null
+    function category (){
+      var x = document.getElementById("broadcast_text");
+      var y = document.getElementById("broadcast_file");
+
+    }
+    function checkOnlyOne_IN(element) {
+      const checkboxes 
+          = document.getElementsByName("GPIOIN");
+      checkboxes.forEach((cb) => {
+        cb.checked = false;
+      })
+      element.checked = true;
+    }
+  </script>
+  <head>
+    <title>pyftp</title>
+  </head>
+
+  <body>
+    <center><h1>Upload Page</h1></center>
+    <center><a href="/">홈페이지</a><br><center>
+    <hr width="100%" color="black"/>
+    <center><h3>Upload File!</h3></center>
+    <hr width="100%" color="black"/>
+
+    <img src="{{ url_for('static',filename='images/upload.png') }}", width="100" 
+        style="margin-left: auto; margin-right: auto; display: block;")/>
+
+    <br><br>
+    <center>
+    <form action = "http://localhost:5000/192.168.0.12/fileUpload" method = "POST"
+         enctype = "multipart/form-data">
+      <div class="container-fluid">
+        <div class="row">
+        <div class="col">
+        <input class="form-check-input" name=GPIOIN type="checkbox" value="1" onclick='checkOnlyOne_IN(this)' data-target="GPIO-IN">
+        <label class="form-check-label" for="flexCheckDefault">
+        GPIO 1
+        </label>
+        <input class="form-check-input" name=GPIOIN type="checkbox" value="2" onclick='checkOnlyOne_IN(this)' data-target="GPIO-IN">
+        <label class="form-check-label" for="flexCheckDefault">
+        GPIO 2
+        </label>
+        <input class="form-check-input" name=GPIOIN type="checkbox" value="3" onclick='checkOnlyOne_IN(this)' data-target="GPIO-IN">
+        <label class="form-check-label" for="flexCheckDefault">
+        GPIO 3
+        </label>
+        <input class="form-check-input" name=GPIOIN type="checkbox" value="4" onclick='checkOnlyOne_IN(this)' data-target="GPIO-IN">
+        <label class="form-check-label" for="flexCheckDefault">
+        GPIO 4
+        </label>
+        <input class="form-check-input" name=GPIOIN type="checkbox" value="5" onclick='checkOnlyOne_IN(this)' data-target="GPIO-IN">
+        <label class="form-check-label" for="flexCheckDefault">
+        GPIO 5
+        </label>
+        <input class="form-check-input" name=GPIOIN type="checkbox" value="6" onclick='checkOnlyOne_IN(this)' data-target="GPIO-IN">
+        <label class="form-check-label" for="flexCheckDefault">
+        GPIO 6
+        </label>
+        <input class="form-check-input" name=GPIOIN type="checkbox" value="7" onclick='checkOnlyOne_IN(this)' data-target="GPIO-IN">
+        <label class="form-check-label" for="flexCheckDefault">
+        GPIO 7
+        </label>
+        <input class="form-check-input" name=GPIOIN type="checkbox" value="8" onclick='checkOnlyOne_IN(this)' data-target="GPIO-IN">
+        <label class="form-check-label" for="flexCheckDefault">
+        GPIO 8
+        </label>
+      </div>
+      <div class="col">
+        <input class="form-check-input" name=GPIOOUT type="checkbox" value="1" onclick='checkOnlyOne_OUT(this)' data-target="GPIO-OUT">
+        <label class="form-check-label" for="flexCheckDefault">
+        OUT-1
+        </label>
+
+        <input class="form-check-input" name=GPIOOUT type="checkbox" value="2" onclick='checkOnlyOne_OUT(this)' data-target="GPIO-OUT">
+        <label class="form-check-label" for="flexCheckDefault">
+        OUT-2
+        </label>
+
+        <input class="form-check-input" name=GPIOOUT type="checkbox" value="3" onclick='checkOnlyOne_OUT(this)' data-target="GPIO-OUT">
+        <label class="form-check-label" for="flexCheckDefault">
+        OUT-3
+        </label>
+
+        <input class="form-check-input" name=GPIOOUT type="checkbox" value="4" onclick='checkOnlyOne_OUT(this)' data-target="GPIO-OUT">
+        <label class="form-check-label" for="flexCheckDefault">
+        OUT-4
+        </label>
+
+        <input class="form-check-input" name=GPIOOUT type="checkbox" value="5" onclick='checkOnlyOne_OUT(this)' data-target="GPIO-OUT">
+        <label class="form-check-label" for="flexCheckDefault">
+        OUT-5
+        </label>
+        <input class="form-check-input" name=GPIOOUT type="checkbox" value="6" onclick='checkOnlyOne_OUT(this)' data-target="GPIO-OUT">
+        <label class="form-check-label" for="flexCheckDefault">
+        OUT-6
+        </label>
+
+        <input class="form-check-input" name=GPIOOUT type="checkbox" value="7" onclick='checkOnlyOne_OUT(this)' data-target="GPIO-OUT">
+        <label class="form-check-label" for="flexCheckDefault">
+        OUT-7
+        </label>
+
+        <input class="form-check-input" name=GPIOOUT type="checkbox" value="8" onclick='checkOnlyOne_OUT(this)' data-target="GPIO-OUT">
+        <label class="form-check-label" for="flexCheckDefault">
+        OUT-8
+        </label>
+      </div>
+      <input type = "file" name = "file" />
+      <input type = "submit"/>
+    </form>
+  </center>
+
+</html>
