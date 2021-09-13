@@ -28,6 +28,8 @@ class UDPClient:
             msg = json.dumps(data_dic)
             self.conn_sock.sendto(bytes(msg, "utf-8"), (self.host,self.port))
             self.printwt(f'[ SENT ] {msg} \n')
+            with open(f"./json/{host}.json", "w") as f:
+                json.dump(str(self.conn_sock.recv(1024),"utf-8"), f)
         except OSError as err:
             self.printwt('Cannot connect to server')
             print(err)

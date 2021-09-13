@@ -6,7 +6,6 @@ app = Flask(__name__)
 client = UDPClient()
 client.create_socket()
 #app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 #파일 업로드 용량 제한 단위:바이트
-
 #HTML 렌더링
 @app.route('/')
 def home_page():
@@ -44,10 +43,16 @@ def upload_file(ip):
         print("upload file!")
         f = request.files['file']
         out =  request.form.getlist("GPIOOUT")
-        i = int(request.form.getlist("GPIOIN")[0])
-        data_dic={"category": "File", "GPIO_IN": i, "GPIO_OUT": out,"data": f"{secure_filename(f.filename)}"}
+        In = int(request.form.getlist("GPIOIN")[0])
+        sendOutArray = [0,0,0,0,0,0,0,0]
+        for i in range(8):
+            if str(i) in out:
+                sendOutArray[i] = 1
+            else:
+                sendOutArray[i] = 0
+        data_dic={"category": "File", "GPIO_IN": In, "GPIO_OUT": sendOutArray,"data": f"{secure_filename(f.filename)}"}
         print(f"sendto {ip} {data_dic}")
-        client.interact_with_server(ip, 8080, data_dic)
+        ret = client.interact_with_server(ip, 8080, data_dic)
         #저장할 경로 + 파일명
         f.save('./uploads/' + secure_filename(f.filename))
         subprocess.getoutput(f"sshpass -p orangepi scp ./uploads/{secure_filename(f.filename)} orangepi@{ip}:/home/orangepi/IoT_target/ ")
@@ -59,10 +64,18 @@ def upload_tts(ip):
     if request.method == 'POST':
         f = str(request.form.getlist("text")[0])
         out =  request.form.getlist("GPIOOUT")
-        i = int(request.form.getlist("GPIOIN")[0])
-        data_dic={"category": "TTS", "GPIO_IN": i, "GPIO_OUT": out,"data": f"{f}"}
-        client.interact_with_server(ip, 8080, data_dic)
+        In = int(request.form.getlist("GPIOIN")[0])
+        sendOutArray = [0,0,0,0,0,0,0,0]
+        for i in range(8):
+            if str(i) in out:
+                sendOutArray[i] = 1
+            else:
+                sendOutArray[i] = 0
+        data_dic={"category": "TTS", "GPIO_IN": In, "GPIO_OUT": sendOutArray,"data": f"{f}"}
+        print(f"sendto {ip} {data_dic}")
+        ret = client.interact_with_server(ip, 8080, data_dic)
         #저장할 경로 + 파일명
+        print(ret)
     return render_template('check.html')
 
 #파일 업로드 처리
@@ -71,8 +84,15 @@ def upload_rtsp(ip):
     if request.method == 'POST':
         f = str(request.form.getlist("text")[0])
         out =  request.form.getlist("GPIOOUT")
-        i = int(request.form.getlist("GPIOIN")[0])
-        data_dic={"category": 'rtsp', "GPIO_IN": i, "GPIO_OUT": out,"data": f"{f}"}
+        In = int(request.form.getlist("GPIOIN")[0])
+        sendOutArray = [0,0,0,0,0,0,0,0]
+        for i in range(8):
+            if str(i) in out:
+                sendOutArray[i] = 1
+            else:
+                sendOutArray[i] = 0
+        data_dic={"category": "rtsp", "GPIO_IN": In, "GPIO_OUT": sendOutArray,"data": f"{f}"}
+        print(f"sendto {ip} {data_dic}")
         client.interact_with_server(ip, 8080, data_dic)
         #저장할 경로 + 파일명
     return render_template('check.html')
