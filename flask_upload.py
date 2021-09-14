@@ -2,6 +2,7 @@ from flask import Flask, render_template, request
 from werkzeug.utils import secure_filename
 import os, subprocess
 from client import UDPClient
+import json
 app = Flask(__name__)
 client = UDPClient()
 client.create_socket()
@@ -11,12 +12,19 @@ client.create_socket()
 def home_page():
     return render_template('home.html')
 
+@app.route('/<ip>')
+def device_page(ip):
+    return render_template('device.html')
+
 # 파일 리스트
-@app.route('/list')
-def list_page():
-    file_list = os.listdir("./uploads")
+@app.route('/<ip>/list')
+def list_page(ip):
+    json_data =None
+    with open(f'./json/{ip}.json', 'r') as f:
+        json_data = json.load(f)
+    print(json.dumps(json_data) )
     html = """<center><a href="/">홈페이지</a><br><br>"""
-    html += "file_list: {}".format(file_list) + "</center>"
+    html += "file_list: {}".format(json_data) + "</center>"
     return html
 
 #업로드 HTML 렌더링
