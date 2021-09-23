@@ -1,0 +1,293 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Dashboard {% endblock %} 
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="pcoded-content">
+        <div class="pcoded-inner-content">
+            <!-- [ breadcrumb ] start -->
+            <!-- [ breadcrumb ] end -->
+            <div class="main-body">
+                <div class="page-wrapper">
+                    <!-- [ Main Content ] start -->
+                    <div class="row">
+                        <!-- [ rating list ] end-->
+                        <div class="col-xl-8 col-md-12 m-b-30">
+                            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link" id="Monday-tab" data-toggle="tab" href="#Monday" role="tab" aria-controls="Monday" aria-selected="false">월요일</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="Tuesday-tab" data-toggle="tab" href="#Tuesday" role="tab" aria-controls="Tuesday" aria-selected="false">화요일</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="Wensday-tab" data-toggle="tab" href="#Wensday" role="tab" aria-controls="Wensday" aria-selected="false">수요일</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="Thursday-tab" data-toggle="tab" href="#Thursday" role="tab" aria-controls="Thursday" aria-selected="false">목요일</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="Friday-tab" data-toggle="tab" href="#Friday" role="tab" aria-controls="Friday" aria-selected="false">금요일</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="Saturday-tab" data-toggle="tab" href="#Saturday" role="tab" aria-controls="Saturday" aria-selected="false">토요일</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="Sunday-tab" data-toggle="tab" href="#Sunday" role="tab" aria-controls="Sunday" aria-selected="false">일요일</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="Everyday-tab" data-toggle="tab" href="#Everyday" role="tab" aria-controls="Everyday" aria-selected="false">매일</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content" id="myTabContent">
+                                <div class="tab-pane fade active show" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>ip</th>
+                                                <th>macAddress</th>
+                                                <th>시작시간</th>
+                                                <th>종료시간</th>
+                                                <th>GPIO OUTPUT</th>
+                                                <th>방송내용</th>
+                                                <th>연결</th>
+                                                <th class="text-right"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <h6 class="m-0">192.168.0.12</h6>
+                                                </td>
+                                                <td>
+                                                    <h6 class="m-0">1f:48:86</h6>
+                                                </td>
+                                                <td>
+                                                    <h6 class="m-0">03:38</h6>
+                                                </td>
+                                                <td>
+                                                    <h6 class="m-0">06:38</h6>
+                                                </td>
+                                                <td>
+                                                    <h6 class="m-0">OFFOFFOFFOFFOFFOFFOFF</h6>
+                                                </td>
+                                                <td>
+                                                    <h6 class="m-0">"TTS" : "Hello"</h6>
+                                                </td>
+                                                <td class="text-right"><i class="fas fa-circle text-c-green f-10"></i></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-8 col-md-6">
+                            <div class="card TimeSetting">
+                                <div class="card-block">
+                                    <h6 class="mb-4">시간 설정</h6>
+                                    <div class="row d-flex align-items-center">
+                                        <h6 class="mb-4">시간</h6>
+                                        <div class="col-auto">
+                                            <select class="form-control" id="day">
+                                                <option>월요일</option>
+                                                <option>화요일</option>
+                                                <option>수요일</option>
+                                                <option>목요일</option>
+                                                <option>금요일</option>
+                                                <option>토요일</option>
+                                                <option>일요일</option>
+                                                <option>매일</option>
+                                            </select>
+                                        </div>
+                                        <h6 class="mb-4">시작 시간</h6>
+                                        <input type="time" name="startTime" class="startTime"/>
+                                        <h6 class="mb-4">종료 시간</h6>
+                                        <input type="time" name="endTime" class="endTime"/>
+                                        <div class="col-auto">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox"  name="GPIOIN">
+                                                <label class="form-check-label" for="flexCheckDefault">
+                                                    First
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" value="1" name="GPIOIN">
+                                                <label class="form-check-label" for="flexCheckDefault">
+                                                    IN-1
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" value="2" name="GPIOIN">
+                                                <label class="form-check-label" for="flexCheckDefault">
+                                                    IN-2
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" value="3" name="GPIOIN">
+                                                <label class="form-check-label" for="flexCheckDefault">
+                                                    IN-3
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" value="4" name="GPIOIN">
+                                                <label class="form-check-label" for="flexCheckDefault">
+                                                    IN-4
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" value="5" name="GPIOIN">
+                                                <label class="form-check-label" for="flexCheckDefault">
+                                                    IN-5
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" value="6" name="GPIOIN">
+                                                <label class="form-check-label" for="flexCheckDefault">
+                                                    IN-6
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" value="7" name="GPIOIN">
+                                                <label class="form-check-label" for="flexCheckDefault">
+                                                    IN-7
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" value="8" name="GPIOIN">
+                                                <label class="form-check-label" for="flexCheckDefault">
+                                                    IN-8
+                                                </label>
+                                            </div>
+                                        </div>
+                                            <div class="col-auto">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox"  name="GPIOIN">
+                                                    <label class="form-check-label" for="flexCheckDefault">
+                                                        Last
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" value="1" name="GPIOIN">
+                                                    <label class="form-check-label" for="flexCheckDefault">
+                                                        IN-1
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" value="2" name="GPIOIN">
+                                                    <label class="form-check-label" for="flexCheckDefault">
+                                                        IN-2
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" value="3" name="GPIOIN">
+                                                    <label class="form-check-label" for="flexCheckDefault">
+                                                        IN-3
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" value="4" name="GPIOIN">
+                                                    <label class="form-check-label" for="flexCheckDefault">
+                                                        IN-4
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" value="5" name="GPIOIN">
+                                                    <label class="form-check-label" for="flexCheckDefault">
+                                                        IN-5
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" value="6" name="GPIOIN">
+                                                    <label class="form-check-label" for="flexCheckDefault">
+                                                        IN-6
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" value="7" name="GPIOIN">
+                                                    <label class="form-check-label" for="flexCheckDefault">
+                                                        IN-7
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" value="8" name="GPIOIN">
+                                                    <label class="form-check-label" for="flexCheckDefault">
+                                                        IN-8
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" value="1" name="GPIOOUT">
+                                                    <label class="form-check-label" for="flexCheckDefault">
+                                                        OUT-1
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" value="2" name="GPIOOUT">
+                                                    <label class="form-check-label" for="flexCheckDefault">
+                                                        OUT-2
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" value="3" name="GPIOOUT">
+                                                    <label class="form-check-label" for="flexCheckDefault">
+                                                        OUT-3
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" value="4" name="GPIOOUT">
+                                                    <label class="form-check-label" for="flexCheckDefault">
+                                                        OUT-4
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" value="5" name="GPIOOUT">
+                                                    <label class="form-check-label" for="flexCheckDefault">
+                                                        OUT-5
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" value="6" name="GPIOOUT">
+                                                    <label class="form-check-label" for="flexCheckDefault">
+                                                        OUT-6
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" value="7" name="GPIOOUT">
+                                                    <label class="form-check-label" for="flexCheckDefault">
+                                                        OUT-7
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" value="8" name="GPIOOUT">
+                                                    <label class="form-check-label" for="flexCheckDefault">
+                                                        OUT-8
+                                                    </label>
+                                                </div>
+                                            </div>
+                                             <div class="col-auto">
+                                                <label for="exampleFormControlFile1">파일</label>
+                                                <input type="file" class="scheduleFile" id="scheduleFile">
+                                            </div>
+                                            <input type="submit" value="추가" class="btn btn-default">
+                                        </div>
+                                    </div>
+                                 </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- [ Main Content ] end -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}
