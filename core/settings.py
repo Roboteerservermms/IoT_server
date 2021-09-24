@@ -16,7 +16,7 @@ SECRET_KEY = config('SECRET_KEY', default='S#perS3crEt_1122')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=True, cast=bool)
-
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 # load production server from .env
 ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1', config('SERVER', default='0.0.0.0')]
 
@@ -121,3 +121,9 @@ STATICFILES_DIRS = (
 )
 #############################################################
 #############################################################
+# 각 media 파일에 대한 URL Prefix
+MEDIA_URL = '/media/' # 항상 / 로 끝나도록 설정
+# MEDIA_URL = 'http://static.myservice.com/media/' 다른 서버로 media 파일 복사시
+
+# 업로드된 파일을 저장할 디렉토리 경로
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
