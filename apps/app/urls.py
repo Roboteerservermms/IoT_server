@@ -10,6 +10,8 @@ urlpatterns = [
 
     # The home page
     path('', views.index, name='home'),
+    path('registerDevice', views.registerDevice, name='registerDevice'),
+    path('registerSchedule', views.registerSchedule, name='registerSchedule'),
     
     # Matches any html file
 

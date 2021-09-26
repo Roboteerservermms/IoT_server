@@ -9,50 +9,60 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.urls import reverse
-from .forms import deviceForm, scheduleForm
 from .models import Rboard, Schedule
 import requests
+from django.shortcuts import redirect
 
 from django_tables2 import MultiTableMixin
 from django.views.generic.base import TemplateView
 
 
+@login_required(login_url="/login/")
 def registerDevice(request):
-    msg = None
-    success = False
     if request.method == "POST":
-        newDeviceForm = deviceForm(request.POST)
-        if newDeviceForm.is_valid():
-            newDeviceName = newDeviceForm.cleaned_data.get("name")
-            newDeviceIP = newDeviceForm.cleaned_data.get("ip")
-            MacResponse = requests.get(f"http://{newDeviceIP}:8080/getMacAddress")
-            if response.status_code == 200:
-                newDeviceMacAddress=MacResponse.text
-                newDevice = Rboard( name=newDeviceName, ip=newDeviceIP, macAddress=newDeviceMacAddress )
-                newDevice.save()
-                redirect("/")
-            else:
-                messages.warning(request, "장치 인터넷 연결을 확인하십시오!")
-                redirect("/")
-                
-    else:
-        newDeviceForm = deviceForm()
+        newDeviceName = request.POST['deviceName'],
+        newDeviceIP = request.POST['deviceIP'],
+        try :
+            macAddressResponse = requests.get(f"http://{newDeviceIP}:8080/getMacAddress")
+            newDeviceMacAddress=""
+            newDeviceMacAddress=macAddressResponse.text
+            newDevice=Rboard.objects.create( 
+                name=newDeviceName, 
+                ip=newDeviceIP, 
+                macAddress=newDeviceMacAddress 
+            )
+            return redirect("/")
+        except:
+            messages.warning(request, "장치 인터넷 연결을 확인하십시오!")
+    return redirect("/")
 
-    return render(request, "accounts/register.html", {"newDeviceForm": newDeviceForm, "msg": msg, "success": success})
-
+@login_required(login_url="/login/")
+def registerSchedule(request):
+    if request.method == "POST":
+        try:
+            response = requests.post(f'http://{device.ip}:8080/registerSchedule',data=request.POST)
+            newSchedule=Schedule.objects.create(
+                device=request.POST['device'],
+                day=request.POST['day'],
+                startTime=request.POST['startTime'],
+                endTime=request.POST['endTime'],
+                OUTPIN="".join(request.POST['OUTPIN']),
+                TTS=request.POST['TTS'],
+                RTSP=request.POST['RTSP'],
+                File=request.POST['File'],
+            )
+            return redirect("/")
+        except:
+            messages.warning(request, "전송실패!")
 
 @login_required(login_url="/login/")
 def index(request):
-    deviceRegister = deviceForm()
-    scheduleRegister = scheduleForm()
     deviceList = Rboard.objects.all()
     scheduleList = Schedule.objects.all()
     context = {
         'segment': 'index',
         "deviceList" : deviceList,
         "scheduleList" : scheduleList,
-        "deviceRegister" : deviceRegister,
-        "scheduleRegister" : scheduleRegister
     }
 
     html_template = loader.get_template('index.html')
