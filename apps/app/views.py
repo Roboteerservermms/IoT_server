@@ -31,6 +31,7 @@ def registerDevice(request):
                 ip=newDeviceIP, 
                 macAddress=newDeviceMacAddress 
             )
+            messages.info(request, "추가완료!")
             return redirect("/")
         except:
             messages.warning(request, "장치 인터넷 연결을 확인하십시오!")
