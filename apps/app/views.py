@@ -55,6 +55,7 @@ def registerSchedule(request):
             return redirect("/")
         except:
             messages.warning(request, "전송실패!")
+        return redirect("/")
 
 @login_required(login_url="/login/")
 def index(request):
