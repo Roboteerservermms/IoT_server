@@ -65,6 +65,5 @@ def index(request):
         "deviceList" : deviceList,
         "scheduleList" : scheduleList,
     }
-
     html_template = loader.get_template('index.html')
     return HttpResponse(html_template.render(context, request))
