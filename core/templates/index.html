@@ -1,0 +1,336 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Dashboard {% endblock %} 
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+<script>
+$('input[type="checkbox"]').on('change', function(e){
+    if($(this).prop('checked'))
+    {
+        $(this).next().val(1);
+    } else {
+        $(this).next().val(0);
+    }
+});
+</script>
+    <div class="pcoded-content">
+        <div class="pcoded-inner-content">
+            <!-- [ breadcrumb ] start -->
+            <!-- [ breadcrumb ] end -->
+            <div class="main-body">
+                <div class="page-wrapper">
+                    <!-- [ Main Content ] start -->
+                    <div class="row">
+                        <!--[ daily sales section ] start-->
+                        <form action="/registerDevice" method="post", class="post-form my-3">
+                            {% csrf_token %}
+                            <div class="col-xl-8 col-md-12 m-b-30">
+                                <div class="card deviceRegister">
+                                    <div class="card-block">
+                                        <h6 class="card-title"> 장치 등록</h6>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                              <span class="input-group-text">장치이름</span>
+                                            </div>
+                                            <input type="text" class="form-control" id="newDeviceName" name="deviceName">
+                                        </div>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                              <span class="input-group-text">장치IP</span>
+                                            </div>
+                                            <input type="text" class="form-control" id="newDeviceIP"name="deviceIP">
+                                        </div>
+                                        <button type="submit" class="save btn btn-default">추가</button>
+                                    </div>
+                                </div>
+                                <div class="alert alert-primary" role="alert">
+                                    {% if messages %}
+                                        {% for message in messages %}
+                                            {{ message.tags }}
+                                            {{ message.message }}
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </form>
+                        <form action="/registerSchedule" method="post", class="post-form my-3">
+                                {% csrf_token %}
+                            <div class="card deviceList">
+                                <div class="card-block">
+                                    <h6 class="card-title"> 장치 리스트</h6>
+                                    {% for device in deviceList %}
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" id="{{device.name}}" name="device" value="{{device.ip}}" >
+                                        <label class="form-check-label" for="{{device.name}}">
+                                            {{ device.name }}
+                                        </label>
+                                      </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        <!-- [ rating list ] end-->
+                            <div class="card TimeSetting">
+                                <div class="card-block">
+                                    <h5 class="card-title"> 예약 리스트</h5>
+                                    <table>
+                                        {% for sch in schduleList %}
+                                            <ul>
+                                                <li>{{ sch.day }}</li>
+                                                <li>{{ sch.startTime }}</li>
+                                                <li>{{ sch.endTime }}</li>
+                                                <li>{{ sch.OUTPIN }}</li>
+                                            </ul>
+                                        {% endfor %}
+                                    </table>
+                                </div>
+                            </div>
+                                <div class="card TimeSetting">
+                                    <div class="card-block">
+                                        <h5 class="card-title"> Schedule 설정</h5>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                            <label class="input-group-text" for="DaySelect">요일</label>
+                                            </div>
+                                            <select class="custom-select" id="DaySelect" name="day">
+                                            <option selected>요일선택</option>
+                                            <option value="Monday">월요일</option>
+                                            <option value="Tuesday">화요일</option>
+                                            <option value="Wensday">수요일</option>
+                                            <option value="Thursday">목요일</option>
+                                            <option value="Friday">금요일</option>
+                                            <option value="Saturday">토요일</option>
+                                            <option value="Sunday">일요일</option>
+                                            <option value="Everyday">매일</option>
+                                            </select>
+                                        </div>
+                                        <div class="input-group" style="display:inline;">
+                                            <div class="input-group-prepend">
+                                            <label class="input-group-text" for="startTimeSelect">시작시간</label>
+                                            </div>
+                                            <input type="time" id="startTimeSelect"name="startTime" class="startTime"/>
+                                            <div class="input-group-prepend">
+                                            <label class="input-group-text" for="endTimeSelect">종료시간</label>
+                                            </div>
+                                            <input type="time" id="endTimeSelect" name="endTime" class="endTime"/>
+                                        </div>
+<!--                                         <div class="col-auto">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox"  name="FIRSTON">
+                                                <label class="form-check-label" for="flexCheckDefault">
+                                                    First
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" value="1" name="FIRSTGPIOIN">
+                                                <label class="form-check-label" for="flexCheckDefault">
+                                                    IN-1
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" value="2" name="FIRSTGPIOIN">
+                                                <label class="form-check-label" for="flexCheckDefault">
+                                                    IN-2
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" value="3" name="FIRSTGPIOIN">
+                                                <label class="form-check-label" for="flexCheckDefault">
+                                                    IN-3
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" value="4" name="FIRSTGPIOIN">
+                                                <label class="form-check-label" for="flexCheckDefault">
+                                                    IN-4
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" value="5" name="FIRSTGPIOIN">
+                                                <label class="form-check-label" for="flexCheckDefault">
+                                                    IN-5
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" value="6" name="FIRSTGPIOIN">
+                                                <label class="form-check-label" for="flexCheckDefault">
+                                                    IN-6
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" value="7" name="FIRSTGPIOIN">
+                                                <label class="form-check-label" for="flexCheckDefault">
+                                                    IN-7
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox"  name="LASTON">
+                                                <label class="form-check-label" for="flexCheckDefault">
+                                                    Last
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" value="1" name="GPIOIN">
+                                                <label class="form-check-label" for="flexCheckDefault">
+                                                    IN-1
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" value="2" name="GPIOIN">
+                                                <label class="form-check-label" for="flexCheckDefault">
+                                                    IN-2
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" value="3" name="GPIOIN">
+                                                <label class="form-check-label" for="flexCheckDefault">
+                                                    IN-3
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" value="4" name="GPIOIN">
+                                                <label class="form-check-label" for="flexCheckDefault">
+                                                    IN-4
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" value="5" name="GPIOIN">
+                                                <label class="form-check-label" for="flexCheckDefault">
+                                                    IN-5
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" value="6" name="GPIOIN">
+                                                <label class="form-check-label" for="flexCheckDefault">
+                                                    IN-6
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" value="7" name="GPIOIN">
+                                                <label class="form-check-label" for="flexCheckDefault">
+                                                    IN-7
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" value="8" name="GPIOIN">
+                                                <label class="form-check-label" for="flexCheckDefault">
+                                                    IN-8
+                                                </label>
+                                            </div>
+                                        </div>
+ -->                                    <div class="col-auto">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" value="1" name="OUTPIN">
+                                                <input class="form-check-input" type="hidden" value="0" name="OUTPIN">
+                                                <label class="form-check-label" for="flexCheckDefault">
+                                                    OUT-1
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" value="1" name="OUTPIN">
+                                                <input class="form-check-input" type="hidden" value="0" name="OUTPIN">
+                                                <label class="form-check-label" for="flexCheckDefault">
+                                                    OUT-2
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" value="1" name="OUTPIN">
+                                                <input class="form-check-input" type="hidden" value="0" name="OUTPIN">
+                                                <label class="form-check-label" for="flexCheckDefault">
+                                                    OUT-3
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" value="1" name="OUTPIN">
+                                                <input class="form-check-input" type="hidden" value="0" name="OUTPIN">
+                                                <label class="form-check-label" for="flexCheckDefault">
+                                                    OUT-4
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" value="1" name="OUTPIN">
+                                                <input class="form-check-input" type="hidden" value="0" name="OUTPIN">
+                                                <label class="form-check-label" for="flexCheckDefault">
+                                                    OUT-5
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" value="1" name="OUTPIN">
+                                                <input class="form-check-input" type="hidden" value="0" name="OUTPIN">
+                                                <label class="form-check-label" for="flexCheckDefault">
+                                                    OUT-6
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" value="1" name="OUTPIN">
+                                                <input class="form-check-input" type="hidden" value="0" name="OUTPIN">
+                                                <label class="form-check-label" for="flexCheckDefault">
+                                                    OUT-7
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                              <span class="input-group-text" id="inputGroup-sizing-default">TTS</span>
+                                            </div>
+                                            <input type="text" class="form-control" name="TTS">
+                                        </div>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                              <span class="input-group-text" id="inputGroup-sizing-default">RTSP</span>
+                                            </div>
+                                            <input type="text" class="form-control" name="RTSP">
+                                        </div>  
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                              <span class="input-group-text">File</span>
+                                            </div>
+                                            <div class="custom-file">
+                                              <input type="file" class="custom-file-input" name="File">
+                                              <label class="custom-file-label" for="inputGroupFile01">파일선택</label>
+                                            </div>
+                                        </div>                               
+                                    </div>
+                                    <button type="submit" class="save btn btn-default">추가</button>
+                                </div>
+                        </form>
+                    </div>
+                
+                    <form action="/testTTS" method="post", class="post-form my-3">
+                        {% csrf_token %}
+                        <div class="col-xl-8 col-md-12 m-b-30">
+                            <div class="card deviceRegister">
+                                <div class="card-block">
+                                    <h6 class="card-title"> TTS 테스트</h6>
+                                    {% for device in deviceList %}
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" id="{{device.name}}" name="device" value="{{device.ip}}" >
+                                        <label class="form-check-label" for="{{device.name}}">
+                                            {{ device.name }}
+                                        </label>
+                                      </div>
+                                    {% endfor %}
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                        <span class="input-group-text" id="inputGroup-sizing-default">TTS</span>
+                                        </div>
+                                        <input type="text" class="form-control" name="TTS">
+                                    </div>
+                                    <button type="submit" class="save btn btn-default">테스트</button>
+                                </div> 
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                    <!-- [ Main Content ] end -->
+            </div>
+        </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}
