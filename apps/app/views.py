@@ -55,10 +55,11 @@ def registerSchedule(request):
             selectDeviceIP = request.POST['device']
             print(f'http://{selectDeviceIP}:8080/setSchedule')
             response = requests.post(f'http://{selectDeviceIP}:8080/setSchedule',data=request.POST)
-            return HttpResponse(response)
-        except:
-            messages.warning(request, "전송실패!")
-            return HttpResponse(request)
+            messages.info(request, "추가완료!")
+            return redirect("/")
+        except :
+            messages.warning(request, "전송 실패!")
+    return redirect("/")
 
 @login_required(login_url="/login/")
 def testTTS(request):
@@ -68,10 +69,10 @@ def testTTS(request):
             selectDeviceIP = request.POST['device']
             print(f'http://{selectDeviceIP}:8080/setTTS')
             response = requests.post(f'http://{selectDeviceIP}:8080/setTTS',data=request.POST)
-            return HTTPResponse(response)
-        except:
-            messages.warning(request, "전송실패!")
-            return HttpResponse("Fail!")
+            return redirect("/")
+        except :
+            messages.warning(request, "전송 실패!")
+    return redirect("/")
 
 @login_required(login_url="/login/")
 def index(request):
