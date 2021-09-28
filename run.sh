@@ -1,4 +1,4 @@
-export PYTHONPATH="/home/orangepi/IoT_target"
+export PYTHONPATH="/home/orangepi/IoT_server"
 export PYTHONIOENCODING=UTF-8
 cd $PYTHONPATH
 git pull

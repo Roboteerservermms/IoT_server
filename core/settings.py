@@ -18,7 +18,7 @@ SECRET_KEY = config('SECRET_KEY', default='S#perS3crEt_1122')
 DEBUG = config('DEBUG', default=True, cast=bool)
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 # load production server from .env
-ALLOWED_HOSTS = ['localhost','0.0.0.0', '127.0.0.1', config('SERVER', default='0.0.0.0')]
+ALLOWED_HOSTS = ["*"]
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 # Application definition
 
