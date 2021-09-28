@@ -12,7 +12,9 @@ urlpatterns = [
     path('', views.index, name='home'),
     path('registerDevice', views.registerDevice, name='registerDevice'),
     path('registerSchedule', views.registerSchedule, name='registerSchedule'),
-    
+    path('setSchedule', views.setSchedule, name='setSchedule'),
+    path('getMacAddress', views.getMacAddress, name='getMacAddress'),
+    path('testTTS', views.testTTS, name='testTTS'),
+    path('setTTS', views.setTTS, name='setTTS'),
     # Matches any html file
-
 ]

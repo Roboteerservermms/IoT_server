@@ -16,49 +16,6 @@ class Rboard(models.Model):
     ip = models.GenericIPAddressField(default="",null=True,protocol="both", unpack_ipv4=False)
     macAddress = models.CharField(max_length=15)
 
-class PIN1(models.Model):
-    device = models.ForeignKey("Rboard", on_delete=models.CASCADE, default="")
-    OUTPIN = models.CharField(default="", null=True, max_length=10)
-    TTS = models.CharField(default="",null=True,max_length=50)
-    RTSP = models.CharField(default="",null=True,max_length=50)
-    File = models.FileField(upload_to="", null=True)
-
-class PIN2(models.Model):
-    device = models.ForeignKey("Rboard", on_delete=models.CASCADE, default="")
-    OUTPIN = models.CharField(default="", null=True, max_length=10)
-    TTS = models.CharField(default="",null=True,max_length=50)
-    RTSP = models.CharField(default="",null=True,max_length=50)
-    File = models.FileField(upload_to="", null=True)
-
-class PIN3(models.Model):
-    device = models.ForeignKey("Rboard", on_delete=models.CASCADE, default="")
-    OUTPIN = models.CharField(default="", null=True, max_length=10)
-    TTS = models.CharField(default="",null=True,max_length=50)
-    RTSP = models.CharField(default="",null=True,max_length=50)
-    File = models.FileField(upload_to="", null=True)
-
-class PIN4(models.Model):
-    device = models.ForeignKey("Rboard", on_delete=models.CASCADE, default="")
-    OUTPIN = models.CharField(default="", null=True, max_length=10)
-    TTS = models.CharField(default="",null=True,max_length=50)
-    RTSP = models.CharField(default="",null=True,max_length=50)
-    File = models.FileField(upload_to="", null=True)
-
-class PIN5(models.Model):
-    device = models.ForeignKey("Rboard", on_delete=models.CASCADE, default="")
-    OUTPIN = models.CharField(default="", null=True, max_length=10)
-    TTS = models.CharField(default="",null=True,max_length=50)
-    RTSP = models.CharField(default="",null=True,max_length=50)
-    File = models.FileField(upload_to="", null=True)
-
-class PIN7(models.Model):
-    device = models.ForeignKey("Rboard", on_delete=models.CASCADE, default="")
-    OUTPIN = models.CharField(default="", null=True, max_length=10)
-    TTS = models.CharField(default="",null=True,max_length=50)
-    RTSP = models.CharField(default="",null=True,max_length=50)
-    File = models.FileField(upload_to="", null=True)
-
-
 class Schedule(models.Model):
     device = models.ForeignKey("Rboard", on_delete=models.CASCADE, default="")
     day = models.CharField(primary_key=True,max_length=10)

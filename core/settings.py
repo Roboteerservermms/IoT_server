@@ -19,7 +19,7 @@ DEBUG = config('DEBUG', default=True, cast=bool)
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 # load production server from .env
 ALLOWED_HOSTS = ['localhost','0.0.0.0', '127.0.0.1', config('SERVER', default='0.0.0.0')]
-
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 # Application definition
 
 INSTALLED_APPS = [
@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'crispy_forms',
     'apps.app'  # Enable the inner app
 ]
 

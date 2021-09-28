@@ -35,13 +35,13 @@ $('input[type="checkbox"]').on('change', function(e){
                                             <div class="input-group-prepend">
                                               <span class="input-group-text">장치이름</span>
                                             </div>
-                                            <input type="text" class="form-control" name="deviceName">
+                                            <input type="text" class="form-control" id="newDeviceName" name="deviceName">
                                         </div>
                                         <div class="input-group mb-3">
                                             <div class="input-group-prepend">
                                               <span class="input-group-text">장치IP</span>
                                             </div>
-                                            <input type="text" class="form-control" name="deviceIP">
+                                            <input type="text" class="form-control" id="newDeviceIP"name="deviceIP">
                                         </div>
                                         <button type="submit" class="save btn btn-default">추가</button>
                                     </div>
@@ -61,11 +61,14 @@ $('input[type="checkbox"]').on('change', function(e){
                             <div class="card deviceList">
                                 <div class="card-block">
                                     <h6 class="card-title"> 장치 리스트</h6>
-                                    <table class="table table-hover">
                                     {% for device in deviceList %}
-                                    <button type="button" class="btn btn-outline-primary"  name="device" value={{ device.ip }}>{{ device.name }}</button>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" id="{{device.name}}" name="device" value="{{device.ip}}" >
+                                        <label class="form-check-label" for="{{device.name}}">
+                                            {{ device.name }}
+                                        </label>
+                                      </div>
                                     {% endfor %}
-                                    </table>
                                 </div>
                             </div>
                         <!-- [ rating list ] end-->
@@ -296,6 +299,32 @@ $('input[type="checkbox"]').on('change', function(e){
                                 </div>
                         </form>
                     </div>
+                
+                    <form action="/testTTS" method="post", class="post-form my-3">
+                        {% csrf_token %}
+                        <div class="col-xl-8 col-md-12 m-b-30">
+                            <div class="card deviceRegister">
+                                <div class="card-block">
+                                    <h6 class="card-title"> TTS 테스트</h6>
+                                    {% for device in deviceList %}
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" id="{{device.name}}" name="device" value="{{device.ip}}" >
+                                        <label class="form-check-label" for="{{device.name}}">
+                                            {{ device.name }}
+                                        </label>
+                                      </div>
+                                    {% endfor %}
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                        <span class="input-group-text" id="inputGroup-sizing-default">TTS</span>
+                                        </div>
+                                        <input type="text" class="form-control" name="TTS">
+                                    </div>
+                                    <button type="submit" class="save btn btn-default">테스트</button>
+                                </div> 
+                            </div>
+                        </div>
+                    </form>
                 </div>
                     <!-- [ Main Content ] end -->
             </div>
