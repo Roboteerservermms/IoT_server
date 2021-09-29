@@ -6,7 +6,6 @@ import time as t
 import pafy
 import logging
 from vlc import EventType
-import schedule as sch
 from queue import PriorityQueue
 
 logger = logging.getLogger()
@@ -29,7 +28,6 @@ port = 8080
 
 
 scheduleList = {}
-schedule = sch
 jsonPath = "./"
 mainJson =None
 with open(f'{jsonPath}main.json', 'r') as f:
