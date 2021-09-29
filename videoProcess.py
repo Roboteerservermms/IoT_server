@@ -1,7 +1,6 @@
 import socket
 import subprocess
 import json
-from gtts import gTTS
 from video import VlcPlayer, Media
 import time as t
 import pafy
@@ -66,6 +65,8 @@ if __name__ == "__main__":
     exitThread = False
     mediaQ = PriorityQueue()
     player.play("blackscreen.mp4")
+    scheduleMediaInSig = False
+    GPIOMediaInSig =False
     while not exitThread:
         with open(f'./main.json', 'r') as f:
             mainJson = json.load(f)
@@ -75,15 +76,19 @@ if __name__ == "__main__":
                 now_time = t.strftime('%H:%M')
                 for m in mainJson["schedule"][now_day]:
                     if m["startTime"] == now_time:
-                        if not m['File']:
-                            addMedia = Media(1,mediaData=m["File"])
-                            mediaQ.put(addMedia)
-                        if not m["RTSP"]:
-                            addMedia = Media(1,mediaData=m["RTSP"])
-                            mediaQ.put(addMedia)
-                        if not m["TTS"]:
-                            addMedia = Media(1,mediaData=m["TTS"])
-                            mediaQ.put(addMedia)
+                        if not scheduleMediaInSig:
+                            if not m['File']:
+                                addMedia = Media(1,mediaData=m["File"])
+                                mediaQ.put(addMedia)
+                            if not m["RTSP"]:
+                                addMedia = Media(1,mediaData=m["RTSP"])
+                                mediaQ.put(addMedia)
+                            if not m["TTS"]:
+                                addMedia = Media(1,mediaData=m["TTS"])
+                                mediaQ.put(addMedia)
+                            scheduleMediaInSig=True
+                    else:
+                        scheduleMediaInSig=False
                 logger.info("schedule is running!")
             except KeyError:
                 scheduleSig = False
@@ -93,18 +98,20 @@ if __name__ == "__main__":
                     in_command = f"cat /sys/class/gpio/gpio{i}/value"
                     inValue = subprocess.getoutput(in_command)
                     if str2bool(inValue):
-                        m = mainJson["GPIOIN"][str(INPIN[i])]
-                        for m in mainJson["GPIOIN"][str(INPIN[i])]:
-                            if not m['File']:
-                                addMedia = Media(3,mediaData=m["File"])
-                                mediaQ.put(addMedia)
-                            if not m["RTSP"]:
-                                addMedia = Media(3,mediaData=m["RTSP"])
-                                mediaQ.put(addMedia)
-                            if not m["TTS"]:
-                                addMedia = Media(3,mediaData=m["TTS"])
-                                mediaQ.put(addMedia)
-                            break
+                        if not GPIOMediaInSig:
+                            m = mainJson["GPIOIN"][str(INPIN[i])]
+                            for m in mainJson["GPIOIN"][str(INPIN[i])]:
+                                if not m['File']:
+                                    addMedia = Media(3,mediaData=m["File"])
+                                    mediaQ.put(addMedia)
+                                if not m["RTSP"]:
+                                    addMedia = Media(3,mediaData=m["RTSP"])
+                                    mediaQ.put(addMedia)
+                                if not m["TTS"]:
+                                    addMedia = Media(3,mediaData=m["TTS"])
+                                    mediaQ.put(addMedia)
+                    else:
+                        GPIOMediaInSig = True
             except KeyError:
                 pass
         if videoEndSig:
