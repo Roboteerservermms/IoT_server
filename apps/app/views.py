@@ -130,6 +130,8 @@ def setSchedule(request):
                 mainJson = json.load(f)
                 print(json.dumps(mainJson) )
             mainJson[day].append(newSchedule)
+            with open(f'{BASE_DIR}/main.json', "w") as f:
+                json.dump(mainJson, f)
             return HttpResponse('set Schedule sucessfully!')
         else:
             return HttpResponse('is not match!')
