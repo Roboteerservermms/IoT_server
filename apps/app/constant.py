@@ -18,16 +18,9 @@ scheduleMedia = {
         "File":""
     }
 }
-
-
 GPIOMedia ={
-    "GPIOOUT" : [],
+    "OUTPIN" : [],
     "Broadcast" : {
         "TTS" : "", "File": "", "RTSP" : "" 
     }
 }
-
-def handleUploadedFile(f,url,fname):
-    with open(f'{url}/{fname}', 'wb+') as destination:
-        for chunk in f.chunks():
-            destination.write(chunk)

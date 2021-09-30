@@ -1,21 +1,18 @@
-import pyttsx3
 import time as t
-def TTS(rawData, mainJson):
-    engine = pyttsx.init()
-    nowTime = t.strftime("%Y%m%d_%H%M%S")
-    fileName=f"{BASE_DIR}{nowTime}.mp3"
-    engine.save_to_file(rawData,fileName)
+
+import subprocess
+
+def File(f,url,fname):
+    fileName = f"{url}/{fname}"
+    with open(fileName, 'wb+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
     return fileName
 
+def TTS(text, path):
+    fileName = f"{path}/{t.strftime('%y%m%d%H%M%S')}.mp3"
+    subprocess.call(["espeak", "-v ko", "-w"+fileName+".mp3", text])
+    return fileName
 
-def rtsp(inMsg, mainJson):
-    m = { "OUTPUT" : inMsg["GPIO_OUT"], "media": inMsg["data"] }
-    mainJson['GPIO'][str(inMsg["GPIO_IN"])].append(m)
-
-def broadcast(inMsg, mainJson):
-    m = { "OUTPUT" : inMsg["GPIO_OUT"], "media": inMsg["data"] }
-    mainJson['GPIO'][str(inMsg["GPIO_IN"])].append(m)
-
-def scheduleAdd(rawData):
-    m = { "time" : inMsg["time"], "media": inMsg["data"] }
-    mainJson['schedule'][inMsg["day"]].append(m)
+def directTTS(text):
+    subprocess.call(["espeak", "-v", "ko", text]) 
