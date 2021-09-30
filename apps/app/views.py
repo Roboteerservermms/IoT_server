@@ -11,12 +11,11 @@ from django.template import loader
 from django.urls import reverse
 from .models import Rboard, Schedule
 from .constant import *
-import requests, getmac, pyttsx3, socket, json
+from .mediaProvider import *
+import requests, getmac, espeak, socket, json
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-import pyttsx3
-
 ## get client IP
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
@@ -55,7 +54,7 @@ def registerSchedule(request):
             selectDeviceIP = request.POST['device']
             print(f'http://{selectDeviceIP}:8080/setSchedule')
             response = requests.post(f'http://{selectDeviceIP}:8080/setSchedule',data=request.POST)
-            messages.info(request, "추가완료!")
+            messages.info(request, f"{response}")
             return redirect("/")
         except :
             messages.warning(request, "전송 실패!")
@@ -69,6 +68,7 @@ def testTTS(request):
             selectDeviceIP = request.POST['device']
             print(f'http://{selectDeviceIP}:8080/setTTS')
             response = requests.post(f'http://{selectDeviceIP}:8080/setTTS',data=request.POST)
+            messages.info(request, f"{response}")
             return redirect("/")
         except :
             messages.warning(request, "전송 실패!")
@@ -122,10 +122,11 @@ def setSchedule(request):
             day = request.POST["day"]
             newSchedule["startTime"] = request.POST["starTime"]
             newSchedule["endTime"] = request.POST["endTime"]
+            newSchedule["OUTPIN"] = request.POST.getlist('OUTPIN')
             newSchedule['TTS'] = request.POST["TTS"]
             newSchedule['RTSP'] = request.POST["RTSP"]
             newSchedule['File'] = request.FILES["File"].name
-            handleUploadedFile(request.FILES["File"],f"{BASE_DIR}/uploads",request.FILES["File"].name )
+            File(request.FILES["File"],f"{BASE_DIR}/uploads",request.FILES["File"].name)
             with open(f'{BASE_DIR}/main.json', 'r') as f:
                 mainJson = json.load(f)
                 print(json.dumps(mainJson) )
@@ -137,12 +138,34 @@ def setSchedule(request):
             return HttpResponse('is not match!')
 
 @method_decorator(csrf_exempt, name="dispatch")
-def setTTS(request):
+def setGPIOSetting(request):
     if request.method == "POST":
         print(request)
-        engine = pyttsx3.init()
-        engine.say(request.POST["TTS"])
-        engine.runAndWait()
-        return HttpResponse('set TTS sucessfully!')
+        if socket.gethostbyname(socket.gethostname()) == request.POST['device']:
+            newSetting = GPIOMedia.copy()
+            setGPIOIN = request.POST["INPIN"]
+            newSetting["OUTPIN"] = request.POST.getlist('OUTPIN')
+            newSetting['TTS'] = TTS(request.POST["TTS"],f"{BASE_DIR}/uploads")
+            newSetting['RTSP'] = request.POST["RTSP"]
+            newSetting['File'] = File(request.FILES["File"],f"{BASE_DIR}/uploads",request.FILES["File"].name)
+            with open(f'{BASE_DIR}/main.json', 'r') as f:
+                mainJson = json.load(f)
+                print(json.dumps(mainJson) )
+            mainJson[setGPIOIN].append(newSetting)
+            with open(f'{BASE_DIR}/main.json', "w") as f:
+                json.dump(mainJson, f)
+            return HttpResponse('set GPIO sucessfully!')
+        else:
+            return HttpResponse('is not match!')
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+def setTTS(request):
+    if request.method == "POST":
+        if socket.gethostbyname(socket.gethostname()) == request.POST['device']:
+            directTTS(request.POST['TTS'])
+            return HttpResponse('set TTS sucessfully!')
+        else:
+            return HttpResponse('device is not match!')
     return HttpResponse('Fail!')
 

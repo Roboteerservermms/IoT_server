@@ -68,7 +68,10 @@ if __name__ == "__main__":
     while not exitThread:
         with open(f'./main.json', 'r') as f:
             mainJson = json.load(f)
-        if scheduleSig:
+        if not mainJson["direct"]:
+            addMedia = Media(0,mediaData=m["direct"])
+            mediaQ.put(addMedia)
+        elif scheduleSig:
             try :
                 now_day= t.strftime('%A')
                 now_time = t.strftime('%H:%M')
@@ -76,13 +79,13 @@ if __name__ == "__main__":
                     if m["startTime"] == now_time:
                         if not scheduleMediaInSig:
                             if not m['File']:
-                                addMedia = Media(1,mediaData=m["File"])
+                                addMedia = Media(1,mediaData=m["File"],gpio=m["OUTPIN"])
                                 mediaQ.put(addMedia)
                             if not m["RTSP"]:
-                                addMedia = Media(1,mediaData=m["RTSP"])
+                                addMedia = Media(1,mediaData=m["RTSP"],gpio=m["OUTPIN"])
                                 mediaQ.put(addMedia)
                             if not m["TTS"]:
-                                addMedia = Media(1,mediaData=m["TTS"])
+                                addMedia = Media(1,mediaData=m["TTS"],gpio=m["OUTPIN"])
                                 mediaQ.put(addMedia)
                             scheduleMediaInSig=True
                     else:
@@ -100,13 +103,13 @@ if __name__ == "__main__":
                             m = mainJson["GPIOIN"][str(INPIN[i])]
                             for m in mainJson["GPIOIN"][str(INPIN[i])]:
                                 if not m['File']:
-                                    addMedia = Media(3,mediaData=m["File"])
+                                    addMedia = Media(3,mediaData=m["File"],gpio=m["OUTPIN"])
                                     mediaQ.put(addMedia)
                                 if not m["RTSP"]:
-                                    addMedia = Media(3,mediaData=m["RTSP"])
+                                    addMedia = Media(3,mediaData=m["RTSP"],gpio=m["OUTPIN"])
                                     mediaQ.put(addMedia)
                                 if not m["TTS"]:
-                                    addMedia = Media(3,mediaData=m["TTS"])
+                                    addMedia = Media(3,mediaData=m["TTS"],gpio=m["OUTPIN"])
                                     mediaQ.put(addMedia)
                     else:
                         GPIOMediaInSig = True
