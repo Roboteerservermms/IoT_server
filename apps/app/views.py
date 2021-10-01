@@ -105,7 +105,7 @@ def setGPIOSettings(request):
     for i in GPIOOUT:
         inCommand = f"cat /sys/class/gpio/gpio{i}/value"
         retGPIOOUT=subprocess.getoutput(inCommand)
-        GPIOStatusJson["OUT"].append(retGPIOIN)
+        GPIOStatusJson["OUT"].append(retGPIOOUT)
     return HttpResponse(GPIOStatusJson)
 
 """ def controlGPIO(request):

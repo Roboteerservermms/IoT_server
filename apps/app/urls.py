@@ -16,5 +16,6 @@ urlpatterns = [
     path('getMacAddress', views.getMacAddress, name='getMacAddress'),
     path('testTTS', views.testTTS, name='testTTS'),
     path('setTTS', views.setTTS, name='setTTS'),
+    path('setGPIOSettings', views.setTTS, name='setGPIOSettings'),
     # Matches any html file
 ]
