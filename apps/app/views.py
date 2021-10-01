@@ -12,7 +12,7 @@ from django.urls import reverse
 from .models import Rboard, Schedule
 from .constant import *
 from .mediaProvider import *
-import requests, getmac, espeak, socket, json
+import requests, getmac, socket, json
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
