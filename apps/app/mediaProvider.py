@@ -15,4 +15,4 @@ def TTS(text, path):
     return fileName
 
 def directTTS(text):
-    subprocess.call(["espeak", "-v", "ko", text]) 
+    subprocess.call(["espeak", "-v", "ko", text])
