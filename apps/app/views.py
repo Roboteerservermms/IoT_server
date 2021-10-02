@@ -82,13 +82,14 @@ def registerDevice(request):
 def registerSchedule(request):
     scheduleList = Schedule.objects.all()
     if request.method == 'POST':
-        scheduleForm = ScheduleForm(request.POST)
+        scheduleForm = ScheduleForm(request.POST, request.FILES)
+        print(scheduleForm.is_valid())
         if scheduleForm.is_valid():
+            print(scheduleForm)
             scheduleForm.save()
             messages.info(request, "추가완료!")
         else:
             messages.warning(request, "전송 실패!")
-        return redirect('/registerSchedule')
     else:
         scheduleForm = ScheduleForm()
     context = {

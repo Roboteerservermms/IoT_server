@@ -6,48 +6,12 @@ import requests
 class GPIOSettingForm(forms.ModelForm):
     class Meta:
         model = GPIOSetting
-        fields = [
-            'INPIN',
-            'OUTPIN1',
-            'OUTPIN2',
-            'OUTPIN3',
-            'OUTPIN4',
-            'OUTPIN5',
-            'OUTPIN6',
-            'OUTPIN7',
-            'TTS',
-            'RTSP',
-            'File',
-            ]
-    def __init__(self, *args, **kwargs):
-        device = kwargs.pop('device','')
-        super(GPIOSettingForm, self).__init__(*args, **kwargs)
-        self.fields['deviceChoice']=forms.ModelChoiceField(queryset=Rboard.objects.all())
+        fields = '__all__'
 
 class ScheduleForm(forms.ModelForm):
     class Meta:
         model = Schedule
-        fields = [
-            'day',
-            'startTime',
-            'endTime',
-            'OUTPIN1',
-            'OUTPIN2',
-            'OUTPIN3',
-            'OUTPIN4',
-            'OUTPIN5',
-            'OUTPIN6',
-            'OUTPIN7',
-            'TTS',
-            'RTSP',
-            'File',
-            ]
-    def __init__(self, *args, **kwargs):
-        device = kwargs.pop('device','')
-        super(ScheduleForm, self).__init__(*args, **kwargs)
-        self.fields['deviceChoice']=forms.ModelChoiceField(queryset=Rboard.objects.all())
-        self.fields['startTime'].widget = widgets.AdminTimeWidget()
-        self.fields['endTime'].widget = widgets.AdminTimeWidget()
+        fields = '__all__'
 
 class RboardForm(forms.ModelForm):
     class Meta:
