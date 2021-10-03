@@ -15,4 +15,6 @@ getmac
 python-vlc
 pafy
 youtube-dl
+gtts
 django-crispy-forms
+django-multiselectfield

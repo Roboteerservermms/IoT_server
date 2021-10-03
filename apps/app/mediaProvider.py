@@ -1,5 +1,5 @@
 import time as t
-
+from gtts import gTTS
 import subprocess
 
 def File(f,url,fname):
@@ -9,9 +9,10 @@ def File(f,url,fname):
             destination.write(chunk)
     return fileName
 
-def TTS(text, path):
+def TTS(recvText, path):
     fileName = f"{path}/{t.strftime('%y%m%d%H%M%S')}.mp3"
-    subprocess.call(["espeak", "-v ko", "-w"+fileName+".mp3", text])
+    tts = gTTS( text=recvText, lang='ko', slow=False )
+    tts.save(fileName)
     return fileName
 
 def directTTS(text):

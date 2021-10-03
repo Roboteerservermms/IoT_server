@@ -56,7 +56,7 @@
                         {% endif %}
                     </div>
                     <!-- [ Hover-table ] start -->
-                    <form  method="post", class="post-form my-3">
+                    <form  method="post", class="post-form my-3" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="col-xl-12">
                         <div class="card">
@@ -64,8 +64,10 @@
                                 <h5>스케줄 설정</h5>
                             </div>
                             <div class="card-block table-border-style">
-                                {{scheduleForm.as_p}}
-                                <button type="submit" class="save btn btn-default">추가</button>
+                                <div class="form-check">
+                                    {{scheduleForm.as_p}}
+                                    <button type="submit" class="save btn btn-default">추가</button>
+                                </div>
                             </div>
                         </div>
                     </div>
