@@ -27,26 +27,12 @@ def index(request):
     deviceList = Rboard.objects.all()
     scheduleList = Schedule.objects.all()
     gpioSettingList = GPIOSetting.objects.all()
-    if request.method == "POST":
-        rboardForm = RboardForm(request.POST)
-        if rboardForm.is_valid():
-            try:
-                macAddressResponse = requests.post(f"http://{request.POST['ip']}:8080/getMacAddress")
-                messages.info(request, "추가완료!")
-            except:
-                messages.warning(request, "전송 실패!")
-            rboardForm.save()
-            messages.info(request, "추가완료!")
-        else:
-            messages.warning(request, "form is invalid!")
-        return redirect('/')
-    else:
-        rboardForm = RboardForm()
-    scheduleForm = ScheduleForm()
-    gpioSettingForm = GPIOSettingForm()
+    rboardForm = RboardForm()
     context = {
         'segment': 'index',
         'rboardForm':rboardForm,
+        'gpioSettingList':gpioSettingList,
+        'scheduleList':scheduleList,
         "deviceList" : deviceList
     }
     html_template = loader.get_template('index.html')
@@ -63,8 +49,8 @@ def get_client_ip(request):
 @login_required(login_url="/login/")
 def registerDevice(request):
     if request.method == "POST":
-        newDeviceName = request.POST['name']
-        newDeviceIP = request.POST['ip']
+        newDeviceName = request.POST['deviceName']
+        newDeviceIP = request.POST['deviceIP']
         print(f"{newDeviceName} {newDeviceIP}")
         try:
             macAddressResponse = requests.post(f"http://{newDeviceIP}:8080/getMacAddress")
@@ -112,7 +98,7 @@ def registerGPIOSetting(request):
     if request.method == 'POST':
         gpioForm = GPIOSettingForm(request.POST, request.FILES)
         targetBoard = Rboard.objects.get(id=request.POST['device'])
-        res = requests.post(f'http://{targetBoard.ip}:8080/setSchedule', data=request.POST,files=request.FILES)
+        res = requests.post(f'http://{targetBoard.ip}:8080/setGPIOSetting', data=request.POST,files=request.FILES)
         print(gpioForm.is_valid())
         if gpioForm.is_valid():
             gpioForm.save()
@@ -181,8 +167,22 @@ def setSchedule(request):
         jsonData = open('main.json')
         mainJson = json.load(jsonData)
         day = request.POST["day"]
-        recvFile = request.FILES['File']
-        recvFileName = default_storage.save(recvFile.name,recvFile)
+        try:
+            recvFile = request.FILES['File']
+            recvFileName = default_storage.save(recvFile.name,recvFile)
+            recvFileRet = f"{settings.MEDIA_ROOT}/{recvFileName}"            
+        except MultiValueDictKeyError as e:
+            recvFileRet = ""
+            pass
+        try:
+            recvRTSP = request.POST['RTSP']
+        except MultiValueDictKeyError as e:
+            recvRTSP= ""
+        
+        try:
+            recvTTS = TTS(request.POST["TTS"],settings.MEDIA_ROOT)
+        except MultiValueDictKeyError as e:
+            recvTTS = ""
         newList = []
         for num in range(1,8):
             try:
@@ -195,9 +195,9 @@ def setSchedule(request):
             "endTime" : request.POST["endTime"],
             "OUTPIN": newList,
             "Broadcast":{
-                "TTS": TTS(request.POST["TTS"],settings.MEDIA_ROOT),
-                "RTSP": request.POST["RTSP"],
-                "File": f"{settings.MEDIA_ROOT}/{recvFileName}"
+                "TTS": recvTTS,
+                "RTSP": recvRTSP,
+                "File": recvFileRet
             }
         }
         mainJson['schedule'][day].append(scheduleMedia)
@@ -212,8 +212,22 @@ def setGPIOSetting(request):
         jsonData = open('main.json')
         mainJson = json.load(jsonData)
         INPIN = request.POST["INPIN"]
-        recvFile = request.FILES['File']
-        recvFileName = default_storage.save(recvFile.name,recvFile)
+        try:
+            recvFile = request.FILES['File']
+            recvFileName = default_storage.save(recvFile.name,recvFile)
+            recvFileRet = f"{settings.MEDIA_ROOT}/{recvFileName}"            
+        except MultiValueDictKeyError as e:
+            recvFileRet = ""
+            pass
+        try:
+            recvRTSP = request.POST['RTSP']
+        except MultiValueDictKeyError as e:
+            recvRTSP= ""
+        
+        try:
+            recvTTS = TTS(request.POST["TTS"],settings.MEDIA_ROOT)
+        except MultiValueDictKeyError as e:
+            recvTTS = ""
         newList = []
         for num in range(1,8):
             if request.POST[f'OUTPIN{num}']:
@@ -223,9 +237,9 @@ def setGPIOSetting(request):
         gpioMedia = {
             "OUTPIN": newList,
             "Broadcast":{
-                "TTS": TTS(request.POST["TTS"],settings.MEDIA_ROOT),
-                "RTSP": request.POST["RTSP"],
-                "File": f"{settings.MEDIA_ROOT}{recvFileName}"
+                "TTS": recvTTS,
+                "RTSP": recvRTSP,
+                "File": recvFileRet
             }
         }
         mainJson['GPIOIN'][INPIN].append(gpioMedia)

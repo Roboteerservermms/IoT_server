@@ -70,30 +70,30 @@ if __name__ == "__main__":
             mainJson = json.load(f)
         if not mainJson["direct"]:
             addMedia = Media(0,mediaData=m["direct"])
+            mainJson['direct'] = ""
             mediaQ.put(addMedia)
-        elif scheduleSig:
-            try :
-                now_day= t.strftime('%A')
-                now_time = t.strftime('%H:%M')
-                for m in mainJson["schedule"][now_day]:
-                    if m["startTime"] == now_time:
-                        if not scheduleMediaInSig:
-                            if not m['File']:
-                                addMedia = Media(1,mediaData=m["File"],gpio=m["OUTPIN"])
-                                mediaQ.put(addMedia)
-                            if not m["RTSP"]:
-                                addMedia = Media(1,mediaData=m["RTSP"],gpio=m["OUTPIN"])
-                                mediaQ.put(addMedia)
-                            if not m["TTS"]:
-                                addMedia = Media(1,mediaData=m["TTS"],gpio=m["OUTPIN"])
-                                mediaQ.put(addMedia)
-                            scheduleMediaInSig=True
-                    else:
-                        scheduleMediaInSig=False
-                logger.info("schedule is running!")
-            except KeyError:
-                scheduleSig = False
-        else:
+        try :
+            now_day= t.strftime('%A')
+            now_time = t.strftime('%H:%M')
+            for m in mainJson["schedule"][now_day]:
+                if m["startTime"] == now_time:
+                    if not scheduleMediaInSig:
+                        if not m['File']:
+                            addMedia = Media(1,mediaData=m["File"],gpio=m["OUTPIN"])
+                            mediaQ.put(addMedia)
+                        if not m["RTSP"]:
+                            addMedia = Media(1,mediaData=m["RTSP"],gpio=m["OUTPIN"])
+                            mediaQ.put(addMedia)
+                        if not m["TTS"]:
+                            addMedia = Media(1,mediaData=m["TTS"],gpio=m["OUTPIN"])
+                            mediaQ.put(addMedia)
+                        scheduleMediaInSig=True
+                else:
+                    scheduleMediaInSig=False
+            logger.info("schedule is running!")
+        except KeyError:
+            scheduleSig = False
+        if not scheduleSig:
             try :
                 for i in GPIOIN:
                     in_command = f"cat /sys/class/gpio/gpio{i}/value"

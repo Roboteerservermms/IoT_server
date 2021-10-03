@@ -34,27 +34,56 @@
                     <div class="col-xl-12">
                         <div class="card">
                             <div class="card-header">
-                                <h5>Basic Table</h5>
-                                <span class="d-block m-t-5">use class <code>table</code> inside table element</span>
+                                <h5>스케줄 설정리스트</h5>
                             </div>
                             <div class="card-block table-border-style">
-                                <div class="table-responsive">
-                                    <table class="table">
-                                    {{ scheduleList.as_table}}
+                                <div class="card-block table-border-style">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>device</th>
+                                                <th>day</th>
+                                                <th>startTime</th>
+                                                <th>endTime</th>
+                                                <th>OUTPUT1</th>
+                                                <th>OUTPUT2</th>
+                                                <th>OUTPUT3</th>
+                                                <th>OUTPUT4</th>
+                                                <th>OUTPUT5</th>
+                                                <th>OUTPUT6</th>
+                                                <th>OUTPUT7</th> 
+                                                <th>TTS</th>
+                                                <th>RTSP</th>
+                                                <th>File</th>                                                   
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for setting in scheduleList %}
+                                                <tr>
+                                                    <th scope="row">{{setting.device}}</th>
+                                                    <td>{{setting.day}}</td>
+                                                    <td>{{setting.startTime}}</td>
+                                                    <td>{{setting.endTime}}</td>
+                                                    <td>{{setting.OUTPUT1}}</td>
+                                                    <td>{{setting.OUTPUT2}}</td>
+                                                    <td>{{setting.OUTPUT3}}</td>
+                                                    <td>{{setting.OUTPUT4}}</td>
+                                                    <td>{{setting.OUTPUT5}}</td>
+                                                    <td>{{setting.OUTPUT6}}</td>
+                                                    <td>{{setting.OUTPUT7}}</td>
+                                                    <td>{{setting.TTS}}</td>
+                                                    <td>{{setting.RTSP}}</td>
+                                                    <td>{{setting.File}}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    {{ gpioSettingList.as_table}}
                                     </table>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <!-- [ basic-table ] end -->
-                    <div class="alert alert-primary" role="alert">
-                        {% if messages %}
-                            {% for message in messages %}
-                                {{ message.tags }}
-                                {{ message.message }}
-                            {% endfor %}
-                        {% endif %}
-                    </div>
                     <!-- [ Hover-table ] start -->
                     <form  method="post", class="post-form my-3" enctype="multipart/form-data">
                     {% csrf_token %}

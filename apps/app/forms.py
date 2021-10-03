@@ -7,11 +7,21 @@ class GPIOSettingForm(forms.ModelForm):
     class Meta:
         model = GPIOSetting
         fields = '__all__'
+    def __init__(self, *args, **kwargs):
+        super(GPIOSettingForm,self).__init__(*args, **kwargs)
+        self.fields['TTS'].required = False
+        self.fields['RTSP'].required = False
+        self.fields['File'].required = False
 
 class ScheduleForm(forms.ModelForm):
     class Meta:
         model = Schedule
         fields = '__all__'
+    def __init__(self, *args, **kwargs):
+        super(ScheduleForm,self).__init__(*args, **kwargs)
+        self.fields['TTS'].required = False
+        self.fields['RTSP'].required = False
+        self.fields['File'].required = False
 
 class RboardForm(forms.ModelForm):
     class Meta:
