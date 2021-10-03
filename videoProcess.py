@@ -93,28 +93,27 @@ if __name__ == "__main__":
             logger.info("schedule is running!")
         except KeyError:
             scheduleSig = False
-        if not scheduleSig:
-            try :
-                for i in GPIOIN:
-                    in_command = f"cat /sys/class/gpio/gpio{i}/value"
-                    inValue = subprocess.getoutput(in_command)
-                    if str2bool(inValue):
-                        if not GPIOMediaInSig:
-                            m = mainJson["GPIOIN"][str(INPIN[i])]
-                            for m in mainJson["GPIOIN"][str(INPIN[i])]:
-                                if not m['File']:
-                                    addMedia = Media(3,mediaData=m["File"],gpio=m["OUTPIN"])
-                                    mediaQ.put(addMedia)
-                                if not m["RTSP"]:
-                                    addMedia = Media(3,mediaData=m["RTSP"],gpio=m["OUTPIN"])
-                                    mediaQ.put(addMedia)
-                                if not m["TTS"]:
-                                    addMedia = Media(3,mediaData=m["TTS"],gpio=m["OUTPIN"])
-                                    mediaQ.put(addMedia)
-                    else:
-                        GPIOMediaInSig = True
-            except KeyError:
-                pass
+        try :
+            for i in GPIOIN:
+                in_command = f"cat /sys/class/gpio/gpio{i}/value"
+                inValue = subprocess.getoutput(in_command)
+                if str2bool(inValue):
+                    if not GPIOMediaInSig:
+                        m = mainJson["GPIOIN"][str(INPIN[i])]
+                        for m in mainJson["GPIOIN"][str(INPIN[i])]:
+                            if not m['File']:
+                                addMedia = Media(3,mediaData=m["File"],gpio=m["OUTPIN"])
+                                mediaQ.put(addMedia)
+                            if not m["RTSP"]:
+                                addMedia = Media(3,mediaData=m["RTSP"],gpio=m["OUTPIN"])
+                                mediaQ.put(addMedia)
+                            if not m["TTS"]:
+                                addMedia = Media(3,mediaData=m["TTS"],gpio=m["OUTPIN"])
+                                mediaQ.put(addMedia)
+                else:
+                    GPIOMediaInSig = True
+        except KeyError:
+            pass
         if videoEndSig:
             try:
                 currentM = mediaQ.get_nowait()
