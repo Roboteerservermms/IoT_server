@@ -1,0 +1,86 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} UI Tables {% endblock %} 
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="pcoded-content">
+    <div class="pcoded-inner-content">
+        <!-- [ breadcrumb ] start -->
+        <div class="page-header">
+            <div class="page-block">
+                <div class="row align-items-center">
+                    <div class="col-md-12">
+                        <div class="page-header-title">
+                            <h5 class="m-b-10"> GPIO 설정</h5>
+                        </div>
+                        <ul class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="/registerGPIOSetting">GPIO 설정</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- [ breadcrumb ] end -->
+        <div class="main-body">
+            <div class="page-wrapper">
+                <!-- [ Main Content ] start -->
+                <div class="row">
+                    <!-- [ basic-table ] start -->
+                    <div class="col-xl-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Basic Table</h5>
+                                <span class="d-block m-t-5">use class <code>table</code> inside table element</span>
+                            </div>
+                            <div class="card-block table-border-style">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                    {{ scheduleList.as_table}}
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- [ basic-table ] end -->
+                    <div class="alert alert-primary" role="alert">
+                        {% if messages %}
+                            {% for message in messages %}
+                                {{ message.tags }}
+                                {{ message.message }}
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                    <!-- [ Hover-table ] start -->
+                    <form  method="post", class="post-form my-3" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="col-xl-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>스케줄 설정</h5>
+                            </div>
+                            <div class="card-block table-border-style">
+                                <div class="form-check">
+                                    {{scheduleForm.as_p}}
+                                    <button type="submit" class="save btn btn-default">추가</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </form>
+                    <!-- [ Hover-table ] end -->
+                </div>
+                <!-- [ Main Content ] end -->
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

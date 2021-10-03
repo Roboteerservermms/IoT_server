@@ -9,14 +9,49 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.urls import reverse
-from .models import Rboard, Schedule
+from .models import *
 from .constant import *
+from .forms import *
 from .mediaProvider import *
 import requests, getmac, socket, json
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-## get client IP
+from django.core.files.storage import default_storage
+from django.conf import settings
+from django.utils.datastructures import MultiValueDictKeyError
+
+
+@login_required(login_url="/login/")
+def index(request):
+    deviceList = Rboard.objects.all()
+    scheduleList = Schedule.objects.all()
+    gpioSettingList = GPIOSetting.objects.all()
+    if request.method == "POST":
+        rboardForm = RboardForm(request.POST)
+        if rboardForm.is_valid():
+            try:
+                macAddressResponse = requests.post(f"http://{request.POST['ip']}:8080/getMacAddress")
+                messages.info(request, "추가완료!")
+            except:
+                messages.warning(request, "전송 실패!")
+            rboardForm.save()
+            messages.info(request, "추가완료!")
+        else:
+            messages.warning(request, "form is invalid!")
+        return redirect('/')
+    else:
+        rboardForm = RboardForm()
+    scheduleForm = ScheduleForm()
+    gpioSettingForm = GPIOSettingForm()
+    context = {
+        'segment': 'index',
+        'rboardForm':rboardForm,
+        "deviceList" : deviceList
+    }
+    html_template = loader.get_template('index.html')
+    return HttpResponse(html_template.render(context, request))
+
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
     if x_forwarded_for:
@@ -28,10 +63,10 @@ def get_client_ip(request):
 @login_required(login_url="/login/")
 def registerDevice(request):
     if request.method == "POST":
-        newDeviceName = request.POST['deviceName']
-        newDeviceIP = request.POST['deviceIP']
+        newDeviceName = request.POST['name']
+        newDeviceIP = request.POST['ip']
         print(f"{newDeviceName} {newDeviceIP}")
-        try :
+        try:
             macAddressResponse = requests.post(f"http://{newDeviceIP}:8080/getMacAddress")
             newDeviceMacAddress=""
             newDeviceMacAddress=macAddressResponse.text
@@ -41,28 +76,63 @@ def registerDevice(request):
                 macAddress=newDeviceMacAddress 
             )
             messages.info(request, "추가완료!")
+            newDevice.save()
             return redirect("/")
-        except :
-            messages.warning(request, "장치 인터넷 연결을 확인하십시오!")
-    return redirect("/")
+        except:
+            messages.warning(request, "warning!")
+            return redirect("/")
+
 
 @login_required(login_url="/login/")
 def registerSchedule(request):
-    print(request)
-    if request.method == "POST":
-        try:
-            selectDeviceIP = request.POST['device']
-            print(f'http://{selectDeviceIP}:8080/setSchedule')
-            response = requests.post(f'http://{selectDeviceIP}:8080/setSchedule',data=request.POST)
-            messages.info(request, f"{response}")
-            return redirect("/")
-        except :
+    scheduleList = Schedule.objects.all()
+    if request.method == 'POST':
+        scheduleForm = ScheduleForm(request.POST, request.FILES)
+        targetBoard = Rboard.objects.get(id=request.POST['device'])
+        res = requests.post(f'http://{targetBoard.ip}:8080/setSchedule', data=request.POST,files=request.FILES)
+        print(scheduleForm.is_valid())
+        if scheduleForm.is_valid():
+            scheduleForm.save()
+            messages.info(request, "추가완료!")
+        else:
             messages.warning(request, "전송 실패!")
-    return redirect("/")
+    else:
+        scheduleForm = ScheduleForm()
+    context = {
+        'segment': 'index',
+        'scheduleForm': scheduleForm,
+        "scheduleList" : scheduleList
+    }
+    html_template = loader.get_template('Schedule.html')
+    return HttpResponse(html_template.render(context, request))
+
+@login_required(login_url="/login/")
+def registerGPIOSetting(request):
+    gpioSettingList = GPIOSetting.objects.all()
+    if request.method == 'POST':
+        gpioForm = GPIOSettingForm(request.POST, request.FILES)
+        targetBoard = Rboard.objects.get(id=request.POST['device'])
+        res = requests.post(f'http://{targetBoard.ip}:8080/setSchedule', data=request.POST,files=request.FILES)
+        print(gpioForm.is_valid())
+        if gpioForm.is_valid():
+            gpioForm.save()
+            messages.info(request, "추가완료!")
+        else:
+            messages.warning(request, "전송 실패!")
+    else:
+        gpioForm = GPIOSettingForm()
+    context = {
+        'segment': 'index',
+        'gpioForm': gpioForm,
+        "gpioSettingList" : gpioSettingList
+    }
+    html_template = loader.get_template('GPIOSetting.html')
+    return HttpResponse(html_template.render(context, request))
+
 
 @login_required(login_url="/login/")
 def testTTS(request):
-    print(request)
+    print(request.body)
     if request.method == "POST":
         try:
             selectDeviceIP = request.POST['device']
@@ -74,17 +144,8 @@ def testTTS(request):
             messages.warning(request, "전송 실패!")
     return redirect("/")
 
-@login_required(login_url="/login/")
-def index(request):
-    deviceList = Rboard.objects.all()
-    scheduleList = Schedule.objects.all()
-    context = {
-        'segment': 'index',
-        "deviceList" : deviceList,
-        "scheduleList" : scheduleList,
-    }
-    html_template = loader.get_template('index.html')
-    return HttpResponse(html_template.render(context, request))
+
+
 
 @method_decorator(csrf_exempt, name="dispatch")
 def getMacAddress(request):
@@ -93,7 +154,7 @@ def getMacAddress(request):
     return HttpResponse(getmac.get_mac_address())
 
 @method_decorator(csrf_exempt, name="dispatch")
-def setGPIOSettings(request):
+def setGPIOStates(request):
     GPIOStatusJson = {
         "IN": [],
         "OUT": []
@@ -116,47 +177,63 @@ def getGPIOOutputStatus(request): """
 @method_decorator(csrf_exempt, name="dispatch")
 def setSchedule(request):
     if request.method == "POST":
-        print(request)
-        if socket.gethostbyname(socket.gethostname()) == request.POST['device']:
-            newSchedule = scheduleMedia.copy()
-            day = request.POST["day"]
-            newSchedule["startTime"] = request.POST["starTime"]
-            newSchedule["endTime"] = request.POST["endTime"]
-            newSchedule["OUTPIN"] = request.POST.getlist('OUTPIN')
-            newSchedule['TTS'] = request.POST["TTS"]
-            newSchedule['RTSP'] = request.POST["RTSP"]
-            newSchedule['File'] = request.FILES["File"].name
-            File(request.FILES["File"],f"{BASE_DIR}/uploads",request.FILES["File"].name)
-            with open(f'{BASE_DIR}/main.json', 'r') as f:
-                mainJson = json.load(f)
-                print(json.dumps(mainJson) )
-            mainJson[day].append(newSchedule)
-            with open(f'{BASE_DIR}/main.json', "w") as f:
-                json.dump(mainJson, f)
-            return HttpResponse('set Schedule sucessfully!')
-        else:
-            return HttpResponse('is not match!')
+        print(request.POST)
+        jsonData = open('main.json')
+        mainJson = json.load(jsonData)
+        day = request.POST["day"]
+        recvFile = request.FILES['File']
+        recvFileName = default_storage.save(recvFile.name,recvFile)
+        newList = []
+        for num in range(1,8):
+            try:
+                if request.POST[f'OUTPIN{num}']:
+                    newList.append(1)
+            except MultiValueDictKeyError as e:
+                newList.append(0)
+        scheduleMedia = {
+            "startTime" : request.POST["startTime"],
+            "endTime" : request.POST["endTime"],
+            "OUTPIN": newList,
+            "Broadcast":{
+                "TTS": TTS(request.POST["TTS"],settings.MEDIA_ROOT),
+                "RTSP": request.POST["RTSP"],
+                "File": f"{settings.MEDIA_ROOT}/{recvFileName}"
+            }
+        }
+        mainJson['schedule'][day].append(scheduleMedia)
+        with open('main.json', "w") as f:
+            json.dump(mainJson, f)
+        print(json.dumps(mainJson))
+        return HttpResponse(f"{json.dumps(mainJson)}")
 
 @method_decorator(csrf_exempt, name="dispatch")
 def setGPIOSetting(request):
     if request.method == "POST":
-        print(request)
-        if socket.gethostbyname(socket.gethostname()) == request.POST['device']:
-            newSetting = GPIOMedia.copy()
-            setGPIOIN = request.POST["INPIN"]
-            newSetting["OUTPIN"] = request.POST.getlist('OUTPIN')
-            newSetting['TTS'] = TTS(request.POST["TTS"],f"{BASE_DIR}/uploads")
-            newSetting['RTSP'] = request.POST["RTSP"]
-            newSetting['File'] = File(request.FILES["File"],f"{BASE_DIR}/uploads",request.FILES["File"].name)
-            with open(f'{BASE_DIR}/main.json', 'r') as f:
-                mainJson = json.load(f)
-                print(json.dumps(mainJson) )
-            mainJson[setGPIOIN].append(newSetting)
-            with open(f'{BASE_DIR}/main.json', "w") as f:
-                json.dump(mainJson, f)
-            return HttpResponse('set GPIO sucessfully!')
-        else:
-            return HttpResponse('is not match!')
+        jsonData = open('main.json')
+        mainJson = json.load(jsonData)
+        INPIN = request.POST["INPIN"]
+        recvFile = request.FILES['File']
+        recvFileName = default_storage.save(recvFile.name,recvFile)
+        newList = []
+        for num in range(1,8):
+            if request.POST[f'OUTPIN{num}']:
+                newList.append(1)
+            else:
+                newList.append(0)
+        gpioMedia = {
+            "OUTPIN": newList,
+            "Broadcast":{
+                "TTS": TTS(request.POST["TTS"],settings.MEDIA_ROOT),
+                "RTSP": request.POST["RTSP"],
+                "File": f"{settings.MEDIA_ROOT}{recvFileName}"
+            }
+        }
+        mainJson['GPIOIN'][INPIN].append(gpioMedia)
+        with open('main.json', "w") as f:
+            json.dump(mainJson, f)
+        print(json.dumps(mainJson))
+        return HttpResponse(f"{json.dumps(mainJson)}")
+
 
 
 @method_decorator(csrf_exempt, name="dispatch")

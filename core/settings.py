@@ -21,6 +21,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 ALLOWED_HOSTS = ["*"]
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 # Application definition
+MAX_UPLOAD_SIZE = 5242880
+DATA_UPLOAD_MAX_MEMORY_SIZE = None
+FILE_UPLOAD_MAX_MEMORY_SIZE = 5242880
 
 INSTALLED_APPS = [
     'django.contrib.admin',
