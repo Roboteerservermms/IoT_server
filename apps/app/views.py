@@ -216,23 +216,24 @@ def setGPIOSetting(request):
             recvFile = request.FILES['File']
             recvFileName = default_storage.save(recvFile.name,recvFile)
             recvFileRet = f"{settings.MEDIA_ROOT}/{recvFileName}"            
-        except MultiValueDictKeyError as e:
+        except:
             recvFileRet = ""
             pass
         try:
             recvRTSP = request.POST['RTSP']
-        except MultiValueDictKeyError as e:
+        except:
             recvRTSP= ""
         
         try:
             recvTTS = TTS(request.POST["TTS"],settings.MEDIA_ROOT)
-        except MultiValueDictKeyError as e:
+        except:
             recvTTS = ""
         newList = []
         for num in range(1,8):
-            if request.POST[f'OUTPIN{num}']:
-                newList.append(1)
-            else:
+            try:
+                if request.POST[f'OUTPIN{num}']:
+                    newList.append(1)
+            except:
                 newList.append(0)
         gpioMedia = {
             "OUTPIN": newList,
