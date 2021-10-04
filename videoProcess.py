@@ -69,7 +69,7 @@ if __name__ == "__main__":
         with open(f'./main.json', 'r') as f:
             mainJson = json.load(f)
         if not mainJson["direct"]:
-            addMedia = Media(0,mediaData=m["direct"])
+            addMedia = Media(0,mediaData=mainJson["direct"])
             mainJson['direct'] = ""
             mediaQ.put(addMedia)
         try :
@@ -104,17 +104,20 @@ if __name__ == "__main__":
             in_command = f"cat /sys/class/gpio/gpio{i}/value"
             inValue = subprocess.getoutput(in_command)
             if str2bool(inValue):
-                m = mainJson["GPIOIN"][str(INPIN[i])]
-                for m in mainJson["GPIOIN"][str(INPIN[i])]:
-                    if not m['File']:
-                        addMedia = Media(3,mediaData=m["File"],gpio=m["OUTPIN"])
-                        mediaQ.put(addMedia)
-                    if not m["RTSP"]:
-                        addMedia = Media(3,mediaData=m["RTSP"],gpio=m["OUTPIN"])
-                        mediaQ.put(addMedia)
-                    if not m["TTS"]:
-                        addMedia = Media(3,mediaData=m["TTS"],gpio=m["OUTPIN"])
-                        mediaQ.put(addMedia)
+                if i == 75:
+                    mediaQ.clear()
+                else:
+                    m = mainJson["GPIOIN"][str(INPIN[i])]
+                    for m in mainJson["GPIOIN"][str(INPIN[i])]:
+                        if not m['File']:
+                            addMedia = Media(3,mediaData=m["File"],gpio=m["OUTPIN"])
+                            mediaQ.put(addMedia)
+                        if not m["RTSP"]:
+                            addMedia = Media(3,mediaData=m["RTSP"],gpio=m["OUTPIN"])
+                            mediaQ.put(addMedia)
+                        if not m["TTS"]:
+                            addMedia = Media(3,mediaData=m["TTS"],gpio=m["OUTPIN"])
+                            mediaQ.put(addMedia)
         if videoEndSig:
             try:
                 currentM = mediaQ.get_nowait()
