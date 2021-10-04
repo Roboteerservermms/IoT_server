@@ -83,12 +83,33 @@ if __name__ == "__main__":
                         if not scheduleMediaInSig:
                             logger.info("schedule is running!")
                             try:
-                                addMedia = Media(1,mediaData=m['Broadcast']["File"],gpio=m["OUTPIN"])
-                                mediaQ.put(addMedia)
-                                addMedia = Media(1,mediaData=m['Broadcast']["RTSP"],gpio=m["OUTPIN"])
-                                mediaQ.put(addMedia)
-                                addMedia = Media(1,mediaData=m['Broadcast']["TTS"],gpio=m["OUTPIN"])
-                                mediaQ.put(addMedia)
+                                if videoEndSig:
+                                    videoEndSig = False
+                                    currentM = m['Broadcast']["File"]
+                                    currentGPIO = m["OUTPIN"]
+                                    player.play(currentM)
+                                    for index,value in enumerate(currentGPIO):
+                                        out_command = f'echo {value} > /sys/class/gpio/gpio{GPIOOUT[index]}/value'
+                                        subprocess.getoutput(out_command)
+                                    logger.info(f"current status { currentM } / {currentGPIO}")
+                                if videoEndSig:
+                                    videoEndSig = False
+                                    currentM = m['Broadcast']["RTSP"]
+                                    currentGPIO = m["OUTPIN"]
+                                    player.play(currentM)
+                                    for index,value in enumerate(currentGPIO):
+                                        out_command = f'echo {value} > /sys/class/gpio/gpio{GPIOOUT[index]}/value'
+                                        subprocess.getoutput(out_command)
+                                    logger.info(f"current status { currentM } / {currentGPIO}")
+                                if videoEndSig:
+                                    videoEndSig = False
+                                    currentM = m['Broadcast']["TTS"]
+                                    currentGPIO = m["OUTPIN"]
+                                    player.play(currentM)
+                                    for index,value in enumerate(currentGPIO):
+                                        out_command = f'echo {value} > /sys/class/gpio/gpio{GPIOOUT[index]}/value'
+                                        subprocess.getoutput(out_command)
+                                    logger.info(f"current status { currentM } / {currentGPIO}")
                             except:
                                 pass
                             scheduleMediaInSig=True
@@ -105,29 +126,54 @@ if __name__ == "__main__":
             inValue = subprocess.getoutput(in_command)
             if str2bool(inValue):
                 if i == 75:
-                    videoStopSig = True
-                    logger.info("all stop!")
+                    if videoStopSig:
+                        logger.info("replay!")
+                        player.play()
+                        videoStopSig = False
+                    else:                 
+                        logger.info("all stop!")
+                        player.pause()
+                        videoStopSig = True
                 else:
-                    listm = mainJson["GPIOIN"][str(INPIN[i])]
-                    if listm :
-                        for m in listm:
-                            addMedia = Media(1,mediaData=m['Broadcast']["File"],gpio=m["OUTPIN"])
-                            mediaQ.put(addMedia)
-                            addMedia = Media(1,mediaData=m['Broadcast']["RTSP"],gpio=m["OUTPIN"])
-                            mediaQ.put(addMedia)
-                            addMedia = Media(1,mediaData=m['Broadcast']["TTS"],gpio=m["OUTPIN"])
-                            mediaQ.put(addMedia)
-        if videoEndSig:
-            try:
-                if not videoStopSig:
-                    currentM = mediaQ.get_nowait()
-                    player.play(currentM.data)
-                    for index,value in enumerate(currentM.gpio):
-                        out_command = f'echo {value} > /sys/class/gpio/gpio{GPIOOUT[index]}/value'
-                        subprocess.getoutput(out_command)
-                    logger.info(f"current status {currentM.data} / {currentM.gpio}")
-                else:
-                    player.pause()
-                    videoStopSig = False
-            except:
-                pass
+                    if not GPIOMediaInSig:
+                        GPIOMediaInSig = True
+                        listm = mainJson["GPIOIN"][str(INPIN[i])]
+                        if listm :
+                            for m in listm:
+                                if videoEndSig:
+                                    videoEndSig = False
+                                    if m['Broadcast']["File"] is None:
+                                        pass
+                                    else:
+                                        currentM = m['Broadcast']["File"]
+                                        currentGPIO = m["OUTPIN"]
+                                        player.play(currentM)
+                                        for index,value in enumerate(currentGPIO):
+                                            out_command = f'echo {value} > /sys/class/gpio/gpio{GPIOOUT[index]}/value'
+                                            subprocess.getoutput(out_command)
+                                        logger.info(f"current status { currentM } / {currentGPIO}")
+                                if videoEndSig:
+                                    videoEndSig = False
+                                    if m['Broadcast']["RTSP"] is None:
+                                        pass
+                                    else:
+                                        currentM = m['Broadcast']["RTSP"]
+                                        currentGPIO = m["OUTPIN"]
+                                        player.play(currentM)
+                                        for index,value in enumerate(currentGPIO):
+                                            out_command = f'echo {value} > /sys/class/gpio/gpio{GPIOOUT[index]}/value'
+                                            subprocess.getoutput(out_command)
+                                        logger.info(f"current status { currentM } / {currentGPIO}")
+                                if videoEndSig:
+                                    videoEndSig = False
+                                    if m['Broadcast']["TTS"] is None:
+                                        GPIOMediaInSig = False
+                                    else:
+                                        currentM = m['Broadcast']["TTS"]
+                                        currentGPIO = m["OUTPIN"]
+                                        player.play(currentM)
+                                        for index,value in enumerate(currentGPIO):
+                                            out_command = f'echo {value} > /sys/class/gpio/gpio{GPIOOUT[index]}/value'
+                                            subprocess.getoutput(out_command)
+                                        logger.info(f"current status { currentM } / {currentGPIO}")
+                                        GPIOMediaInSig = False
