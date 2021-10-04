@@ -81,15 +81,12 @@ if __name__ == "__main__":
                     if not scheduleMediaInSig:
                         logger.info("schedule is running!")
                         try:
-                            if not m['Broadcast']['File']:
-                                addMedia = Media(1,mediaData=m['Broadcast']["File"],gpio=m['Broadcast']["OUTPIN"])
-                                mediaQ.put(addMedia)
-                            if not m['Broadcast']["RTSP"]:
-                                addMedia = Media(1,mediaData=m['Broadcast']["RTSP"],gpio=m['Broadcast']["OUTPIN"])
-                                mediaQ.put(addMedia)
-                            if not m['Broadcast']["TTS"]:
-                                addMedia = Media(1,mediaData=m['Broadcast']["TTS"],gpio=m['Broadcast']["OUTPIN"])
-                                mediaQ.put(addMedia)
+                            addMedia = Media(1,mediaData=m['Broadcast']["File"],gpio=m["OUTPIN"])
+                            mediaQ.put(addMedia)
+                            addMedia = Media(1,mediaData=m['Broadcast']["RTSP"],gpio=m["OUTPIN"])
+                            mediaQ.put(addMedia)
+                            addMedia = Media(1,mediaData=m['Broadcast']["TTS"],gpio=m["OUTPIN"])
+                            mediaQ.put(addMedia)
                         except:
                             pass
                         scheduleMediaInSig=True
@@ -107,18 +104,16 @@ if __name__ == "__main__":
             if str2bool(inValue):
                 if i == 75:
                     videoStopSig = True
+                    logger.info("all stop!")
                 else:
                     m = mainJson["GPIOIN"][str(INPIN[i])]
                     for m in mainJson["GPIOIN"][str(INPIN[i])]:
-                        if not m['Broadcast']['File']:
-                            addMedia = Media(3,mediaData=m['Broadcast']["File"],gpio=m["OUTPIN"])
-                            mediaQ.put(addMedia)
-                        if not m['Broadcast']["RTSP"]:
-                            addMedia = Media(3,mediaData=m['Broadcast']["RTSP"],gpio=m["OUTPIN"])
-                            mediaQ.put(addMedia)
-                        if not m['Broadcast']["TTS"]:
-                            addMedia = Media(3,mediaData=m['Broadcast']["TTS"],gpio=m["OUTPIN"])
-                            mediaQ.put(addMedia)
+                        addMedia = Media(1,mediaData=m['Broadcast']["File"],gpio=m["OUTPIN"])
+                        mediaQ.put(addMedia)
+                        addMedia = Media(1,mediaData=m['Broadcast']["RTSP"],gpio=m["OUTPIN"])
+                        mediaQ.put(addMedia)
+                        addMedia = Media(1,mediaData=m['Broadcast']["TTS"],gpio=m["OUTPIN"])
+                        mediaQ.put(addMedia)
         if videoEndSig:
             try:
                 if not videoStopSig:
