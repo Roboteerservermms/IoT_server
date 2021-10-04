@@ -69,14 +69,15 @@ if __name__ == "__main__":
     while not exitThread:
         with open(f'./main.json', 'r') as f:
             mainJson = json.load(f)
-        logger.info(f"{mainJson}")
         try :
             now_day= t.strftime('%A')
             now_time = t.strftime('%H:%M')
             listm = mainJson["schedule"][now_day]
             if listm:
                 for m in listm:
-                    if m["startTime"] == now_time:
+                    startTime = t.strptime(m["startTime"],"%H:%M")
+                    endTime = t.strptime(m["endTime"],"%H:%M")
+                    if now_time >= startTime and  now_time <= endTime :
                         currentM = m['Broadcast']["File"]
                         currentGPIO = m["OUTPIN"]
                         player.play(currentM)
@@ -110,7 +111,7 @@ if __name__ == "__main__":
                         t.sleep(1.5)
                         duration = player.get_length() / 1000
                         t.sleep(duration)
-                    if m["endTime"] == now_time:
+                    else:
                         break
         except KeyError:
             scheduleSig = False
@@ -118,7 +119,6 @@ if __name__ == "__main__":
             in_command = f"cat /sys/class/gpio/gpio{i}/value"
             inValue = subprocess.getoutput(in_command)
             if str2bool(inValue):
-                logger.info(f"PIN { INPIN[i] } high!")
                 if i == 75:
                     if videoStopSig:
                         logger.info("replay!")
