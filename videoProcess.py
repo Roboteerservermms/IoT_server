@@ -69,10 +69,7 @@ if __name__ == "__main__":
     while not exitThread:
         with open(f'./main.json', 'r') as f:
             mainJson = json.load(f)
-        if not mainJson["direct"]:
-            addMedia = Media(0,mediaData=mainJson["direct"])
-            mainJson['direct'] = ""
-            mediaQ.put(addMedia)
+        logger.info(f"{mainJson}")
         try :
             now_day= t.strftime('%A')
             now_time = t.strftime('%H:%M')
