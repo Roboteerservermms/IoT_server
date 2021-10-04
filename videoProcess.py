@@ -76,26 +76,28 @@ if __name__ == "__main__":
         try :
             now_day= t.strftime('%A')
             now_time = t.strftime('%H:%M')
-            for m in mainJson["schedule"][now_day]:
-                if m["startTime"] == now_time:
-                    if not scheduleMediaInSig:
-                        logger.info("schedule is running!")
-                        try:
-                            addMedia = Media(1,mediaData=m['Broadcast']["File"],gpio=m["OUTPIN"])
-                            mediaQ.put(addMedia)
-                            addMedia = Media(1,mediaData=m['Broadcast']["RTSP"],gpio=m["OUTPIN"])
-                            mediaQ.put(addMedia)
-                            addMedia = Media(1,mediaData=m['Broadcast']["TTS"],gpio=m["OUTPIN"])
-                            mediaQ.put(addMedia)
-                        except:
-                            pass
+            listm = mainJson["schedule"][now_day]
+            if listm:
+                for m in listm:
+                    if m["startTime"] == now_time:
+                        if not scheduleMediaInSig:
+                            logger.info("schedule is running!")
+                            try:
+                                addMedia = Media(1,mediaData=m['Broadcast']["File"],gpio=m["OUTPIN"])
+                                mediaQ.put(addMedia)
+                                addMedia = Media(1,mediaData=m['Broadcast']["RTSP"],gpio=m["OUTPIN"])
+                                mediaQ.put(addMedia)
+                                addMedia = Media(1,mediaData=m['Broadcast']["TTS"],gpio=m["OUTPIN"])
+                                mediaQ.put(addMedia)
+                            except:
+                                pass
+                            scheduleMediaInSig=True
+                        else:
+                            scheduleMediaInSig=False    
+                    if m["endTime"] == now_time:
                         scheduleMediaInSig=True
                     else:
-                        scheduleMediaInSig=False    
-                if m["endTime"] == now_time:
-                    scheduleMediaInSig=True
-                else:
-                    scheduleMediaInSig=False
+                        scheduleMediaInSig=False
         except KeyError:
             scheduleSig = False
         for i in GPIOIN:
@@ -106,14 +108,15 @@ if __name__ == "__main__":
                     videoStopSig = True
                     logger.info("all stop!")
                 else:
-                    m = mainJson["GPIOIN"][str(INPIN[i])]
-                    for m in mainJson["GPIOIN"][str(INPIN[i])]:
-                        addMedia = Media(1,mediaData=m['Broadcast']["File"],gpio=m["OUTPIN"])
-                        mediaQ.put(addMedia)
-                        addMedia = Media(1,mediaData=m['Broadcast']["RTSP"],gpio=m["OUTPIN"])
-                        mediaQ.put(addMedia)
-                        addMedia = Media(1,mediaData=m['Broadcast']["TTS"],gpio=m["OUTPIN"])
-                        mediaQ.put(addMedia)
+                    listm = mainJson["GPIOIN"][str(INPIN[i])]
+                    if listm :
+                        for m in listm:
+                            addMedia = Media(1,mediaData=m['Broadcast']["File"],gpio=m["OUTPIN"])
+                            mediaQ.put(addMedia)
+                            addMedia = Media(1,mediaData=m['Broadcast']["RTSP"],gpio=m["OUTPIN"])
+                            mediaQ.put(addMedia)
+                            addMedia = Media(1,mediaData=m['Broadcast']["TTS"],gpio=m["OUTPIN"])
+                            mediaQ.put(addMedia)
         if videoEndSig:
             try:
                 if not videoStopSig:
