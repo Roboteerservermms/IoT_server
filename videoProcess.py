@@ -79,6 +79,7 @@ if __name__ == "__main__":
             for m in mainJson["schedule"][now_day]:
                 if m["startTime"] == now_time:
                     if not scheduleMediaInSig:
+                        logger.info("schedule is running!")
                         try:
                             if not m['File']:
                                 addMedia = Media(1,mediaData=m["File"],gpio=m["OUTPIN"])
@@ -98,7 +99,6 @@ if __name__ == "__main__":
                     scheduleMediaInSig=True
                 else:
                     scheduleMediaInSig=False
-            logger.info("schedule is running!")
         except KeyError:
             scheduleSig = False
         for i in GPIOIN:

@@ -188,7 +188,7 @@ def setSchedule(request):
             try:
                 if request.POST[f'OUTPIN{num}']:
                     newList.append(1)
-            except MultiValueDictKeyError as e:
+            except:
                 newList.append(0)
         scheduleMedia = {
             "startTime" : request.POST["startTime"],
