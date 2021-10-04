@@ -122,51 +122,41 @@ if __name__ == "__main__":
                 in_command = f"cat /sys/class/gpio/gpio{i}/value"
                 inValue = subprocess.getoutput(in_command)
                 if str2bool(inValue):
-                    if i == 75:
-                        if videoStopSig:
-                            logger.info("replay!")
-                            player.play()
-                            videoStopSig = False
-                        else:                 
-                            logger.info("all stop!")
-                            player.pause()
-                            videoStopSig = True
-                    else:
-                            listm = mainJson["GPIOIN"][str(INPIN[i])]
-                            if listm :
-                                for m in listm:
-                                    if videoEndSig:
-                                        videoEndSig = False
-                                        currentM = m['Broadcast']["File"]
-                                        currentGPIO = m["OUTPIN"]
-                                        player.play(currentM)
-                                        for index,value in enumerate(currentGPIO):
-                                            out_command = f'echo {value} > /sys/class/gpio/gpio{GPIOOUT[index]}/value'
-                                            subprocess.getoutput(out_command)
-                                        logger.info(f"current status { currentM } / {currentGPIO}")
-                                        t.sleep(1.5)
-                                        duration = player.get_length() / 1000
-                                        t.sleep(duration)
+                    listm = mainJson["GPIOIN"][str(INPIN[i])]
+                    if listm :
+                        for m in listm:
+                            if videoEndSig:
+                                videoEndSig = False
+                                currentM = m['Broadcast']["File"]
+                                currentGPIO = m["OUTPIN"]
+                                player.play(currentM)
+                                for index,value in enumerate(currentGPIO):
+                                    out_command = f'echo {value} > /sys/class/gpio/gpio{GPIOOUT[index]}/value'
+                                    subprocess.getoutput(out_command)
+                                logger.info(f"current status { currentM } / {currentGPIO}")
+                                t.sleep(1.5)
+                                duration = player.get_length() / 1000
+                                t.sleep(duration)
 
-                                        currentM = m['Broadcast']["RTSP"]
-                                        currentGPIO = m["OUTPIN"]
-                                        player.play(currentM)
-                                        for index,value in enumerate(currentGPIO):
-                                            out_command = f'echo {value} > /sys/class/gpio/gpio{GPIOOUT[index]}/value'
-                                            subprocess.getoutput(out_command)
-                                        logger.info(f"current status { currentM } / {currentGPIO}")
-                                        t.sleep(1.5)
-                                        duration = player.get_length() / 1000
-                                        t.sleep(duration)
+                                currentM = m['Broadcast']["RTSP"]
+                                currentGPIO = m["OUTPIN"]
+                                player.play(currentM)
+                                for index,value in enumerate(currentGPIO):
+                                    out_command = f'echo {value} > /sys/class/gpio/gpio{GPIOOUT[index]}/value'
+                                    subprocess.getoutput(out_command)
+                                logger.info(f"current status { currentM } / {currentGPIO}")
+                                t.sleep(1.5)
+                                duration = player.get_length() / 1000
+                                t.sleep(duration)
 
-                                        currentM = m['Broadcast']["TTS"]
-                                        currentGPIO = m["OUTPIN"]
-                                        player.play(currentM)
-                                        for index,value in enumerate(currentGPIO):
-                                            out_command = f'echo {value} > /sys/class/gpio/gpio{GPIOOUT[index]}/value'
-                                            subprocess.getoutput(out_command)
-                                        logger.info(f"current status { currentM } / {currentGPIO}")
+                                currentM = m['Broadcast']["TTS"]
+                                currentGPIO = m["OUTPIN"]
+                                player.play(currentM)
+                                for index,value in enumerate(currentGPIO):
+                                    out_command = f'echo {value} > /sys/class/gpio/gpio{GPIOOUT[index]}/value'
+                                    subprocess.getoutput(out_command)
+                                logger.info(f"current status { currentM } / {currentGPIO}")
 
-                                        t.sleep(1.5)
-                                        duration = player.get_length() / 1000
-                                        t.sleep(duration)
+                                t.sleep(1.5)
+                                duration = player.get_length() / 1000
+                                t.sleep(duration)
