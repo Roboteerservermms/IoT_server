@@ -122,6 +122,7 @@ if __name__ == "__main__":
             in_command = f"cat /sys/class/gpio/gpio{i}/value"
             inValue = subprocess.getoutput(in_command)
             if str2bool(inValue):
+                logger.info(f"PIN { INPIN[i] } high!")
                 if i == 75:
                     if videoStopSig:
                         logger.info("replay!")
