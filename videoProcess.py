@@ -6,7 +6,7 @@ import time as t
 import pafy
 import logging
 from vlc import EventType
-from queue import PriorityQueue
+from queue import Empty, PriorityQueue
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -65,6 +65,7 @@ if __name__ == "__main__":
     player.play("blackscreen.mp4")
     scheduleMediaInSig = False
     GPIOMediaInSig =False
+    videoStopSig = False
     while not exitThread:
         with open(f'./main.json', 'r') as f:
             mainJson = json.load(f)
@@ -105,7 +106,7 @@ if __name__ == "__main__":
             inValue = subprocess.getoutput(in_command)
             if str2bool(inValue):
                 if i == 75:
-                    mediaQ.clear()
+                    videoStopSig = True
                 else:
                     m = mainJson["GPIOIN"][str(INPIN[i])]
                     for m in mainJson["GPIOIN"][str(INPIN[i])]:
@@ -120,11 +121,15 @@ if __name__ == "__main__":
                             mediaQ.put(addMedia)
         if videoEndSig:
             try:
-                currentM = mediaQ.get_nowait()
-                player.play(currentM.data)
-                for index,value in enumerate(currentM.gpio):
-                    out_command = f'echo {value} > /sys/class/gpio/gpio{GPIOOUT[index]}/value'
-                    subprocess.getoutput(out_command)
-                logger.info(f"current status {currentM.data} / {currentM.gpio}")
+                if not videoStopSig:
+                    currentM = mediaQ.get_nowait()
+                    player.play(currentM.data)
+                    for index,value in enumerate(currentM.gpio):
+                        out_command = f'echo {value} > /sys/class/gpio/gpio{GPIOOUT[index]}/value'
+                        subprocess.getoutput(out_command)
+                    logger.info(f"current status {currentM.data} / {currentM.gpio}")
+                else:
+                    player.pause()
+                    videoStopSig = False
             except:
                 pass
