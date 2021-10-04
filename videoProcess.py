@@ -71,13 +71,14 @@ if __name__ == "__main__":
             mainJson = json.load(f)
         try :
             now_day= t.strftime('%A')
-            now_time = t.strftime('%H:%M')
+            nowTime = t.strftime('%H:%M')
             listm = mainJson["schedule"][now_day]
             if listm:
                 for m in listm:
+                    nowTime =  t.strptime(nowTime,"%H:%M")
                     startTime = t.strptime(m["startTime"],"%H:%M")
                     endTime = t.strptime(m["endTime"],"%H:%M")
-                    if now_time >= startTime and  now_time <= endTime :
+                    if nowTime > startTime and  nowTime <= endTime :
                         currentM = m['Broadcast']["File"]
                         currentGPIO = m["OUTPIN"]
                         player.play(currentM)
