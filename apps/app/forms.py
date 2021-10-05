@@ -23,6 +23,7 @@ class ScheduleForm(forms.ModelForm):
         super(ScheduleForm,self).__init__(*args, **kwargs)
         self.fields['TTS'].required = False
         self.fields['RTSP'].required = False
+        self.fields['File'].required = False
 
 class RboardForm(forms.ModelForm):
     class Meta:
