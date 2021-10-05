@@ -75,20 +75,17 @@ if __name__ == "__main__":
             listm = mainJson["schedule"][now_day]
                 if listm :
                     for m in listm:
-                        if videoEndSig:
-                            videoEndSig = False
-                            for media in ["File", "RTSP","TTS"]:
-                                currentM = m['Broadcast'][media]
-                                if currentM is not None:
+                        for media in ["File", "RTSP","TTS"]:
+                            currentM = m['Broadcast'][media]
+                            if currentM is not None:
+                                if videoEndSig:
+                                    videoEndSig = False
                                     currentGPIO = m["OUTPIN"]
                                     player.play(currentM)
                                     for index,value in enumerate(currentGPIO):
                                         out_command = f'echo {value} > /sys/class/gpio/gpio{GPIOOUT[index]}/value'
                                         subprocess.getoutput(out_command)
                                     logger.info(f"current status { currentM } / {currentGPIO}")
-                                    t.sleep(1.5)
-                                    duration = player.get_length() / 1000
-                                    t.sleep(duration)
                     else:
                         scheduleSig = False
         except KeyError:
@@ -101,18 +98,17 @@ if __name__ == "__main__":
                     listm = mainJson["GPIOIN"][str(INPIN[i])]
                     if listm :
                         for m in listm:
-                            if videoEndSig:
-                                videoEndSig = False
-                                for media in ["File", "RTSP","TTS"]:
-                                    currentM = m['Broadcast'][media]
-                                    if currentM is not None:
+                            for media in ["File", "RTSP","TTS"]:
+                                currentM = m['Broadcast'][media]
+                                if currentM is not None:
+                                    if videoEndSig:
+                                        videoEndSig = False
                                         currentGPIO = m["OUTPIN"]
                                         player.play(currentM)
                                         for index,value in enumerate(currentGPIO):
                                             out_command = f'echo {value} > /sys/class/gpio/gpio{GPIOOUT[index]}/value'
                                             subprocess.getoutput(out_command)
                                         logger.info(f"current status { currentM } / {currentGPIO}")
-                                        t.sleep(1.5)
-                                        duration = player.get_length() / 1000
-                                        t.sleep(duration)
+                                    else:
+
                     break
