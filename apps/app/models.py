@@ -29,7 +29,7 @@ class Schedule(models.Model):
         ('Sunday', '일요일'),
     )
     device = models.ForeignKey("Rboard", on_delete=models.CASCADE, default="")
-    day = models.CharField(primary_key=True,max_length=10, choices=DAY_CHOICES)
+    day = models.CharField(max_length=10, choices=DAY_CHOICES)
     startTime = models.TimeField(auto_now_add=False)
     endTime = models.TimeField(auto_now_add=False)
     OUTPIN1 = models.BooleanField(default=False)
@@ -55,7 +55,7 @@ class GPIOSetting(models.Model):
         ('7', 'INPIN7'),
     )
     device = models.ForeignKey("Rboard", on_delete=models.CASCADE, default="")
-    INPIN = models.CharField(primary_key=True,max_length=10, choices=INPIN_CHOICES)
+    INPIN = models.CharField(max_length=10, choices=INPIN_CHOICES)
     OUTPIN1 = models.BooleanField(default=False)
     OUTPIN2 = models.BooleanField(default=False)
     OUTPIN3 = models.BooleanField(default=False)
