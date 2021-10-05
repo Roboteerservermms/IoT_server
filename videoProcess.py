@@ -109,6 +109,5 @@ if __name__ == "__main__":
                                             out_command = f'echo {value} > /sys/class/gpio/gpio{GPIOOUT[index]}/value'
                                             subprocess.getoutput(out_command)
                                         logger.info(f"current status { currentM } / {currentGPIO}")
-                                    else:
 
                     break
