@@ -25,4 +25,3 @@ staticfiles/*
 !staticfiles/.gitkeep 
 .vscode/symbols.json
 apps/app/migrations/
-core/uploads/
