@@ -27,6 +27,7 @@ class Schedule(models.Model):
         ('Friday', '금요일'),
         ('Saturday', '토요일'),
         ('Sunday', '일요일'),
+        ('Everyday', '매일'),
     )
     device = models.ForeignKey("Rboard", on_delete=models.CASCADE, default="")
     day = models.CharField(max_length=10, choices=DAY_CHOICES)
