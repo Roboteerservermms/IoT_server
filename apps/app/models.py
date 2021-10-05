@@ -39,8 +39,8 @@ class Schedule(models.Model):
     OUTPIN5 = models.BooleanField(default=False)
     OUTPIN6 = models.BooleanField(default=False)
     OUTPIN7 = models.BooleanField(default=False)
-    TTS = models.CharField(default="",null=True,max_length=50)
-    RTSP = models.CharField(default="",null=True,max_length=50)
+    TTS = models.CharField(default="",null=True,max_length=500)
+    RTSP = models.CharField(default="",null=True,max_length=500)
     File = models.FileField(upload_to="", null=True)
 
 
@@ -63,6 +63,6 @@ class GPIOSetting(models.Model):
     OUTPIN5 = models.BooleanField(default=False)
     OUTPIN6 = models.BooleanField(default=False)
     OUTPIN7 = models.BooleanField(default=False)
-    TTS = models.CharField(default="",null=True,max_length=50)
-    RTSP = models.CharField(default="",null=True,max_length=50)
+    TTS = models.CharField(default="",null=True,max_length=500)
+    RTSP = models.CharField(default="",null=True,max_length=500)
     File = models.FileField(upload_to="", null=True)
