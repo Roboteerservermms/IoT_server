@@ -30,4 +30,6 @@ for gpio in "111" "112" "113" "114" "229" "117" "118" "75"; do
 done
 timedatectl set-timezone Asia/Seoul
 python3 videoProcess.py &
+python3 manage.py makemigrations
+python3 manage.py migrate
 python3 manage.py runserver 0.0.0.0:8080
