@@ -72,22 +72,22 @@ if __name__ == "__main__":
         try :
             now_day= t.strftime('%A')
             nowTime = t.strftime('%H:%M')
-            listm = mainJson["schedule"][now_day]
-                if listm :
-                    for m in listm:
-                        for media in ["File", "RTSP","TTS"]:
-                            currentM = m['Broadcast'][media]
-                            if currentM is not None:
-                                if videoEndSig:
-                                    videoEndSig = False
-                                    currentGPIO = m["OUTPIN"]
-                                    player.play(currentM)
-                                    for index,value in enumerate(currentGPIO):
-                                        out_command = f'echo {value} > /sys/class/gpio/gpio{GPIOOUT[index]}/value'
-                                        subprocess.getoutput(out_command)
-                                    logger.info(f"current status { currentM } / {currentGPIO}")
-                    else:
-                        scheduleSig = False
+            listM = mainJson["schedule"][now_day]
+            if listM:
+                for m in listM:
+                    for media in ["File", "RTSP","TTS"]:
+                        currentM = m['Broadcast'][media]
+                        if currentM is not None:
+                            if videoEndSig:
+                                videoEndSig = False
+                                currentGPIO = m["OUTPIN"]
+                                player.play(currentM)
+                                for index,value in enumerate(currentGPIO):
+                                    out_command = f'echo {value} > /sys/class/gpio/gpio{GPIOOUT[index]}/value'
+                                    subprocess.getoutput(out_command)
+                                logger.info(f"current status { currentM } / {currentGPIO}")
+                else:
+                    scheduleSig = False
         except KeyError:
             scheduleSig = False
         if not scheduleSig:
@@ -95,9 +95,9 @@ if __name__ == "__main__":
                 in_command = f"cat /sys/class/gpio/gpio{i}/value"
                 inValue = subprocess.getoutput(in_command)
                 if str2bool(inValue):
-                    listm = mainJson["GPIOIN"][str(INPIN[i])]
-                    if listm :
-                        for m in listm:
+                    listM = mainJson["GPIOIN"][str(INPIN[i])]
+                    if listM :
+                        for m in listM:
                             for media in ["File", "RTSP","TTS"]:
                                 currentM = m['Broadcast'][media]
                                 if currentM is not None:
