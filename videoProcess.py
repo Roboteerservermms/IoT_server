@@ -160,3 +160,4 @@ if __name__ == "__main__":
                                 t.sleep(1.5)
                                 duration = player.get_length() / 1000
                                 t.sleep(duration)
+                    break
