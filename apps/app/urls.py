@@ -4,7 +4,7 @@ Copyright (c) 2019 - present AppSeed.us
 """
 
 from django.urls import path, re_path
-from apps.app import views
+from apps.app import views, controlVideo
 
 urlpatterns = [
 
@@ -17,6 +17,8 @@ urlpatterns = [
     path('getMacAddress', views.getMacAddress, name='getMacAddress'),
     path('testTTS', views.testTTS, name='testTTS'),
     path('setTTS', views.setTTS, name='setTTS'),
-    path('setGPIOSetting', views.setGPIOSetting, name='setGPIOSetting'),
+
+    path('getGPIOStates', controlVideo.getGPIOStates, name='getGPIOStates'),
+    path('getPlayList', controlVideo.getPlayList, name='getPlayList'),
     # Matches any html file
 ]
