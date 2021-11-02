@@ -61,6 +61,7 @@ def registerDevice(request):
                 ip=newDeviceIP, 
                 macAddress=newDeviceMacAddress 
             )
+            videoStatus =  requests.post(f"http://{newDeviceIP}:8080/awakeVideo")
             messages.info(request, "추가완료!")
             newDevice.save()
             return redirect("/")

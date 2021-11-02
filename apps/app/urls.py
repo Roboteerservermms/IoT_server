@@ -18,6 +18,7 @@ urlpatterns = [
     path('testTTS', views.testTTS, name='testTTS'),
     path('setTTS', views.setTTS, name='setTTS'),
 
+    path('awakeVideo', controlVideo.awakeVideo, name='awakeVideo'),
     path('getGPIOStates', controlVideo.getGPIOStates, name='getGPIOStates'),
     path('getPlayList', controlVideo.getPlayList, name='getPlayList'),
     # Matches any html file

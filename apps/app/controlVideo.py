@@ -53,7 +53,10 @@ class videoThread(threading.Thread):
 
     def video_end_handler(self, event):
         if not self.playlist:
-            self.nowPlay = self.playlist.pop(0)
+            try:
+                self.nowPlay = self.playlist.pop(0)
+            except:
+                self.nowPlay = "blackscreen.mp4"
         self.player.play(self.nowPlay)
     
     def gpioRise(self, pin):
@@ -102,14 +105,6 @@ class videoThread(threading.Thread):
             self.playQueryList()
 
 
-
-
-                
-
-                    
-
-
-
 @method_decorator(csrf_exempt, name="dispatch")
 def getGPIOStates(request):
     GPIOStatusJson = {
@@ -132,3 +127,12 @@ def getPlayList(request):
     gpioPlayList = GPIOSetting.objects.all()
     return HttpResponse(schPlayList, gpioPlayList)
 
+videoStatue = False
+@method_decorator(csrf_exempt, name="dispatch")
+def awakeVideo(request):
+    if not videoStatue:
+        pid = videoThread()
+        pid.start()
+        return HttpResponse(True)
+    else:
+        return HttpResponse("already awake")
