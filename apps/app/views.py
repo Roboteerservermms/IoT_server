@@ -13,6 +13,7 @@ from .models import *
 from .constant import *
 from .forms import *
 from .mediaProvider import *
+from .controlVideo import *
 import requests, getmac, socket, json
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
@@ -21,6 +22,9 @@ from django.core.files.storage import default_storage
 from django.conf import settings
 from django.utils.datastructures import MultiValueDictKeyError
 
+
+pid = videoThread()
+pid.start()
 
 @login_required(login_url="/login/")
 def index(request):
@@ -96,25 +100,37 @@ def registerSchedule(request):
 @login_required(login_url="/login/")
 def registerGPIOSetting(request):
     gpioSettingList = GPIOSetting.objects.all()
+    deviceList = Rboard.objects.all()
     if request.method == 'POST':
-        gpioForm = GPIOSettingForm(request.POST, request.FILES)
         targetBoard = Rboard.objects.get(id=request.POST['device'])
         res = requests.post(f'http://{targetBoard.ip}:8080/setGPIOSetting', data=request.POST,files=request.FILES)
-        print(gpioForm.is_valid())
-        if gpioForm.is_valid():
-            gpioForm.save()
-            messages.info(request, "추가완료!")
-        else:
-            messages.warning(request, "전송 실패!")
-    else:
-        gpioForm = GPIOSettingForm()
+        messages.info(request, f"{res}")
     context = {
         'segment': 'index',
-        'gpioForm': gpioForm,
+        'deviceList':deviceList,
         "gpioSettingList" : gpioSettingList
     }
     html_template = loader.get_template('GPIOSetting.html')
     return HttpResponse(html_template.render(context, request))
+
+@login_required(login_url="/login/")
+def removeRboard(request,pk):
+    targetRboard = Rboard.objects.get(pk=pk)
+    targetRboard.delete()
+    return redirect("/")
+
+@login_required(login_url="/login/")
+def removeSchedule(request,pk):
+    targetSchedule = Schedule.objects.get(pk=pk)
+    targetSchedule.delete()
+    return redirect("/registerSchedule")
+
+
+@login_required(login_url="/login/")
+def removeGPIOSetting(request,pk):
+    targetSetting = GPIOSetting.objects.get(pk=pk)
+    targetSetting.delete()
+    return redirect("/registerGPIOSetting")
 
 
 @login_required(login_url="/login/")
@@ -156,18 +172,10 @@ def setGPIOStates(request):
         GPIOStatusJson["OUT"].append(retGPIOOUT)
     return HttpResponse(GPIOStatusJson)
 
-""" def controlGPIO(request):
-
-def setTTS(request):
-
-def getGPIOOutputStatus(request): """
 @method_decorator(csrf_exempt, name="dispatch")
 def setSchedule(request):
     if request.method == "POST":
         print(request.POST)
-        jsonData = open('main.json')
-        mainJson = json.load(jsonData)
-        day = request.POST["day"]
         try:
             recvFile = request.FILES['File']
             recvFileName = default_storage.save(recvFile.name,recvFile)
@@ -184,27 +192,24 @@ def setSchedule(request):
             recvTTS = TTS(request.POST["TTS"],settings.MEDIA_ROOT)
         except MultiValueDictKeyError as e:
             recvTTS = ""
-        newList = []
+        recvOutList = []
         for num in range(1,8):
             try:
                 if request.POST[f'OUTPIN{num}']:
-                    newList.append(1)
+                    recvOutList.append(1)
             except:
-                newList.append(0)
-        scheduleMedia = {
-            "startTime" : request.POST["startTime"],
-            "endTime" : request.POST["endTime"],
-            "OUTPIN": newList,
-            "Broadcast":{
-                "TTS": recvTTS,
-                "RTSP": recvRTSP,
-                "File": recvFileRet
-            }
-        }
-        mainJson['schedule'][day].append(scheduleMedia)
-        with open('main.json', "w") as f:
-            json.dump(mainJson, f)
-        print(json.dumps(mainJson))
+                recvOutList.append(0)
+        newSchedule = Schedule.objects.create(
+            day = request.POST["day"],
+            startTime = request.POST["startTime"],
+            endTime = request.POST["endTime"],
+            IN=  request.POST["INPIN"],
+            OUT= recvOutList,
+            TTS=recvTTS,
+            RTSP=recvRTSP,
+            File=recvFileRet
+        )
+        newSchedule.save()
         return HttpResponse(f"{json.dumps(mainJson)}")
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -229,15 +234,15 @@ def setGPIOSetting(request):
             recvTTS = TTS(request.POST["TTS"],settings.MEDIA_ROOT)
         except:
             recvTTS = ""
-        newList = []
+        recvOutList = []
         for num in range(1,8):
             try:
                 if request.POST[f'OUTPIN{num}']:
-                    newList.append(1)
+                    recvOutList.append(1)
             except:
-                newList.append(0)
+                recvOutList.append(0)
         gpioMedia = {
-            "OUTPIN": newList,
+            "OUTPIN": recvOutList,
             "Broadcast":{
                 "TTS": recvTTS,
                 "RTSP": recvRTSP,

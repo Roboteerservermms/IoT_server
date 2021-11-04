@@ -83,7 +83,11 @@ $('input[type="checkbox"]').on('change', function(e){
                                                     <td>
                                                         <h6 class="text-muted"><i class="fas fa-circle text-c-green f-10 m-r-15"></i>{{ device.macAddress}}</h6>
                                                     </td>
-                                                    <td><a href="/registerGPIOSetting" class="label theme-bg2 text-white f-12">GPIOSetting</a><a href="/registerSchedule" class="label theme-bg text-white f-12">registerSchedule</a></td>
+                                                    <td>
+                                                        <a href="/registerGPIOSetting" class="label theme-bg2 text-white f-12">GPIOSetting</a>
+                                                        <a href="/registerSchedule" class="label theme-bg text-white f-12">registerSchedule</a>
+                                                        <a href="/Rboard/{{device.id}}/remove" class="label theme-bg text-white f-12">삭제</a>
+                                                    </td>
                                                 </tr>
                                                 {% endfor %}
                                             </tbody>

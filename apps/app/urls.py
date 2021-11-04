@@ -13,6 +13,10 @@ urlpatterns = [
     path('registerDevice', views.registerDevice, name='registerDevice'),
     path('registerSchedule', views.registerSchedule, name='registerSchedule'),
     path('registerGPIOSetting', views.registerGPIOSetting, name='registerGPIOSetting'),
+    path('Rboard/<int:pk>/remove/',views.removeRboard, name='removeRboard'),
+    path('schedule/<int:pk>/remove/',views.removeSchedule, name='removeSchedule'),
+    path('GPIOSetting/<int:pk>/remove/',views.removeGPIOSetting, name='removeGPIOSetting'),
+
     path('setSchedule', views.setSchedule, name='setSchedule'),
     path('getMacAddress', views.getMacAddress, name='getMacAddress'),
     path('testTTS', views.testTTS, name='testTTS'),

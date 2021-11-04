@@ -70,6 +70,9 @@
                                                     <td>{{setting.TTS}}</td>
                                                     <td>{{setting.RTSP}}</td>
                                                     <td>{{setting.File}}</td>
+                                                    <td>
+                                                        <a href="/GPIOSetting/{{setting.id}}/remove" class="label theme-bg text-white f-12">삭제</a>
+                                                    </td>
                                                 </tr>
                                             {% endfor %}
                                         </tbody>
@@ -86,17 +89,61 @@
                     <div class="col-xl-12">
                         <div class="card">
                             <div class="card-header">
-                                <h5>GPIO 설정</h5>
+                                <h5>GPIO 1</h5>
                             </div>
                             <div class="card-block table-border-style">
                                 <div class="form-check">
-                                    {{gpioForm.as_p}}
-                                    <button type="submit" class="save btn btn-default">추가</button>
+                                    <div class="btn-group col-xs-12" data-toggle="buttons">
+                                        <label class="btn btn-default">
+                                            <input type="checkbox" name="OUTPIN" value="1">OUTPIN1
+                                        </label>
+                                        <label class="btn btn-default">
+                                            <input type="checkbox" name="OUTPIN" value="2">OUTPIN2
+                                        </label>
+                                        <label class="btn btn-default">
+                                            <input type="checkbox" name="OUTPIN" value="3">OUTPIN3
+                                        </label>
+                                        <label class="btn btn-default">
+                                            <input type="checkbox" name="OUTPIN" value="4">OUTPIN4
+                                        </label>
+                                        <label class="btn btn-default">
+                                            <input type="checkbox" name="OUTPIN" value="5">OUTPIN5
+                                        </label>
+                                        <label class="btn btn-default">
+                                            <input type="checkbox" name="OUTPIN" value="6">OUTPIN6
+                                        </label>
+                                        <label class="btn btn-default">
+                                            <input type="checkbox" name="OUTPIN" value="7">OUTPIN7
+                                        </label>
+                                    </div>
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                        <span class="input-group-text" id="basic-addon1">TTS</span>
+                                        </div>
+                                        <input type="text" class="form-control" name="TTS" placeholder="TTS" aria-label="TTS" aria-describedby="basic-addon1">
+                                    </div>
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                        <span class="input-group-text" id="basic-addon1">RTSP</span>
+                                        </div>
+                                        <input type="text" class="form-control" name="RTSP" placeholder="RTSP" aria-label="RTSP" aria-describedby="basic-addon1">
+                                    </div>
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                        <span class="input-group-text">File</span>
+                                        </div>
+                                        <div class="custom-file">
+                                        <input type="file" class="custom-file-input" id="File" name="File">
+                                        <label class="custom-file-label" for="inputGroupFile01">파일 선택</label>
+                                        </div>
+                                    </div>                                      
+                                    <button type="submit" class="save btn btn-default">저장</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                     </form>
+
                     <!-- [ Hover-table ] end -->
                 </div>
                 <!-- [ Main Content ] end -->
