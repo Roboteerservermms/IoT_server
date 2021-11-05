@@ -63,13 +63,13 @@ class videoThread(threading.Thread):
         if pin is None and mediaId is not None:
             self.gpioQ = GPIOSetting.objects.get(id=mediaId)
 
-    def play(self, media):
+    def play(self, media=None):
         if media is not None and self.videoEndSig and not self.videoStopSig:
             self.player.play(media)
             time.sleep(1.5)
             duration = self.player.get_length() / 1000
             time.sleep(duration)
-        if self.videoStopSig:
+        if self.videoStopSig or media is None:
             self.player.play(self.blackScreen)
 
     def playQueryList(self, queryList):
@@ -85,6 +85,8 @@ class videoThread(threading.Thread):
                     self.play(value)
                 elif key == "TTS":
                     self.play(TTS(value,settings.MEDIA_ROOT))
+        else:
+            self.play()
     
     def scheduleAdd(self, day=None, time=None, mediaId=None):
         if day is not None and time is not None and mediaId is None:
