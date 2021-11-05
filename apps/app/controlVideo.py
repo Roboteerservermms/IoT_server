@@ -39,17 +39,40 @@ logger.addHandler(file_handler)
 def str2bool(v):
     return str(v).lower() in ("yes", "true", "t", "1")
 
+
 class videoThread(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
         self.player = VlcPlayer('--mouse-hide-timeout=0')
+        self.player.add_callback(EventType.MediaPlayerEndReached,self.videoEndHandler)
+        self.player.add_callback(EventType.MediaPlayerPlaying,self.videoPlayingHandler)
         self.nowPlay = f"{settings.MEDIA_ROOT}/blackscreen.mp4"
         self.playlist = []
         self.scheduleQ = Schedule.objects.none()
         self.gpioQ = GPIOSetting.objects.none()
         self.player.play(self.nowPlay)
         self.videoStopSig = False
-    
+        self.videoEndSig = False
+    def videoEndHandler(self,event):
+        self.videoEnd = True
+        if not self.videoStopSig:
+            if self.playlist:
+                for playIndex in self.playlist:
+                    self.player.play(playIndex)
+                    logger.info(f"now play {playIndex}")
+            else:
+                self.nowPlay = f"{settings.MEDIA_ROOT}/blackscreen.mp4"
+                self.player.play(self.nowPlay)
+        else:
+            self.nowPlay = f"{settings.MEDIA_ROOT}/blackscreen.mp4"
+            self.player.play(self.nowPlay)
+
+    def videoPlayingHandler(self,event):
+        if self.videoStopSig:
+            self.playlist = []
+            self.nowPlay = f"{settings.MEDIA_ROOT}/blackscreen.mp4"
+            self.player.play(self.nowPlay)
+        
     def gpioRise(self, pin):             
         self.gpioQ = GPIOSetting.objects.filter(
             Q(IN = pin)
@@ -94,16 +117,9 @@ class videoThread(threading.Thread):
             self.playQueryList(self.gpioQ)
 
     def run(self):
+        self.nowPlay = f"{settings.MEDIA_ROOT}/blackscreen.mp4"
+        self.player.play(self.nowPlay)
         while True:
-            if not self.videoStopSig:
-                if self.playlist:
-                    for playIndex in self.playlist:
-                        self.player.play(playIndex)
-                        logger.info(f"now play {playIndex}")
-            else:
-                self.nowPlay = f"{settings.MEDIA_ROOT}/blackscreen.mp4"
-                self.player.play(self.nowPlay)
-            
             nowDay= datetime.datetime.today().weekday()
             nowTime =  datetime.datetime.now()
             self.scheduleAdd(nowDay, nowTime)
