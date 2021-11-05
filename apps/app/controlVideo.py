@@ -61,11 +61,11 @@ class videoThread(threading.Thread):
     def gpioRise(self, pin):             
         self.queryList = GPIOSetting.objects.filter(
             Q(IN = pin+1)
-        ).values()[0]
+        )
 
     def playQueryList(self):
         if not self.queryList:
-            for key, value in self.queryList:
+            for key, value in self.queryList.values()[0]:
                 if key == "OUT":
                     for index, value in enumerate(value):
                         out_command = f'echo {value} > /sys/class/gpio/gpio{OUTPIN[index+1]}/value'
@@ -85,7 +85,7 @@ class videoThread(threading.Thread):
                 Q(day__contains = nowDay)
                 & Q(startTime__lt = nowTime)
                 & Q(endTime__gt = nowTime)
-            ).values()[0]
+            )
         except Schedule.DoesNotExist:
             pass
 
