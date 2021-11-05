@@ -102,6 +102,7 @@ class videoThread(threading.Thread):
             self.playQueryList(self.gpioQ)
 
     def run(self):
+        self.player.play(self.nowPlay)
         while True:
             nowDay= datetime.datetime.today().weekday()
             nowTime =  datetime.datetime.now()
