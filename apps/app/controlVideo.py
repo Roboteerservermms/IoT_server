@@ -45,7 +45,6 @@ class videoThread(threading.Thread):
         threading.Thread.__init__(self)
         self.player = VlcPlayer('--mouse-hide-timeout=0')
         self.player.add_callback(EventType.MediaPlayerEndReached,self.videoEndHandler)
-        self.player.add_callback(EventType.MediaPlayerPlaying,self.videoPlayingHandler)
         self.nowPlay = f"{settings.MEDIA_ROOT}/blackscreen.mp4"
         self.playlist = []
         self.scheduleQ = Schedule.objects.none()
@@ -53,15 +52,9 @@ class videoThread(threading.Thread):
         self.player.play(self.nowPlay)
         self.videoStopSig = False
         self.videoEndSig = False
+        
     def videoEndHandler(self,event):
         self.videoEndSig = True
-
-    def videoPlayingHandler(self,event):
-        self.videoEndSig = False
-        if self.videoStopSig:
-            self.playlist = []
-            self.nowPlay = f"{settings.MEDIA_ROOT}/blackscreen.mp4"
-            self.player.play(self.nowPlay)
         
     def gpioRise(self, pin):             
         self.gpioQ = GPIOSetting.objects.filter(
@@ -119,8 +112,12 @@ class videoThread(threading.Thread):
                         while True:
                             if self.videoEndSig:
                                 break
+                            if self.videoStopSig:
+                                self.playlist = []
+                                self.nowPlay = f"{settings.MEDIA_ROOT}/blackscreen.mp4"
+                                self.player.play(self.nowPlay)
+                                break
 
-                        
             nowDay= datetime.datetime.today().weekday()
             nowTime =  datetime.datetime.now()
             self.scheduleAdd(nowDay, nowTime)
