@@ -44,20 +44,22 @@ class videoThread(threading.Thread):
         threading.Thread.__init__(self)
         self.player = VlcPlayer('--mouse-hide-timeout=0')
         self.player.add_callback(EventType.MediaPlayerEndReached,self.video_end_handler)
-        self.nowPlay = "blackscreen.mp4"
+        self.nowPlay = f"{settings.BASE_DIR}/blackscreen.mp4"
         self.playlist = []
         self.scheduleQ = Schedule.objects.none()
         self.gpioQ = GPIOSetting.objects.none()
         self.player.play(self.nowPlay)
-        self.videoEndSig = False
+        self.videoStopSig = False
 
     def video_end_handler(self, event):
-        if not self.playlist:
-            try:
+        if not self.videoStopSig:
+            if self.playlist:
                 self.nowPlay = self.playlist.pop(0)
-            except:
-                self.nowPlay = "blackscreen.mp4"
-        self.player.play(self.nowPlay)
+            else:
+                self.playQueryList()
+            self.player.play(self.nowPlay)
+        else:
+            self.player.stop()
     
     def gpioRise(self, pin):             
         self.gpioQ = GPIOSetting.objects.filter(
@@ -102,10 +104,21 @@ class videoThread(threading.Thread):
             self.playQueryList(self.gpioQ)
 
     def run(self):
-        self.player.play(self.nowPlay)
         while True:
+            if not self.videoStopSig:
+                if self.playlist:
+                    self.nowPlay = self.playlist.pop(0)
+                else:
+                    self.nowPlay = "blackscreen.mp4"
+                self.player.play(self.nowPlay)
+            else:
+                self.player.stop()
+            
             nowDay= datetime.datetime.today().weekday()
             nowTime =  datetime.datetime.now()
+            self.scheduleAdd(nowDay, nowTime)
+            if self.scheduleQ.exists():
+                self.playQueryList(self.scheduleQ)
             for pinNum, originNum in INPIN.items():
                 inCommand = f"cat /sys/class/gpio/gpio{originNum}/value"
                 retGPIOIN=subprocess.getoutput(inCommand)
@@ -113,13 +126,12 @@ class videoThread(threading.Thread):
                     if pinNum == 0:
                         self.playlist.clear()
                         self.player.stop()
+                        self.videoStopSig = True
                     else:
                         self.gpioRise(pinNum)
-            self.scheduleAdd(nowDay, nowTime)
-            if self.scheduleQ.exists():
-                self.playQueryList(self.scheduleQ)
-            else:
-                self.playQueryList(self.gpioQ)
+            if self.gpioQ.exists():
+                self.playQueryList(self, self.gpioQ)
+
 
 
 @method_decorator(csrf_exempt, name="dispatch")
