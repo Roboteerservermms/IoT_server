@@ -254,12 +254,12 @@ def setGPIOSetting(request,gpioId):
             recvTTS = request.POST["TTS"]
         except MultiValueDictKeyError as e:
             recvTTS = ""
-        recvOutList = [0,0,0,0,0,0,0]
+        recvOutList = ['0','0','0','0','0','0','0']
         for i in request.POST.getlist("OUTPIN"):
-            recvOutList[int(i)-1] = 1
+            recvOutList[int(i)-1] = '1'
         newGPIOSetting = GPIOSetting.objects.create(
             IN = gpioId,
-            OUT= recvOutList,
+            OUT= ''.join(recvOutList),
             TTS=recvTTS,
             RTSP=recvRTSP,
             File=recvFileRet
