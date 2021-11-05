@@ -81,8 +81,8 @@ class videoThread(threading.Thread):
                     self.play(TTS(value,settings.MEDIA_ROOT))
     
     def scheduleAdd(self, day, time):
-        nowDay= datetime.datetime.today().weekday()
-        nowTime =  datetime.datetime.now()
+        nowDay= day
+        nowTime = time
         try:
             self.scheduleQ = Schedule.objects.filter(
                 Q(day__contains = nowDay)
@@ -94,11 +94,11 @@ class videoThread(threading.Thread):
 
     def chime(self,category, value):
         if category == "Schedule":
-            self.playlist.clear()
+            self.player.pause()
             self.scheduleAdd(value['day'], value['startTime'])
             self.playQueryList(self.scheduleQ)
         elif category == "GPIO":
-            self.playlist.clear()
+            self.player.pause()
             self.gpioRise(value["INPIN"])
             self.playQueryList(self.gpioQ)
 
@@ -109,19 +109,21 @@ class videoThread(threading.Thread):
             nowDay= datetime.datetime.today().weekday()
             nowTime =  datetime.datetime.now()
             self.scheduleAdd(nowDay, nowTime)
-            self.playQueryList(self.scheduleQ)
-            for pinNum, originNum in INPIN.items():
-                inCommand = f"cat /sys/class/gpio/gpio{originNum}/value"
-                retGPIOIN=subprocess.getoutput(inCommand)
-                if str2bool(retGPIOIN):
-                    if pinNum == 0:
-                        self.playlist.clear()
-                        self.videoStopSig = True
-                        break
-                    else:
-                        self.gpioRise(pinNum)
-                        break
-            self.playQueryList(self.gpioQ)
+            if self.scheduleQ.exists():
+                self.playQueryList(self.scheduleQ)
+            else:
+                for pinNum, originNum in INPIN.items():
+                    inCommand = f"cat /sys/class/gpio/gpio{originNum}/value"
+                    retGPIOIN=subprocess.getoutput(inCommand)
+                    if str2bool(retGPIOIN):
+                        if pinNum == 0:
+                            self.playlist.clear()
+                            self.videoStopSig = True
+                            break
+                        else:
+                            self.gpioRise(pinNum)
+                            break
+                self.playQueryList(self.gpioQ)
 
 
 

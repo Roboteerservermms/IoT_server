@@ -22,8 +22,8 @@ from django.conf import settings
 from django.utils.datastructures import MultiValueDictKeyError
 
 
-pid = videoThread()
-pid.start()
+videoPid = videoThread()
+videoPid.start()
 
 @login_required(login_url="/login/")
 def index(request):
@@ -149,22 +149,26 @@ def removeGPIOSetting(request,gpioId):
 
 
 @login_required(login_url="/login/")
-def testTTS(request):
-    print(request.body)
+def sendChime(request,category):
     if request.method == "POST":
         try:
             selectDeviceIP = request.POST['device']
-            print(f'http://{selectDeviceIP}:8080/setTTS')
-            response = requests.post(f'http://{selectDeviceIP}:8080/setTTS',data=request.POST)
-            messages.info(request, f"{response}")
-            return redirect("/")
+            response = requests.post(f"http://{selectDeviceIP}:8080/recvChime/{category}",data=request.POST)
+            if response.text == "Success!":
+                messages.info(request, f"{response}")
+            else:
+                messages.warning(request, "전송 실패!")
+            return redirect(f"/{category}")
         except :
             messages.warning(request, "전송 실패!")
-    return redirect("/")
+    return redirect(f"/{category}")
 
 
-
-
+@method_decorator(csrf_exempt, name="dispatch")
+def runChime(request,category):
+    if request.method == "POST":
+        videoPid.chime(category, request)
+    HttpResponse("Success!")
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -267,13 +271,4 @@ def setGPIOSetting(request,gpioId):
         newGPIOSetting.save()
         return HttpResponse("Success!")
 
-@method_decorator(csrf_exempt, name="dispatch")
-def setTTS(request):
-    if request.method == "POST":
-        if socket.gethostbyname(socket.gethostname()) == request.POST['device']:
-            directTTS(request.POST['TTS'])
-            return HttpResponse('set TTS sucessfully!')
-        else:
-            return HttpResponse('device is not match!')
-    return HttpResponse('Fail!')
 
