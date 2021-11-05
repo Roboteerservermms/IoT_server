@@ -8,7 +8,6 @@ from django.urls import reverse
 from core.settings import BASE_DIR
 from .models import *
 from .constant import *
-from .forms import *
 from .mediaProvider import *
 import requests, getmac, socket, json
 from django.shortcuts import redirect
