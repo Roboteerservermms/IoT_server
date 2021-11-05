@@ -70,11 +70,14 @@ class videoThread(threading.Thread):
                         out_command = f'echo {value} > /sys/class/gpio/gpio{OUTPIN[index+1]}/value'
                         subprocess.getoutput(out_command)
                 elif key == "File":
-                    self.playlist.append(value)
+                    if value is not None:
+                        self.playlist.append(value)
                 elif key == "RTSP":
-                    self.playlist.append(value)
+                    if value is not None:
+                        self.playlist.append(value)
                 elif key == "TTS":
-                    self.playlist.append(TTS(value,settings.MEDIA_ROOT))
+                    if value is not None:
+                        self.playlist.append(TTS(value,settings.MEDIA_ROOT))
                 
     
     def scheduleAdd(self, day, time):
