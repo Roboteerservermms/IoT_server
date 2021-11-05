@@ -11,7 +11,7 @@ urlpatterns = [
     # The home page
     path('', views.index, name='home'),
     path('registerDevice', views.registerDevice, name='registerDevice'),
-    path('schedule', views.registerSchedule, name='Schedule'),
+    path('Schedule', views.registerSchedule, name='Schedule'),
     path('GPIOSetting/', views.registerGPIOSetting, name='GPIOSetting'),
 
     path('Rboard/<int:deviceId>/remove/',views.removeRboard, name='removeRboard'),
@@ -23,9 +23,11 @@ urlpatterns = [
 
     path('setSchedule/<int:scheduleDay>', views.setSchedule, name='setSchedule'),
     path('setGPIOSetting/<int:gpioId>', views.setGPIOSetting, name='setGPIOSetting'),
+
     path('getMacAddress', views.getMacAddress, name='getMacAddress'),
-    path('sendChime/<string:category>', views.sendChime, name='sendChime'),
-    path('runChime/<string:category>', views.runChime, name='runChime'),
+    
+    path('sendChime/<str:category>/<int:mediaId>', views.sendChime, name='sendChime'),
+    path('runChime/<str:category>/<int:mediaId>', views.runChime, name='runChime'),
 
     path('awakeVideo', controlVideo.awakeVideo, name='awakeVideo'),
     path('getGPIOStates', controlVideo.getGPIOStates, name='getGPIOStates'),

@@ -149,11 +149,11 @@ def removeGPIOSetting(request,gpioId):
 
 
 @login_required(login_url="/login/")
-def sendChime(request,category):
+def sendChime(request,category,mediaId):
     if request.method == "POST":
         try:
             selectDeviceIP = request.POST['device']
-            response = requests.post(f"http://{selectDeviceIP}:8080/recvChime/{category}",data=request.POST)
+            response = requests.post(f"http://{selectDeviceIP}:8080/recvChime/{category}/{mediaId}",data=request.POST)
             if response.text == "Success!":
                 messages.info(request, f"{response}")
             else:
@@ -165,9 +165,9 @@ def sendChime(request,category):
 
 
 @method_decorator(csrf_exempt, name="dispatch")
-def runChime(request,category):
+def runChime(request,category, mediaId):
     if request.method == "POST":
-        videoPid.chime(category, request)
+        videoPid.chime(category, mediaId)
     HttpResponse("Success!")
 
 
