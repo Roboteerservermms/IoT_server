@@ -115,8 +115,9 @@ class videoThread(threading.Thread):
                     for playIndex in self.playlist:
                         self.player.play(playIndex)
                         logger.info(f"now play {playIndex}")
-                        duration = self.player.get_length()
-                        time.sleep(duration)
+                        while True:
+                            if self.videoEndSig:
+                                break
 
                         
             nowDay= datetime.datetime.today().weekday()
