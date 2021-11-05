@@ -24,7 +24,7 @@ from django.utils.datastructures import MultiValueDictKeyError
 
 
 videoPid = videoThread()
-detectAIPid = detectThread()
+#detectAIPid = detectThread()
 
 @login_required(login_url="/login/")
 def index(request):
@@ -178,10 +178,10 @@ def runChime(request,category, mediaId):
     if request.method == "GET":
         redirect(f"/{category}")
 
-@method_decorator(csrf_exempt, name="dispatch")
-def runDetectAI(request):
-    if not detectAIPid.is_alive():
-        detectAIPid.start()
+#@method_decorator(csrf_exempt, name="dispatch")
+#def runDetectAI(request):
+##    if not detectAIPid.is_alive():
+ ##       detectAIPid.start()
 
 @method_decorator(csrf_exempt, name="dispatch")
 def runVideo(request):
