@@ -58,36 +58,37 @@ class videoThread(threading.Thread):
                 self.nowPlay = "blackscreen.mp4"
         self.player.play(self.nowPlay)
     
-    def gpioRise(self, pin):
-        if not self.queryList:                
-            self.queryList = GPIOSetting.objects.filter(
-                Q(IN = pin+1)
-            ).values()
+    def gpioRise(self, pin):             
+        self.queryList = GPIOSetting.objects.filter(
+            Q(IN = pin+1)
+        ).values()[0]
 
     def playQueryList(self):
-        for key, value in self.queryList:
-            if key == "OUT":
-                for index, value in enumerate(value):
-                    out_command = f'echo {value} > /sys/class/gpio/gpio{OUTPIN[index+1]}/value'
-                    subprocess.getoutput(out_command)
-            elif key == "File":
-                self.playlist.append(value)
-            elif key == "RTSP":
-                self.playlist.append(value)
-            elif key == "TTS":
-                self.playlist.append(TTS(value,settings.MEDIA_ROOT))
+        if not self.queryList:
+            for key, value in self.queryList:
+                if key == "OUT":
+                    for index, value in enumerate(value):
+                        out_command = f'echo {value} > /sys/class/gpio/gpio{OUTPIN[index+1]}/value'
+                        subprocess.getoutput(out_command)
+                elif key == "File":
+                    self.playlist.append(value)
+                elif key == "RTSP":
+                    self.playlist.append(value)
+                elif key == "TTS":
+                    self.playlist.append(TTS(value,settings.MEDIA_ROOT))
     
     def scheduleAdd(self, day, time):
         nowDay= datetime.datetime.today().weekday()
         nowTime =  datetime.datetime.now()
         try:
             self.queryList = Schedule.objects.filter(
-                Q(day__contains = nowDay) | Q(day__contains = 7)
+                Q(day__contains = nowDay)
                 & Q(startTime__lt = nowTime)
                 & Q(endTime__gt = nowTime)
-            ).values()
+            ).values()[0]
         except Schedule.DoesNotExist:
             pass
+
     def chime(self,category, value):
         if category == "Schedule":
             self.playlist.clear()
