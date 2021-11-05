@@ -115,7 +115,7 @@ class videoThread(threading.Thread):
                     for playIndex in self.playlist:
                         self.player.play(playIndex)
                         logger.info(f"now play {playIndex}")
-                        duration = self.player.get_length() / 1000
+                        duration = self.player.get_length()
                         time.sleep(duration)
 
                         
