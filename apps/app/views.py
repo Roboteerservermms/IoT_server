@@ -150,10 +150,10 @@ def removeGPIOSetting(request,gpioId):
 
 @login_required(login_url="/login/")
 def sendChime(request,category,mediaId):
-    if request.method == "POST" or request.method == "GET":
+    if request.method == "POST":
         try:
             selectDeviceIP = request.POST['device']
-            response = requests.post(f"http://{selectDeviceIP}:8080/recvChime/{category}/{mediaId}",data=request.POST)
+            response = requests.post(f"http://{selectDeviceIP}:8080/runChime/{category}/{mediaId}",data=request.POST)
             if response.text == "Success!":
                 messages.info(request, f"{response}")
             else:
@@ -161,6 +161,8 @@ def sendChime(request,category,mediaId):
             return redirect(f"/{category}")
         except :
             messages.warning(request, "전송 실패!")
+    if request.method == "GET":
+        videoPid.chime(category, mediaId)
     return redirect(f"/{category}")
 
 
