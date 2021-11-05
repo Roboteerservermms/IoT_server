@@ -13,6 +13,7 @@ from .models import *
 from .constant import *
 from .mediaProvider import *
 from .controlVideo import *
+from .sensor import *
 import requests, getmac, socket, json, netifaces
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
@@ -23,7 +24,7 @@ from django.utils.datastructures import MultiValueDictKeyError
 
 
 videoPid = videoThread()
-videoPid.start()
+detectAIPid = detectThread()
 
 @login_required(login_url="/login/")
 def index(request):
@@ -64,6 +65,8 @@ def registerDevice(request):
                 )
                 messages.info(request, "추가완료!")
                 newDevice.save()
+                if not videoPid.is_alive():
+                    videoPid.start()
                 return redirect("/")
             except:
                 messages.warning(request, "warning!")
@@ -77,6 +80,7 @@ def registerDevice(request):
                         "deviceName" : newDeviceName
                     }
                 )
+                res = requests.post(f"http://{newDeviceIP}:8080/runVideo",
                 newDeviceMacAddress=""
                 newDeviceMacAddress=macAddressResponse.text
                 newDevice=Rboard.objects.create( 
@@ -174,6 +178,15 @@ def runChime(request,category, mediaId):
     if request.method == "GET":
         redirect(f"/{category}")
 
+@method_decorator(csrf_exempt, name="dispatch")
+def runDetectAI(request):
+    if not detectAIPid.is_alive():
+        detectAIPid.start()
+
+@method_decorator(csrf_exempt, name="dispatch")
+def runVideo(request):
+    if not videoPid.is_alive():
+        videoPid.start()
 
 @method_decorator(csrf_exempt, name="dispatch")
 def getMacAddress(request):
