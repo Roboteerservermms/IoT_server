@@ -111,12 +111,6 @@ class videoThread(threading.Thread):
                     while True:
                         if self.videoEndSig:
                             break
-                        if self.videoStopSig:
-                            self.playlist = []
-                            self.nowPlay = f"{settings.MEDIA_ROOT}/blackscreen.mp4"
-                            self.player.play(self.nowPlay)
-                            logger.info(f"Stop Signal occur!")
-                            break
 
             nowDay= datetime.datetime.today().weekday()
             nowTime =  datetime.datetime.now()
