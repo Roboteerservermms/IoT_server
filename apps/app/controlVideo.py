@@ -12,7 +12,6 @@ from django.template import loader
 from django.urls import reverse
 from .models import *
 from .constant import *
-from .forms import *
 from .mediaProvider import *
 from .video import VlcPlayer
 from vlc import EventType
@@ -63,7 +62,7 @@ class videoThread(threading.Thread):
         if not self.queryList:                
             self.queryList = GPIOSetting.objects.filter(
                 Q(IN = pin)
-            ).values()[0]
+            ).values()
 
     def playQueryList(self):
         for key, value in self.queryList:
@@ -76,23 +75,33 @@ class videoThread(threading.Thread):
             elif key == "RTSP":
                 self.playlist.append(value)
             elif key == "TTS":
-                self.playlist.append(value)
+                self.playlist.append(TTS(value,settings.MEDIA_ROOT))
     
-    def scheduleAdd(self):
+    def scheduleAdd(self, day, time):
         nowDay= datetime.datetime.today().weekday()
-        nowTime =  datetime.today()
+        nowTime =  datetime.datetime.now()
         try:
             self.queryList = Schedule.objects.filter(
-                Q(day__contains = nowDay)
+                Q(day__contains = nowDay) | Q(day__contains = 7)
                 & Q(startTime__lt = nowTime)
                 & Q(endTime__gt = nowTime)
-            ).values()[0]
+            ).values()
         except Schedule.DoesNotExist:
             pass
-        
+    def chime(self,category, value):
+        if category == "Schedule":
+            self.playlist.clear()
+            self.scheduleAdd(value['day'], value['startTime'])
+            self.playQueryList()
+        elif category == "GPIO":
+            self.playlist.clear()
+            self.gpioRise(value["INPIN"])
+            self.playQueryList()
 
     def run(self):
         while True:
+            nowDay= datetime.datetime.today().weekday()
+            nowTime =  datetime.datetime.now()
             for pinNum, originNum in INPIN.items():
                 inCommand = f"cat /sys/class/gpio/gpio{originNum}/value"
                 retGPIOIN=subprocess.getoutput(inCommand)
@@ -101,7 +110,7 @@ class videoThread(threading.Thread):
                         self.player.stop()
                     else:
                         self.gpioRise(pinNum)
-            self.scheduleAdd()
+            self.scheduleAdd(nowDay, nowTime)
             self.playQueryList()
 
 

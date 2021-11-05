@@ -10,7 +10,7 @@ def File(f,url,fname):
     return fileName
 
 def TTS(recvText, path):
-    fileName = f"{path}/{t.strftime('%y%m%d%H%M%S')}.mp3"
+    fileName = f"{path}/{recvText}.mp3"
     tts = gTTS( text=recvText, lang='ko', slow=False )
     tts.save(fileName)
     return fileName

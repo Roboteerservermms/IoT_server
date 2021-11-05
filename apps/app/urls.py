@@ -12,12 +12,17 @@ urlpatterns = [
     path('', views.index, name='home'),
     path('registerDevice', views.registerDevice, name='registerDevice'),
     path('registerSchedule', views.registerSchedule, name='registerSchedule'),
-    path('registerGPIOSetting', views.registerGPIOSetting, name='registerGPIOSetting'),
-    path('Rboard/<int:pk>/remove/',views.removeRboard, name='removeRboard'),
-    path('schedule/<int:pk>/remove/',views.removeSchedule, name='removeSchedule'),
-    path('GPIOSetting/<int:pk>/remove/',views.removeGPIOSetting, name='removeGPIOSetting'),
+    path('registerGPIOSetting/', views.registerGPIOSetting, name='registerGPIOSetting'),
 
-    path('setSchedule', views.setSchedule, name='setSchedule'),
+    path('Rboard/<int:deviceId>/remove/',views.removeRboard, name='removeRboard'),
+    path('Schedule/<int:scheduleId>/remove/',views.removeSchedule, name='removeSchedule'),
+    path('GPIOSetting/<int:gpioId>/remove/',views.removeGPIOSetting, name='removeGPIOSetting'),
+    
+    path('GPIOSetting/<int:gpioId>/add/', views.setSchedule, name='setSchedule'),
+    path('Schedule/<int:rboardId>/add/', views.setGPIOSetting, name='setGPIOSetting'),
+
+    path('setSchedule/<int:scheduleDay>', views.setSchedule, name='setSchedule'),
+    path('setGPIOSetting/<int:gpioId>', views.setGPIOSetting, name='setGPIOSetting'),
     path('getMacAddress', views.getMacAddress, name='getMacAddress'),
     path('testTTS', views.testTTS, name='testTTS'),
     path('setTTS', views.setTTS, name='setTTS'),

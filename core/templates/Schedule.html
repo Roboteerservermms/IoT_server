@@ -36,22 +36,21 @@
                             <div class="card-header">
                                 <h5>스케줄 설정리스트</h5>
                             </div>
+                            {% for device in deviceList %}
+                            <form action="/Rboard/{{device.id}}/Schedule/List" method="POST">
+                            <button class="btn btn-primary"  name="device" value="{{device.ip}}">{{device.name}}</button>
+                            </form>
+                            {% endfor %}
                             <div class="card-block table-border-style">
                                 <div class="card-block table-border-style">
                                     <table class="table table-hover">
                                         <thead>
                                             <tr>
-                                                <th>device</th>
                                                 <th>day</th>
                                                 <th>startTime</th>
                                                 <th>endTime</th>
-                                                <th>OUTPUT1</th>
-                                                <th>OUTPUT2</th>
-                                                <th>OUTPUT3</th>
-                                                <th>OUTPUT4</th>
-                                                <th>OUTPUT5</th>
-                                                <th>OUTPUT6</th>
-                                                <th>OUTPUT7</th> 
+                                                <th>INPIN</th>
+                                                <th>OUTPUT</th>
                                                 <th>TTS</th>
                                                 <th>RTSP</th>
                                                 <th>File</th>                                                   
@@ -60,17 +59,11 @@
                                         <tbody>
                                             {% for setting in scheduleList %}
                                                 <tr>
-                                                    <th scope="row">{{setting.device}}</th>
                                                     <td>{{setting.day}}</td>
                                                     <td>{{setting.startTime}}</td>
                                                     <td>{{setting.endTime}}</td>
-                                                    <td>{{setting.OUTPUT1}}</td>
-                                                    <td>{{setting.OUTPUT2}}</td>
-                                                    <td>{{setting.OUTPUT3}}</td>
-                                                    <td>{{setting.OUTPUT4}}</td>
-                                                    <td>{{setting.OUTPUT5}}</td>
-                                                    <td>{{setting.OUTPUT6}}</td>
-                                                    <td>{{setting.OUTPUT7}}</td>
+                                                    <td>{{setting.IN}}</td>
+                                                    <td>{{setting.OUT}}</td>
                                                     <td>{{setting.TTS}}</td>
                                                     <td>{{setting.RTSP}}</td>
                                                     <td>{{setting.File}}</td>
@@ -80,7 +73,6 @@
                                                 </tr>
                                             {% endfor %}
                                         </tbody>
-                                    {{ gpioSettingList.as_table}}
                                     </table>
                                 </div>
                             </div>
@@ -97,8 +89,115 @@
                             </div>
                             <div class="card-block table-border-style">
                                 <div class="form-check">
-                                    {{scheduleForm.as_p}}
-                                    <button type="submit" class="save btn btn-default">추가</button>
+                                    {% for device in deviceList %}
+                                        <input type="checkbox" name="device" value="{{device.id}}"> {{device.name}}
+                                    {% endfor %}
+                                    <div class="form-check">
+                                        <div class="btn-group col-xs-12" data-toggle="buttons">
+                                            <label class="btn btn-default">
+                                                <input type="checkbox" name="day" value="0">월요일
+                                            </label>
+                                            <label class="btn btn-default">
+                                                <input type="checkbox" name="day" value="1">화요일
+                                            </label>
+                                            <label class="btn btn-default">
+                                                <input type="checkbox" name="day" value="2">수요일
+                                            </label>
+                                            <label class="btn btn-default">
+                                                <input type="checkbox" name="day" value="3">목요일
+                                            </label>
+                                            <label class="btn btn-default">
+                                                <input type="checkbox" name="day" value="4">금요일
+                                            </label>
+                                            <label class="btn btn-default">
+                                                <input type="checkbox" name="day" value="5">토요일
+                                            </label>
+                                            <label class="btn btn-default">
+                                                <input type="checkbox" name="day" value="6">일요일
+                                            </label>
+                                            <label class="btn btn-default">
+                                                <input type="checkbox" name="day" value="7">매일
+                                            </label>
+                                        </div>
+                                        <div>
+                                            <label>
+                                                <input name="startTime" type="time" >
+                                            </label>
+                                        </div>
+                                        <div>
+                                            <label>
+                                                <input name="endTime" type="time" >
+                                            </label>
+                                        </div>
+                                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                            <label class="btn btn-secondary ">
+                                              <input type="radio" name="INPIN"  value ="1" autocomplete="off" > INPIN1
+                                            </label>
+                                            <label class="btn btn-secondary">
+                                              <input type="radio" name="INPIN"  value="2" autocomplete="off"> INPIN2
+                                            </label>
+                                            <label class="btn btn-secondary">
+                                              <input type="radio" name="INPIN"  value="3" autocomplete="off"> INPIN3
+                                            </label>
+                                            <label class="btn btn-secondary">
+                                                <input type="radio" name="INPIN"  value="4" autocomplete="off"> INPIN4
+                                            </label>
+                                            <label class="btn btn-secondary">
+                                                <input type="radio" name="INPIN"  value="5" autocomplete="off"> INPIN5
+                                            </label>
+                                            <label class="btn btn-secondary">
+                                                <input type="radio" name="INPIN" value='6' autocomplete="off"> INPIN6
+                                            </label>
+                                            <label class="btn btn-secondary">
+                                                <input type="radio" name="INPIN"  value='7' autocomplete="off"> INPIN7
+                                            </label>
+                                        </div>
+                                        <div class="btn-group col-xs-12" data-toggle="buttons">
+                                            <label class="btn btn-default">
+                                                <input type="checkbox" name="OUTPIN" value="1">OUTPIN1
+                                            </label>
+                                            <label class="btn btn-default">
+                                                <input type="checkbox" name="OUTPIN" value="2">OUTPIN2
+                                            </label>
+                                            <label class="btn btn-default">
+                                                <input type="checkbox" name="OUTPIN" value="3">OUTPIN3
+                                            </label>
+                                            <label class="btn btn-default">
+                                                <input type="checkbox" name="OUTPIN" value="4">OUTPIN4
+                                            </label>
+                                            <label class="btn btn-default">
+                                                <input type="checkbox" name="OUTPIN" value="5">OUTPIN5
+                                            </label>
+                                            <label class="btn btn-default">
+                                                <input type="checkbox" name="OUTPIN" value="6">OUTPIN6
+                                            </label>
+                                            <label class="btn btn-default">
+                                                <input type="checkbox" name="OUTPIN" value="7">OUTPIN7
+                                            </label>
+                                        </div>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon1">TTS</span>
+                                            </div>
+                                            <input type="text" class="form-control" name="TTS" placeholder="TTS" aria-label="TTS" aria-describedby="basic-addon1">
+                                        </div>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon1">RTSP</span>
+                                            </div>
+                                            <input type="text" class="form-control" name="RTSP" placeholder="RTSP" aria-label="RTSP" aria-describedby="basic-addon1">
+                                        </div>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                            <span class="input-group-text">File</span>
+                                            </div>
+                                            <div class="custom-file">
+                                            <input type="file" class="custom-file-input" id="File" name="File">
+                                            <label class="custom-file-label" for="inputGroupFile01">파일 선택</label>
+                                            </div>
+                                        </div>                                      
+                                        <button type="submit" class="save btn btn-default">저장</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -36,20 +36,18 @@
                             <div class="card-header">
                                 <h5>GPIO 설정 리스트</h5>
                             </div>
+                            {% for device in deviceList %}
+                            <form action="/Rboard/{{device.id}}/Schedule/List" method="POST">
+                            <button class="btn btn-primary"  name="device" value="{{device.ip}}">{{device.name}}</button>
+                            </form>
+                            {% endfor %}
                             <div class="card-block table-border-style">
                                 <div class="card-block table-border-style">
                                     <table class="table table-hover">
                                         <thead>
                                             <tr>
-                                                <th>device</th>
                                                 <th>INPIN</th>
-                                                <th>OUTPUT1</th>
-                                                <th>OUTPUT2</th>
-                                                <th>OUTPUT3</th>
-                                                <th>OUTPUT4</th>
-                                                <th>OUTPUT5</th>
-                                                <th>OUTPUT6</th>
-                                                <th>OUTPUT7</th> 
+                                                <th>OUTPUT</th>
                                                 <th>TTS</th>
                                                 <th>RTSP</th>
                                                 <th>File</th>                                                   
@@ -58,15 +56,8 @@
                                         <tbody>
                                             {% for setting in gpioSettingList %}
                                                 <tr>
-                                                    <th scope="row">{{setting.device}}</th>
-                                                    <td>{{setting.INPIN}}</td>
-                                                    <td>{{setting.OUTPUT1}}</td>
-                                                    <td>{{setting.OUTPUT2}}</td>
-                                                    <td>{{setting.OUTPUT3}}</td>
-                                                    <td>{{setting.OUTPUT4}}</td>
-                                                    <td>{{setting.OUTPUT5}}</td>
-                                                    <td>{{setting.OUTPUT6}}</td>
-                                                    <td>{{setting.OUTPUT7}}</td>
+                                                    <td>{{setting.IN}}</td>
+                                                    <td>{{setting.OUT}}</td>
                                                     <td>{{setting.TTS}}</td>
                                                     <td>{{setting.RTSP}}</td>
                                                     <td>{{setting.File}}</td>
@@ -76,7 +67,6 @@
                                                 </tr>
                                             {% endfor %}
                                         </tbody>
-                                    {{ gpioSettingList.as_table}}
                                     </table>
                                 </div>
                             </div>
@@ -84,11 +74,22 @@
                     </div>
                     <!-- [ basic-table ] end -->
                     <!-- [ Hover-table ] start -->
-                    <form  method="post", class="post-form my-3" enctype="multipart/form-data">
+                    <form method="post", class="post-form my-3" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="col-xl-12">
                         <div class="card">
                             <div class="card-header">
+                                <h5>설정할 장치</h5>
+                            </div>
+                            <div class="card-block table-border-style">
+                                {% for device in deviceList %}
+                                <input type="checkbox" name="device" value="{{device.id}}"> {{device.name}}
+                                {% endfor %}
+                            </div>  
+                        </div>                        
+                        <div class="card">
+                            <div class="card-header">
+                                <input type="checkbox" name="INPIN" value="1">
                                 <h5>GPIO 1</h5>
                             </div>
                             <div class="card-block table-border-style">

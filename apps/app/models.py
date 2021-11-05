@@ -20,35 +20,17 @@ class Rboard(models.Model):
         return self.ip
 
 class Schedule(models.Model):
-    DAY_CHOICES = (
-        ('1', '월요일'),
-        ('2', '화요일'),
-        ('3', '수요일'),
-        ('4', '목요일'),
-        ('5', '금요일'),
-        ('6', '토요일'),
-        ('7', '일요일'),
-    )
-    day = models.CharField(max_length=10, choices=DAY_CHOICES)
+    day = models.IntegerField(null=True)
     startTime = models.TimeField(auto_now_add=False)
     endTime = models.TimeField(auto_now_add=False)
-    IN = models.CharField(max_length=15)
+    IN = models.IntegerField(null=True)
     OUT = models.CharField(max_length=15)
     TTS = models.CharField(default="",null=True,max_length=500)
     RTSP = models.CharField(default="",null=True,max_length=500)
     File = models.FileField(upload_to="", null=True)
 
 class GPIOSetting(models.Model):
-    IN_CHOICES = (
-        ('1', 'INPIN1'),
-        ('2', 'INPIN2'),
-        ('3', 'INPIN3'),
-        ('4', 'INPIN4'),
-        ('5', 'INPIN5'),
-        ('6', 'INPIN6'),
-        ('7', 'INPIN7'),
-    )
-    IN = models.CharField(max_length=15, choices=IN_CHOICES)
+    IN = models.IntegerField(null=True)
     OUT = models.CharField(max_length=15)
     TTS = models.CharField(default="",null=True,max_length=500)
     RTSP = models.CharField(default="",null=True,max_length=500)
