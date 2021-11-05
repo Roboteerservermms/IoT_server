@@ -219,15 +219,15 @@ def setSchedule(request,scheduleDay):
             recvTTS = request.POST["TTS"]
         except MultiValueDictKeyError as e:
             recvTTS = ""
-        recvOutList = [0,0,0,0,0,0,0]
+        recvOutList = ['0','0','0','0','0','0','0']
         for i in request.POST.getlist("OUTPIN"):
-            recvOutList[int(i)-1] = 1
+            recvOutList[int(i)-1] = '1'
         newSchedule = Schedule.objects.create(
             day = scheduleDay,
             startTime = request.POST["startTime"],
             endTime = request.POST["endTime"],
             IN=  int(request.POST["INPIN"]),
-            OUT= recvOutList,
+            OUT= ''.join(recvOutList),
             TTS=recvTTS,
             RTSP=recvRTSP,
             File=recvFileRet
