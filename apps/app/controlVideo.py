@@ -125,7 +125,7 @@ class videoThread(threading.Thread):
                         self.gpioRise(pinNum)
                         break
             if self.gpioQ.exists():
-                self.playQueryList(self, self.gpioQ)
+                self.playQueryList(self.gpioQ)
 
 
 
