@@ -52,7 +52,7 @@ class videoThread(threading.Thread):
         self.player.play(self.nowPlay)
         self.videoStopSig = False
         self.videoEndSig = False
-        
+
     def videoEndHandler(self,event):
         self.videoEndSig = True
         
@@ -103,20 +103,20 @@ class videoThread(threading.Thread):
         self.nowPlay = f"{settings.MEDIA_ROOT}/blackscreen.mp4"
         self.player.play(self.nowPlay)
         while True:
-            if not self.videoStopSig:
-                if self.playlist:
-                    for playIndex in self.playlist:
-                        self.player.play(playIndex)
-                        time.sleep(1.5)
-                        logger.info(f"now play {playIndex}")
-                        while True:
-                            if self.videoEndSig:
-                                break
-                            if self.videoStopSig:
-                                self.playlist = []
-                                self.nowPlay = f"{settings.MEDIA_ROOT}/blackscreen.mp4"
-                                self.player.play(self.nowPlay)
-                                break
+            if self.playlist:
+                for playIndex in self.playlist:
+                    self.player.play(playIndex)
+                    time.sleep(1.5)
+                    logger.info(f"now play {playIndex}")
+                    while True:
+                        if self.videoEndSig:
+                            break
+                        if self.videoStopSig:
+                            self.playlist = []
+                            self.nowPlay = f"{settings.MEDIA_ROOT}/blackscreen.mp4"
+                            self.player.play(self.nowPlay)
+                            logger.info(f"Stop Signal occur!")
+                            break
 
             nowDay= datetime.datetime.today().weekday()
             nowTime =  datetime.datetime.now()
@@ -128,7 +128,6 @@ class videoThread(threading.Thread):
                 if str2bool(retGPIOIN):
                     if pinNum == 0:
                         self.playlist.clear()
-                        self.player.stop()
                         self.videoStopSig = True
                         break
                     else:
