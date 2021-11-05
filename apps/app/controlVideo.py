@@ -54,16 +54,10 @@ class videoThread(threading.Thread):
         self.videoStopSig = False
         self.videoEndSig = False
     def videoEndHandler(self,event):
-        self.videoEnd = True
-        while True:
-            if not self.videoStopSig:
-                if self.playlist:
-                    for playIndex in self.playlist:
-                        self.player.play(playIndex)
-                        logger.info(f"now play {playIndex}")
-                        break
+        self.videoEndSig = True
 
     def videoPlayingHandler(self,event):
+        self.videoEndSig = False
         if self.videoStopSig:
             self.playlist = []
             self.nowPlay = f"{settings.MEDIA_ROOT}/blackscreen.mp4"
@@ -116,6 +110,12 @@ class videoThread(threading.Thread):
         self.nowPlay = f"{settings.MEDIA_ROOT}/blackscreen.mp4"
         self.player.play(self.nowPlay)
         while True:
+            if not self.videoStopSig:
+                if self.playlist:
+                    for playIndex in self.playlist:
+                        if self.videoEndSig:
+                            self.player.play(playIndex)
+                            logger.info(f"now play {playIndex}")
             nowDay= datetime.datetime.today().weekday()
             nowTime =  datetime.datetime.now()
             self.scheduleAdd(nowDay, nowTime)
