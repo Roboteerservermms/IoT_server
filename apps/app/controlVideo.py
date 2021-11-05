@@ -46,7 +46,6 @@ class videoThread(threading.Thread):
         self.player = VlcPlayer('--mouse-hide-timeout=0')
         self.player.add_callback(EventType.MediaPlayerEndReached,self.videoEndHandler)
         self.nowPlay = f"{settings.MEDIA_ROOT}/blackscreen.mp4"
-        self.playlist = []
         self.scheduleQ = Schedule.objects.none()
         self.gpioQ = GPIOSetting.objects.none()
         self.player.play(self.nowPlay)
@@ -60,9 +59,14 @@ class videoThread(threading.Thread):
         self.gpioQ = GPIOSetting.objects.filter(
             Q(IN = pin)
         )
+    def play(self, media):
+        if media is not None and self.videoEndSig:
+            self.player.play(media)
+            time.sleep(1.5)
+            duration = self.player.get_length() / 1000
+            time.sleep(duration)  
 
     def playQueryList(self, queryList):
-        self.playlist = []
         if queryList.exists():
             for key, value in queryList.values()[0].items():
                 if key == "OUT":
@@ -70,15 +74,11 @@ class videoThread(threading.Thread):
                         out_command = f'echo {value} > /sys/class/gpio/gpio{OUTPIN[index+1]}/value'
                         subprocess.getoutput(out_command)
                 elif key == "File":
-                    if value is not None:
-                        self.playlist.append(value)
+                    self.play(value)
                 elif key == "RTSP":
-                    if value is not None:
-                        self.playlist.append(value)
+                    self.play(value)
                 elif key == "TTS":
-                    if value is not None:
-                        self.playlist.append(TTS(value,settings.MEDIA_ROOT))
-                
+                    self.play(value)
     
     def scheduleAdd(self, day, time):
         nowDay= datetime.datetime.today().weekday()
@@ -106,15 +106,6 @@ class videoThread(threading.Thread):
         self.nowPlay = f"{settings.MEDIA_ROOT}/blackscreen.mp4"
         self.player.play(self.nowPlay)
         while True:
-            if self.playlist:
-                for playIndex in self.playlist:
-                    self.player.play(playIndex)
-                    time.sleep(1.5)
-                    logger.info(f"now play {playIndex}")
-                    while True:
-                        if self.videoEndSig:
-                            break
-
             nowDay= datetime.datetime.today().weekday()
             nowTime =  datetime.datetime.now()
             self.scheduleAdd(nowDay, nowTime)
