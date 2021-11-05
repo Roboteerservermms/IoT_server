@@ -66,12 +66,12 @@ class videoThread(threading.Thread):
     def play(self, media=None):
         if media is not None and self.videoEndSig and not self.videoStopSig:
             self.player.play(media)
+            logger.info(f"now play {media}")
             time.sleep(1.5)
             duration = self.player.get_length() / 1000
             time.sleep(duration)
         if self.videoStopSig or media is None:
             self.player.play(self.blackScreen)
-
     def playQueryList(self, queryList):
         if queryList.exists():
             for key, value in queryList.values()[0].items():
@@ -90,22 +90,16 @@ class videoThread(threading.Thread):
             self.play()
     
     def scheduleAdd(self, day=None, time=None, mediaId=None):
-        if day is not None and time is not None and mediaId is None:
-            nowDay= day
-            nowTime = time
-            try:
-                self.scheduleQ = Schedule.objects.filter(
-                    Q(day__contains = nowDay)
-                    & Q(startTime__lt = nowTime)
-                    & Q(endTime__gt = nowTime)
-                )
-            except Schedule.DoesNotExist:
-                pass
-        if day is None and time is None and mediaId is not None:
-            try:
-                self.scheduleQ = Schedule.objects.get(id=mediaId)
-            except Schedule.DoesNotExist:
-                pass
+        nowDay= day
+        nowTime = time
+        try:
+            self.scheduleQ = Schedule.objects.filter(
+                Q(day__contains = nowDay)
+                & Q(startTime__lt = nowTime)
+                & Q(endTime__gt = nowTime)
+            )
+        except Schedule.DoesNotExist:
+            pass
 
     def chime(self,category, mediaId):
         if category == "Schedule":
