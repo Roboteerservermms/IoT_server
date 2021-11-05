@@ -78,7 +78,7 @@ class videoThread(threading.Thread):
                 elif key == "RTSP":
                     self.play(value)
                 elif key == "TTS":
-                    self.play(value)
+                    self.play(TTS(value,settings.MEDIA_ROOT))
     
     def scheduleAdd(self, day, time):
         nowDay= datetime.datetime.today().weekday()
