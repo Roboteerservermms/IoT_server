@@ -80,7 +80,7 @@ def registerDevice(request):
                         "deviceName" : newDeviceName
                     }
                 )
-                res = requests.post(f"http://{newDeviceIP}:8080/runVideo",
+                res = requests.post(f"http://{newDeviceIP}:8080/runVideo")
                 newDeviceMacAddress=""
                 newDeviceMacAddress=macAddressResponse.text
                 newDevice=Rboard.objects.create( 
