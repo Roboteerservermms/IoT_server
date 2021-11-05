@@ -61,7 +61,7 @@ class videoThread(threading.Thread):
     def gpioRise(self, pin):
         if not self.queryList:                
             self.queryList = GPIOSetting.objects.filter(
-                Q(IN = pin)
+                Q(IN = pin+1)
             ).values()
 
     def playQueryList(self):
