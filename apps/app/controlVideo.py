@@ -90,16 +90,22 @@ class videoThread(threading.Thread):
             self.play()
     
     def scheduleAdd(self, day=None, time=None, mediaId=None):
-        nowDay= day
-        nowTime = time
-        try:
-            self.scheduleQ = Schedule.objects.filter(
-                Q(day__contains = nowDay)
-                & Q(startTime__lt = nowTime)
-                & Q(endTime__gt = nowTime)
-            )
-        except Schedule.DoesNotExist:
-            pass
+        if day is not None and time is not None and mediaId is None:
+            nowDay= day
+            nowTime = time
+            try:
+                self.scheduleQ = Schedule.objects.filter(
+                    Q(day__contains = nowDay)
+                    & Q(startTime__lt = nowTime)
+                    & Q(endTime__gt = nowTime)
+                )
+            except Schedule.DoesNotExist:
+                pass
+        if day is None and time is None and mediaId is not None:
+            try:
+                self.scheduleQ = Schedule.objects.get(id=mediaId)
+            except Schedule.DoesNotExist:
+                pass
 
     def chime(self,category, mediaId):
         if category == "Schedule":
