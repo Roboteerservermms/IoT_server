@@ -109,7 +109,7 @@ class videoThread(threading.Thread):
             self.player.pause()
             self.scheduleAdd(mediaId=mediaId)
             self.playQueryList(self.scheduleQ)
-        elif category == "GPIO":
+        elif category == "GPIOSetting":
             self.player.pause()
             self.gpioRise(mediaId=mediaId)
             self.playQueryList(self.gpioQ)
