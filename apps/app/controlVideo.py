@@ -114,6 +114,7 @@ class videoThread(threading.Thread):
                 if self.playlist:
                     for playIndex in self.playlist:
                         self.player.play(playIndex)
+                        time.sleep(1.5)
                         logger.info(f"now play {playIndex}")
                         while True:
                             if self.videoEndSig:
