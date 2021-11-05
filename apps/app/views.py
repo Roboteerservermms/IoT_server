@@ -136,14 +136,14 @@ def removeRboard(request,deviceId):
 def removeSchedule(request,scheduleId):
     targetSchedule = Schedule.objects.get(id=scheduleId)
     targetSchedule.delete()
-    return redirect("/registerSchedule")
+    return redirect("/Schedule")
 
 
 @login_required(login_url="/login/")
 def removeGPIOSetting(request,gpioId):
     targetSetting = GPIOSetting.objects.get(id=gpioId)
     targetSetting.delete()
-    return redirect("/registerGPIOSetting")
+    return redirect("/GPIOSetting")
 
 
 
