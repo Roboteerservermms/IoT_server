@@ -15,7 +15,7 @@ from .constant import *
 from .mediaProvider import *
 from .video import VlcPlayer
 from vlc import EventType
-import requests, getmac, socket, json, threading, logging
+import requests, getmac, socket, json, threading, logging,time
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
@@ -113,9 +113,12 @@ class videoThread(threading.Thread):
             if not self.videoStopSig:
                 if self.playlist:
                     for playIndex in self.playlist:
-                        if self.videoEndSig:
-                            self.player.play(playIndex)
-                            logger.info(f"now play {playIndex}")
+                        self.player.play(playIndex)
+                        logger.info(f"now play {playIndex}")
+                        duration = self.player.get_length() / 1000
+                        time.sleep(duration)
+
+                        
             nowDay= datetime.datetime.today().weekday()
             nowTime =  datetime.datetime.now()
             self.scheduleAdd(nowDay, nowTime)
