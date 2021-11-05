@@ -58,7 +58,7 @@ class videoThread(threading.Thread):
     def playQueryList(self, queryList):
         self.playlist = []
         if queryList.exists():
-            for key, value in queryList.values()[0]:
+            for key, value in queryList.values()[0].items():
                 if key == "OUT":
                     for index, value in enumerate(value):
                         out_command = f'echo {value} > /sys/class/gpio/gpio{OUTPIN[index+1]}/value'
@@ -120,6 +120,7 @@ class videoThread(threading.Thread):
                         break
                     else:
                         self.gpioRise(pinNum)
+                        logger.info(f"{pinNum} is HIGH!")
                         break
             if self.gpioQ.exists():
                 self.playQueryList(self.gpioQ)
