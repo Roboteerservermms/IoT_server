@@ -12,7 +12,7 @@ urlpatterns = [
     path('', views.index, name='home'),
     path('registerDevice', views.registerDevice, name='registerDevice'),
     path('Schedule', views.registerSchedule, name='Schedule'),
-    path('GPIOSetting', views.registerGPIOSetting, name='GPIOSetting'),
+    path('GPIOSetting/', views.registerGPIOSetting, name='GPIOSetting'),
 
     path('Rboard/<int:deviceId>/remove/',views.removeRboard, name='removeRboard'),
     path('Schedule/<int:scheduleId>/remove/',views.removeSchedule, name='removeSchedule'),

@@ -84,7 +84,8 @@ class videoThread(threading.Thread):
                 elif key == "RTSP":
                     self.play(value)
                 elif key == "TTS":
-                    self.play(TTS(value,settings.MEDIA_ROOT))
+                    if value is None:
+                        self.play(TTS(value,settings.MEDIA_ROOT))
         else:
             self.play()
     
