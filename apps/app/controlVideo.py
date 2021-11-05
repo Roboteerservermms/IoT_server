@@ -99,6 +99,7 @@ class videoThread(threading.Thread):
                 if self.playlist:
                     for playIndex in self.playlist:
                         self.player.play(playIndex)
+                        logger.info(f"now play {playIndex}")
                 else:
                     self.nowPlay = f"{settings.MEDIA_ROOT}/blackscreen.mp4"
                     self.player.play(self.nowPlay)  
