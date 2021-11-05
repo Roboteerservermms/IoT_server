@@ -55,17 +55,13 @@ class videoThread(threading.Thread):
         self.videoEndSig = False
     def videoEndHandler(self,event):
         self.videoEnd = True
-        if not self.videoStopSig:
-            if self.playlist:
-                for playIndex in self.playlist:
-                    self.player.play(playIndex)
-                    logger.info(f"now play {playIndex}")
-            else:
-                self.nowPlay = f"{settings.MEDIA_ROOT}/blackscreen.mp4"
-                self.player.play(self.nowPlay)
-        else:
-            self.nowPlay = f"{settings.MEDIA_ROOT}/blackscreen.mp4"
-            self.player.play(self.nowPlay)
+        while True:
+            if not self.videoStopSig:
+                if self.playlist:
+                    for playIndex in self.playlist:
+                        self.player.play(playIndex)
+                        logger.info(f"now play {playIndex}")
+                        break
 
     def videoPlayingHandler(self,event):
         if self.videoStopSig:
@@ -123,8 +119,7 @@ class videoThread(threading.Thread):
             nowDay= datetime.datetime.today().weekday()
             nowTime =  datetime.datetime.now()
             self.scheduleAdd(nowDay, nowTime)
-            if self.scheduleQ.exists():
-                self.playQueryList(self.scheduleQ)
+            self.playQueryList(self.scheduleQ)
             for pinNum, originNum in INPIN.items():
                 inCommand = f"cat /sys/class/gpio/gpio{originNum}/value"
                 retGPIOIN=subprocess.getoutput(inCommand)
@@ -136,10 +131,8 @@ class videoThread(threading.Thread):
                         break
                     else:
                         self.gpioRise(pinNum)
-                        logger.info(f"{pinNum} is HIGH!")
                         break
-            if self.gpioQ.exists():
-                self.playQueryList(self.gpioQ)
+            self.playQueryList(self.gpioQ)
 
 
 
