@@ -24,14 +24,14 @@ class Schedule(models.Model):
     startTime = models.TimeField(auto_now_add=False)
     endTime = models.TimeField(auto_now_add=False)
     IN = models.IntegerField(null=True)
-    OUT = models.CharField(max_length=15)
+    OUT = models.CharField(null=True,max_length=15)
     TTS = models.CharField(default="",null=True,max_length=500)
     RTSP = models.CharField(default="",null=True,max_length=500)
     File = models.FileField(upload_to="", null=True)
 
 class GPIOSetting(models.Model):
     IN = models.IntegerField(null=True)
-    OUT = models.CharField(max_length=15)
+    OUT = models.CharField(null=True, max_length=15)
     TTS = models.CharField(default="",null=True,max_length=500)
     RTSP = models.CharField(default="",null=True,max_length=500)
     File = models.FileField(upload_to="", null=True)
