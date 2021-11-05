@@ -46,7 +46,8 @@ class videoThread(threading.Thread):
         self.player.add_callback(EventType.MediaPlayerEndReached,self.video_end_handler)
         self.nowPlay = "blackscreen.mp4"
         self.playlist = []
-        self.queryList =""
+        self.scheduleQ = Schedule.objects.none()
+        self.gpioQ = GPIOSetting.objects.none()
         self.player.play(self.nowPlay)
         self.videoEndSig = False
 
@@ -59,13 +60,13 @@ class videoThread(threading.Thread):
         self.player.play(self.nowPlay)
     
     def gpioRise(self, pin):             
-        self.queryList = GPIOSetting.objects.filter(
+        self.gpioQ = GPIOSetting.objects.filter(
             Q(IN = pin+1)
         )
 
-    def playQueryList(self):
-        if not self.queryList:
-            for key, value in self.queryList.values()[0]:
+    def playQueryList(self, queryList):
+        if queryList.exists():
+            for key, value in queryList.values()[0]:
                 if key == "OUT":
                     for index, value in enumerate(value):
                         out_command = f'echo {value} > /sys/class/gpio/gpio{OUTPIN[index+1]}/value'
@@ -76,12 +77,13 @@ class videoThread(threading.Thread):
                     self.playlist.append(value)
                 elif key == "TTS":
                     self.playlist.append(TTS(value,settings.MEDIA_ROOT))
+                
     
     def scheduleAdd(self, day, time):
         nowDay= datetime.datetime.today().weekday()
         nowTime =  datetime.datetime.now()
         try:
-            self.queryList = Schedule.objects.filter(
+            self.scheduleQ = Schedule.objects.filter(
                 Q(day__contains = nowDay)
                 & Q(startTime__lt = nowTime)
                 & Q(endTime__gt = nowTime)
@@ -93,11 +95,11 @@ class videoThread(threading.Thread):
         if category == "Schedule":
             self.playlist.clear()
             self.scheduleAdd(value['day'], value['startTime'])
-            self.playQueryList()
+            self.playQueryList(self.scheduleQ)
         elif category == "GPIO":
             self.playlist.clear()
             self.gpioRise(value["INPIN"])
-            self.playQueryList()
+            self.playQueryList(self.gpioQ)
 
     def run(self):
         while True:
@@ -113,7 +115,10 @@ class videoThread(threading.Thread):
                     else:
                         self.gpioRise(pinNum)
             self.scheduleAdd(nowDay, nowTime)
-            self.playQueryList()
+            if self.scheduleQ.exists():
+                self.playQueryList(self.scheduleQ)
+            else:
+                self.playQueryList(self.gpioQ)
 
 
 @method_decorator(csrf_exempt, name="dispatch")
