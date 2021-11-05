@@ -107,6 +107,7 @@ class videoThread(threading.Thread):
                 retGPIOIN=subprocess.getoutput(inCommand)
                 if str2bool(retGPIOIN):
                     if pinNum == 0:
+                        self.playlist.claer()
                         self.player.stop()
                     else:
                         self.gpioRise(pinNum)
