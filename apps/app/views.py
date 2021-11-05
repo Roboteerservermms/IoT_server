@@ -13,7 +13,7 @@ from .models import *
 from .constant import *
 from .mediaProvider import *
 from .controlVideo import *
-from .sensor import *
+#from .sensor import *
 import requests, getmac, socket, json, netifaces
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
