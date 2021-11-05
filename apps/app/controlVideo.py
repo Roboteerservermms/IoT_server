@@ -119,8 +119,10 @@ class videoThread(threading.Thread):
                         self.playlist.clear()
                         self.player.stop()
                         self.videoStopSig = True
+                        break
                     else:
                         self.gpioRise(pinNum)
+                        break
             if self.gpioQ.exists():
                 self.playQueryList(self, self.gpioQ)
 
