@@ -44,7 +44,7 @@ class videoThread(threading.Thread):
         threading.Thread.__init__(self)
         self.player = VlcPlayer('--mouse-hide-timeout=0')
         self.player.add_callback(EventType.MediaPlayerEndReached,self.video_end_handler)
-        self.nowPlay = f"{settings.BASE_DIR}/blackscreen.mp4"
+        self.nowPlay = f"{settings.MEDIA_ROOT}/blackscreen.mp4"
         self.playlist = []
         self.scheduleQ = Schedule.objects.none()
         self.gpioQ = GPIOSetting.objects.none()
