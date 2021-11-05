@@ -45,10 +45,10 @@ class videoThread(threading.Thread):
         threading.Thread.__init__(self)
         self.player = VlcPlayer('--mouse-hide-timeout=0')
         self.player.add_callback(EventType.MediaPlayerEndReached,self.videoEndHandler)
-        self.nowPlay = f"{settings.MEDIA_ROOT}/blackscreen.mp4"
+        self.blackScreen = f"{settings.MEDIA_ROOT}/blackscreen.mp4"
         self.scheduleQ = Schedule.objects.none()
         self.gpioQ = GPIOSetting.objects.none()
-        self.player.play(self.nowPlay)
+        self.player.play(self.blackScreen)
         self.videoStopSig = False
         self.videoEndSig = False
 
@@ -63,13 +63,14 @@ class videoThread(threading.Thread):
         if pin is None and mediaId is not None:
             self.gpioQ = GPIOSetting.objects.get(id=mediaId)
 
-
     def play(self, media):
-        if media is not None and self.videoEndSig:
+        if media is not None and self.videoEndSig and not self.videoStopSig:
             self.player.play(media)
             time.sleep(1.5)
             duration = self.player.get_length() / 1000
-            time.sleep(duration)  
+            time.sleep(duration)
+        if self.videoStopSig:
+            self.player.play(self.blackScreen)
 
     def playQueryList(self, queryList):
         if queryList.exists():
@@ -114,8 +115,8 @@ class videoThread(threading.Thread):
             self.playQueryList(self.gpioQ)
 
     def run(self):
-        self.nowPlay = f"{settings.MEDIA_ROOT}/blackscreen.mp4"
-        self.player.play(self.nowPlay)
+        self.blackScreen = f"{settings.MEDIA_ROOT}/blackscreen.mp4"
+        self.player.play(self.blackScreen)
         while True:
             nowDay= datetime.datetime.today().weekday()
             nowTime =  datetime.datetime.now()
@@ -128,8 +129,7 @@ class videoThread(threading.Thread):
                     retGPIOIN=subprocess.getoutput(inCommand)
                     if str2bool(retGPIOIN):
                         if pinNum == 0:
-                            self.playlist.clear()
-                            self.videoStopSig = True
+                            self.videoStopSig = not self.videoStopSig
                             break
                         else:
                             self.gpioRise(pin=pinNum)
