@@ -23,7 +23,7 @@ urlpatterns = [
     path('GPIOSetting/<int:gpioId>/remove',WebAPI.removeGPIOSetting, name='removeGPIOSetting'),
     
     path('GPIOSetting/<int:gpioId>/add', MediaAPI.addGPIOSetting, name='setSchedule'),
-    path('Schedule/<int:rboardId>/add', MediaAPI.addSchedule, name='setGPIOSetting'),
+    path('Schedule/<int:scheduleDay>/add', MediaAPI.addSchedule, name='setGPIOSetting'),
 
     path('getMacAddress', MediaAPI.getMacAddress, name='getMacAddress'),
 
