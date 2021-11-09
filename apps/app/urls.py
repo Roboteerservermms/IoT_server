@@ -10,7 +10,6 @@ urlpatterns = [
 
     # The home page
     path('', views.index, name='home'),
-    path('Rboard', views.rboard, name='Rboard'),
     path('Schedule', views.schedulePage, name='Schedule'),
     path('GPIOSetting/', views.GPIOSettingPage, name='GPIOSetting'),
 
