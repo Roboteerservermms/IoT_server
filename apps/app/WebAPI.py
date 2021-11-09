@@ -126,7 +126,7 @@ def sendChime(request,category,mediaId):
     if request.method == "POST":
         try:
             selectDeviceIP = request.POST['device']
-            response = requests.post(f"http://{selectDeviceIP}:8080/Rboard/{category}/{mediaId}/run",data=request.POST)
+            response = requests.post(f"http://{selectDeviceIP}:8080/{category}/{mediaId}/run",data=request.POST)
             if response.text == "Success!":
                 messages.info(request, f"{response.text}")
             else:
