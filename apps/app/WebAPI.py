@@ -82,6 +82,7 @@ def sendSchedule(request):
         messages.warning(request, f"연결이 되지않았습니다")
     except Exception as err:
         messages.error(request, "누락된 부분이 있습니다")
+    return redirect("/Schedule")
 
 @login_required(login_url="/login/")
 def sendGPIOSetting(request):
@@ -98,6 +99,7 @@ def sendGPIOSetting(request):
                 messages.error(request, "누락된 부분이 있습니다")
         except KeyError:
             messages.error(request, "누락된 부분이 있습니다!")
+        return redirect("/GPIOSetting")
 
 
 @login_required(login_url="/login/")

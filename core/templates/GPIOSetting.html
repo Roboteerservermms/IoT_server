@@ -37,7 +37,7 @@
                                 <h5>GPIO 설정 리스트</h5>
                             </div>
                             {% for device in deviceList %}
-                            <form action="/Rboard/{{device.id}}/GPIOSetting/List" method="POST">
+                            <form action="http://{{device.id}}:8080/GPIOSetting" method="POST">
                                 <button class="btn btn-primary"  name="device" value="{{device.ip}}">{{device.name}}</button>
                             </form>
                             {% endfor %}
