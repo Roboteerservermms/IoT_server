@@ -54,7 +54,7 @@ class videoThread(threading.Thread):
 
     def videoEndHandler(self,event):
         self.videoEndSig = True
-        
+
     def gpioRise(self, pin=None, mediaId=None):
         if pin is not None and mediaId is None:
             self.gpioQ = GPIOSetting.objects.filter(
@@ -88,7 +88,7 @@ class videoThread(threading.Thread):
                         self.play(TTS(value,settings.MEDIA_ROOT))
         else:
             self.play()
-    
+
     def scheduleAdd(self, day=None, time=None, mediaId=None):
         if day is not None and time is not None and mediaId is None:
             nowDay= day

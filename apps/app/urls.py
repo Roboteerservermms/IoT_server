@@ -4,31 +4,35 @@ Copyright (c) 2019 - present AppSeed.us
 """
 
 from django.urls import path, re_path
-from apps.app import views, controlVideo
+from apps.app import views, controlVideo, MediaAPI, WebAPI
 
 urlpatterns = [
 
     # The home page
     path('', views.index, name='home'),
-    path('registerDevice', views.registerDevice, name='registerDevice'),
-    path('Schedule', views.registerSchedule, name='Schedule'),
-    path('GPIOSetting/', views.registerGPIOSetting, name='GPIOSetting'),
+    path('Rboard', views.rboard, name='Rboard')
+    path('Schedule', views.schedulePage, name='Schedule'),
+    path('GPIOSetting/', views.GPIOSettingPage, name='GPIOSetting'),
 
-    path('Rboard/<int:deviceId>/remove/',views.removeRboard, name='removeRboard'),
-    path('Schedule/<int:scheduleId>/remove/',views.removeSchedule, name='removeSchedule'),
-    path('GPIOSetting/<int:gpioId>/remove/',views.removeGPIOSetting, name='removeGPIOSetting'),
+    path('Rboad/add', WebAPI.addRboard, name='addRboard'),
     
-    path('GPIOSetting/<int:gpioId>/add/', views.setSchedule, name='setSchedule'),
-    path('Schedule/<int:rboardId>/add/', views.setGPIOSetting, name='setGPIOSetting'),
+    path('Schedule/send', WebAPI.sendSchedule, name='sendSchedule'),
+    path('GPIOSetting/send', WebAPI.sendGPIOSetting, name='sendGPIOSetting'),
 
-    path('setSchedule/<int:scheduleDay>', views.setSchedule, name='setSchedule'),
-    path('setGPIOSetting/<int:gpioId>', views.setGPIOSetting, name='setGPIOSetting'),
+    path('Rboard/<int:deviceId>/remove/',WebAPI.removeRboard, name='removeRboard'),
+    path('Schedule/<int:scheduleDay>/remove/',WebAPI.removeSchedule, name='removeSchedule'),
+    path('GPIOSetting/<int:gpioId>/remove/',WebAPI.removeGPIOSetting, name='removeGPIOSetting'),
+    
+    path('GPIOSetting/<int:gpioId>/add/', MediaAPI.addGPIOSetting, name='setSchedule'),
+    path('Schedule/<int:rboardId>/add/', MediaAPI.addSchedule, name='setGPIOSetting'),
 
-    path('getMacAddress', views.getMacAddress, name='getMacAddress'),
+    path('getMacAddress', MediaAPI.getMacAddress, name='getMacAddress'),
 
-    path('sendChime/<str:category>/<int:mediaId>', views.sendChime, name='sendChime'),
-    path('runChime/<str:category>/<int:mediaId>', views.runChime, name='runChime'),
-    path('runVideo', views.runVideo, name='runVideo'),
+    path('Rboard/<str:category>/<int:mediaId>/chime/send', WebAPI.sendChime, name='sendChime'),
+
+    path('Rboard/<str:category>/<int:mediaId>/chime/run', MediaAPI.runChime, name='runChime'),
+    path('runVideo', MediaAPI.runVideo, name='runVideo'),
+    
     path('awakeVideo', controlVideo.awakeVideo, name='awakeVideo'),
     path('getGPIOStates', controlVideo.getGPIOStates, name='getGPIOStates'),
     path('getPlayList', controlVideo.getPlayList, name='getPlayList'),

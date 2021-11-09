@@ -25,7 +25,7 @@ $('input[type="checkbox"]').on('change', function(e){
                     <!-- [ Main Content ] start -->
                     <div class="row">
                         <!--[ daily sales section ] start-->
-                        <form action="/registerDevice" method="post", class="post-form my-3">
+                        <form action="/Rboard/add" method="post", class="post-form my-3">
                             {% csrf_token %}
                             <div class="col-xl-8 col-md-12 m-b-30">
                                 <div class="card deviceRegister">
@@ -68,7 +68,7 @@ $('input[type="checkbox"]').on('change', function(e){
                                                 <tr>
                                                     <th>deviceName</th>
                                                     <th>deviceIP</th>
-                                                    <th>macAddress</th>                                                 
+                                                    <th>macAddress</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -84,8 +84,8 @@ $('input[type="checkbox"]').on('change', function(e){
                                                         <h6 class="text-muted"><i class="fas fa-circle text-c-green f-10 m-r-15"></i>{{ device.macAddress}}</h6>
                                                     </td>
                                                     <td>
-                                                        <a href="/GPIOSetting" class="label theme-bg2 text-white f-12">GPIOSetting</a>
-                                                        <a href="/Schedule" class="label theme-bg text-white f-12">Schedule</a>
+                                                        <a href="http://{{device.ip}}:8080/GPIOSetting" class="label theme-bg2 text-white f-12">GPIOSetting</a>
+                                                        <a href="http://{{device.ip}}:8080/Schedule" class="label theme-bg text-white f-12">Schedule</a>
                                                         <a href="/Rboard/{{device.id}}/remove" class="label theme-bg text-white f-12">삭제</a>
                                                     </td>
                                                 </tr>
@@ -114,7 +114,7 @@ $('input[type="checkbox"]').on('change', function(e){
                                                     <th>OUTPUT</th>
                                                     <th>TTS</th>
                                                     <th>RTSP</th>
-                                                    <th>File</th>                                                   
+                                                    <th>File</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -123,10 +123,14 @@ $('input[type="checkbox"]').on('change', function(e){
                                                         <th scope="row">{{setting.day}}<</th>
                                                         <td>{{setting.startTime}}</td>
                                                         <td>{{setting.endTime}}</td>
-                                                        <td>{{setting.OUTPUT}}</td>
+                                                        <td>{{setting.IN}}</td>
+                                                        <td>{{setting.OUT}}</td>
                                                         <td>{{setting.TTS}}</td>
                                                         <td>{{setting.RTSP}}</td>
                                                         <td>{{setting.File}}</td>
+                                                        <td>
+                                                            <a href="/Schedule/{{setting.id}}/remove" class="label theme-bg text-white f-12">삭제</a>
+                                                        </td>
                                                     </tr>
                                                 {% endfor %}
                                             </tbody>
@@ -150,17 +154,20 @@ $('input[type="checkbox"]').on('change', function(e){
                                                     <th>OUTPUT</th>
                                                     <th>TTS</th>
                                                     <th>RTSP</th>
-                                                    <th>File</th>                                                   
+                                                    <th>File</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 {% for setting in gpioSettingList %}
                                                     <tr>
                                                         <th scope="row">{{setting.INPIN}}</th>
-                                                        <td>{{setting.OUTPUT}}</td>
+                                                        <td>{{setting.OUT}}</td>
                                                         <td>{{setting.TTS}}</td>
                                                         <td>{{setting.RTSP}}</td>
                                                         <td>{{setting.File}}</td>
+                                                        <td>
+                                                            <a href="/GPIOSetting/{{setting.id}}/remove" class="label theme-bg text-white f-12">삭제</a>
+                                                        </td>
                                                     </tr>
                                                 {% endfor %}
                                             </tbody>
