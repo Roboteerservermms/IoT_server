@@ -61,7 +61,9 @@ class videoThread(threading.Thread):
                 Q(IN = pin)
             )
         if pin is None and mediaId is not None:
-            self.gpioQ = GPIOSetting.objects.get(id=mediaId)
+            self.gpioQ = GPIOSetting.objects.filter(
+                Q(id = mediaId)
+            )
 
     def play(self, media=None):
         if media is not None and self.videoEndSig and not self.videoStopSig:
@@ -72,6 +74,7 @@ class videoThread(threading.Thread):
             time.sleep(duration)
         if self.videoStopSig or media is None:
             self.player.play(self.blackScreen)
+
     def playQueryList(self, queryList):
         if queryList.exists():
             for key, value in queryList.values()[0].items():
