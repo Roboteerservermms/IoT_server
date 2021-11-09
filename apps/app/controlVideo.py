@@ -46,6 +46,7 @@ class videoThread(threading.Thread):
         self.player = VlcPlayer('--mouse-hide-timeout=0')
         self.player.add_callback(EventType.MediaPlayerEndReached,self.videoEndHandler)
         self.blackScreen = f"{settings.MEDIA_ROOT}/blackscreen.mp4"
+        self.nowPlay = ""
         self.scheduleQ = Schedule.objects.none()
         self.gpioQ = GPIOSetting.objects.none()
         self.player.play(self.blackScreen)
@@ -67,6 +68,7 @@ class videoThread(threading.Thread):
 
     def play(self, media=None):
         if media is not None and self.videoEndSig and not self.videoStopSig:
+            self.nowPlay = media
             self.player.play(media)
             logger.info(f"now play {media}")
             time.sleep(1.5)
@@ -74,6 +76,10 @@ class videoThread(threading.Thread):
             time.sleep(duration)
         if self.videoStopSig or media is None:
             self.player.play(self.blackScreen)
+            self.nowPlay = self.blackScreen
+
+    def stopSig(self):
+        self.videoStopSig = not self.videoStopSig
 
     def playQueryList(self, queryList):
         if queryList.exists():
@@ -137,7 +143,7 @@ class videoThread(threading.Thread):
                     retGPIOIN=subprocess.getoutput(inCommand)
                     if str2bool(retGPIOIN):
                         if pinNum == 0:
-                            self.videoStopSig = not self.videoStopSig
+                            self.stopSig()
                             break
                         else:
                             self.gpioRise(pin=pinNum)

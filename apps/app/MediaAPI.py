@@ -19,6 +19,14 @@ from django.conf import settings
 from django.utils.datastructures import MultiValueDictKeyError
 from .views import videoPid
 
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
+
 @method_decorator(csrf_exempt, name="dispatch")
 def addSchedule(request,scheduleDay):
     if request.method == "POST":
@@ -135,6 +143,13 @@ def scheduleRunChime(request, mediaId):
 #def runDetectAI(request):
 ##    if not detectAIPid.is_alive():
  ##       detectAIPid.start()
+
+@method_decorator(csrf_exempt, name="dispatch")
+def runVideo(request):
+    if not videoPid.is_alive():
+        videoPid.start()
+        HttpResponse("Success!")
+    HttpResponse("already run!")
 
 @method_decorator(csrf_exempt, name="dispatch")
 def runVideo(request):

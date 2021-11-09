@@ -30,6 +30,7 @@ urlpatterns = [
     path('GPIOSetting/<int:mediaId>/chime/run', WebAPI.GPIORunChime, name='runChime'),
     path('Schedule/<int:mediaId>/chime/run', WebAPI.scheduleRunChime, name='runChime'),
     path('runVideo', MediaAPI.runVideo, name='runVideo'),
+    path('reversePlay', WebAPI.reversePlay, name='reversePlay'),
     
     path('awakeVideo', controlVideo.awakeVideo, name='awakeVideo'),
     path('getGPIOStates', controlVideo.getGPIOStates, name='getGPIOStates'),

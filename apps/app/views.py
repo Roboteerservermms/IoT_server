@@ -35,18 +35,12 @@ def index(request):
         'segment': 'index',
         'gpioSettingList':gpioSettingList,
         'scheduleList':scheduleList,
-        "deviceList" : deviceList
+        "deviceList" : deviceList,
+        "nowPlay": videoPid.nowPlay,
+        "videoStopSig" : videoPid.videoStopSig
     }
     html_template = loader.get_template('index.html')
     return HttpResponse(html_template.render(context, request))
-
-def get_client_ip(request):
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-    if x_forwarded_for:
-        ip = x_forwarded_for.split(',')[0]
-    else:
-        ip = request.META.get('REMOTE_ADDR')
-    return ip
 
 @login_required(login_url="/login/")
 def schedulePage(request):
@@ -55,7 +49,9 @@ def schedulePage(request):
     context = {
         'segment': 'index',
         'deviceList': deviceList,
-        "scheduleList" : scheduleList
+        "scheduleList" : scheduleList,
+        "nowPlay": videoPid.nowPlay,
+        "videoStopSig" : videoPid.videoStopSig
     }
     html_template = loader.get_template('Schedule.html')
     return HttpResponse(html_template.render(context, request))
@@ -67,7 +63,9 @@ def GPIOSettingPage(request):
     context = {
         'segment': 'index',
         'deviceList':deviceList,
-        "gpioSettingList" : gpioSettingList
+        "gpioSettingList" : gpioSettingList,
+        "nowPlay": videoPid.nowPlay,
+        "videoStopSig" : videoPid.videoStopSig
     }
     html_template = loader.get_template('GPIOSetting.html')
     return HttpResponse(html_template.render(context, request))
