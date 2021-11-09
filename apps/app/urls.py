@@ -18,12 +18,12 @@ urlpatterns = [
     path('Schedule/send', WebAPI.sendSchedule, name='sendSchedule'),
     path('GPIOSetting/send', WebAPI.sendGPIOSetting, name='sendGPIOSetting'),
 
-    path('Rboard/<int:deviceId>/remove/',WebAPI.removeRboard, name='removeRboard'),
-    path('Schedule/<int:scheduleDay>/remove/',WebAPI.removeSchedule, name='removeSchedule'),
-    path('GPIOSetting/<int:gpioId>/remove/',WebAPI.removeGPIOSetting, name='removeGPIOSetting'),
+    path('Rboard/<int:deviceId>/remove',WebAPI.removeRboard, name='removeRboard'),
+    path('Schedule/<int:scheduleDay>/remove',WebAPI.removeSchedule, name='removeSchedule'),
+    path('GPIOSetting/<int:gpioId>/remove',WebAPI.removeGPIOSetting, name='removeGPIOSetting'),
     
-    path('GPIOSetting/<int:gpioId>/add/', MediaAPI.addGPIOSetting, name='setSchedule'),
-    path('Schedule/<int:rboardId>/add/', MediaAPI.addSchedule, name='setGPIOSetting'),
+    path('GPIOSetting/<int:gpioId>/add', MediaAPI.addGPIOSetting, name='setSchedule'),
+    path('Schedule/<int:rboardId>/add', MediaAPI.addSchedule, name='setGPIOSetting'),
 
     path('getMacAddress', MediaAPI.getMacAddress, name='getMacAddress'),
 
