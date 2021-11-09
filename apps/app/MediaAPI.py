@@ -121,11 +121,16 @@ def setGPIOStates(request):
     return HttpResponse(GPIOStatusJson)
 
 @method_decorator(csrf_exempt, name="dispatch")
-def runChime(request,category, mediaId):
-    videoPid.chime(category, mediaId)
+def GPIORunChime(request, mediaId):
+    videoPid.chime("GPIOSetting", mediaId)
     if request.method == "POST":
         HttpResponse("Success!")
 
+@method_decorator(csrf_exempt, name="dispatch")
+def scheduleRunChime(request, mediaId):
+    videoPid.chime("Schedule", mediaId)
+    if request.method == "POST":
+        HttpResponse("Success!")
 #@method_decorator(csrf_exempt, name="dispatch")
 #def runDetectAI(request):
 ##    if not detectAIPid.is_alive():
