@@ -55,39 +55,38 @@ def addSchedule(request,scheduleDay):
         return HttpResponse("Success!")
 
 @method_decorator(csrf_exempt, name="dispatch")
-def addGPIOSetting(request):
+def addGPIOSetting(request, gpioId):
     if request.method == "POST":
-        for gpioId in request.POST.getlist("INPIN"):
-            try:
-                recvFile = request.FILES[f"{gpioId}/File"]
-                recvFileName = default_storage.save(recvFile.name,recvFile)
-                recvFileRet = f"{settings.MEDIA_ROOT}/{recvFileName}"
-            except MultiValueDictKeyError as e:
-                recvFileRet = ""
-                pass
-            try:
-                recvRTSP = request.POST[f"{gpioId}/RTSP"]
-            except MultiValueDictKeyError as e:
-                recvRTSP= ""
-            try:
-                recvTTS = request.POST["TTS"]
-            except MultiValueDictKeyError as e:
-                recvTTS = ""
-            try:
-                recvOutList = ['0','0','0','0','0','0','0']
-                for i in request.POST.getlist(f"{gpioId}/OUTPIN"):
-                    recvOutList[int(i)-1] = '1'
-            except MultiValueDictKeyError as e:
-                pass
-            newGPIOSetting = GPIOSetting.objects.create(
-                IN = gpioId,
-                OUT= ''.join(recvOutList),
-                TTS=recvTTS,
-                RTSP=recvRTSP,
-                File=recvFileRet
-            )
-            newGPIOSetting.save()
-        return HttpResponse("Success!")
+        try:
+            recvFile = request.FILES[f"{gpioId}/File"]
+            recvFileName = default_storage.save(recvFile.name,recvFile)
+            recvFileRet = f"{settings.MEDIA_ROOT}/{recvFileName}"
+        except MultiValueDictKeyError as e:
+            recvFileRet = ""
+            pass
+        try:
+            recvRTSP = request.POST[f"{gpioId}/RTSP"]
+        except MultiValueDictKeyError as e:
+            recvRTSP= ""
+        try:
+            recvTTS = request.POST["TTS"]
+        except MultiValueDictKeyError as e:
+            recvTTS = ""
+        try:
+            recvOutList = ['0','0','0','0','0','0','0']
+            for i in request.POST.getlist(f"{gpioId}/OUTPIN"):
+                recvOutList[int(i)-1] = '1'
+        except MultiValueDictKeyError as e:
+            pass
+        newGPIOSetting = GPIOSetting.objects.create(
+            IN = gpioId,
+            OUT= ''.join(recvOutList),
+            TTS=recvTTS,
+            RTSP=recvRTSP,
+            File=recvFileRet
+        )
+        newGPIOSetting.save()
+    return HttpResponse("Success!")
 
 @method_decorator(csrf_exempt, name="dispatch")
 def getMacAddress(request):
