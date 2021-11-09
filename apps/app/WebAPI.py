@@ -123,6 +123,11 @@ def removeGPIOSetting(request,gpioId):
     return redirect("/GPIOSetting")
 
 @login_required(login_url="/login/")
-def sendChime(request,category,mediaId):
+def GPIORunChime(request, mediaId):
+    videoPid.chime(category, mediaId)
+    return redirect(f"/{category}")
+
+@login_required(login_url="/login/")
+def scheduleRunChime(request, mediaId):
     videoPid.chime(category, mediaId)
     return redirect(f"/{category}")
