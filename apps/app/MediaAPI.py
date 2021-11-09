@@ -69,7 +69,7 @@ def addGPIOSetting(request, gpioId):
         except MultiValueDictKeyError as e:
             recvRTSP= ""
         try:
-            recvTTS = request.POST["TTS"]
+            recvTTS = request.POST[f"{gpioId}/TTS"]
         except MultiValueDictKeyError as e:
             recvTTS = ""
         try:
