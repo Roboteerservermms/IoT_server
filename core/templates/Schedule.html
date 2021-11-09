@@ -37,7 +37,7 @@
                                 <h5>스케줄 설정리스트</h5>
                             </div>
                             {% for device in deviceList %}
-                            <form action="http://{{device.id}}:8080/Schedule/" method="POST">
+                            <form action="http://{{device.ip}}:8080/Schedule/" method="POST">
                             <button class="btn btn-primary"  name="device" value="{{device.ip}}">{{device.name}}</button>
                             </form>
                             {% endfor %}
@@ -83,7 +83,7 @@
                     </div>
                     <!-- [ basic-table ] end -->
                     <!-- [ Hover-table ] start -->
-                    <form action="/send" method="post", class="post-form my-3" enctype="multipart/form-data">
+                    <form action="send" method="post", class="post-form my-3" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="col-xl-12">
                         <div class="card">
