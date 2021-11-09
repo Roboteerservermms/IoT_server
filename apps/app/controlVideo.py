@@ -106,7 +106,9 @@ class videoThread(threading.Thread):
                 pass
         if day is None and time is None and mediaId is not None:
             try:
-                self.scheduleQ = Schedule.objects.get(id=mediaId)
+                self.scheduleQ = Schedule.objects.filter(
+                    Q(id=mediaId)
+                )
             except Schedule.DoesNotExist:
                 pass
 
