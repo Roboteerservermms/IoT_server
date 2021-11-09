@@ -72,7 +72,7 @@ def sendSchedule(request):
     if request.method == 'POST':
         targetBoard = Rboard.objects.get(id=request.POST['device'])
         for day in request.POST.getlist("day"):
-            if day == "7":
+            if day == 7:
                 for i in range(day):
                     res = requests.post(f'http://{targetBoard.ip}:8080/Schedule/{i}/add', data=request.POST,files=request.FILES)
             else:
