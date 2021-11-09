@@ -13,7 +13,7 @@ urlpatterns = [
     path('Schedule', views.schedulePage, name='Schedule'),
     path('GPIOSetting/', views.GPIOSettingPage, name='GPIOSetting'),
 
-    path('Rboad/add', WebAPI.addRboard, name='addRboard'),
+    path('Rboard/add', WebAPI.addRboard, name='addRboard'),
     
     path('Schedule/send', WebAPI.sendSchedule, name='sendSchedule'),
     path('GPIOSetting/send', WebAPI.sendGPIOSetting, name='sendGPIOSetting'),
