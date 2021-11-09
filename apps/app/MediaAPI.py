@@ -17,7 +17,7 @@ from django.utils.decorators import method_decorator
 from django.core.files.storage import default_storage
 from django.conf import settings
 from django.utils.datastructures import MultiValueDictKeyError
-
+from .view import videoPid
 
 @method_decorator(csrf_exempt, name="dispatch")
 def addSchedule(request,scheduleDay):
@@ -135,3 +135,5 @@ def runChime(request,category, mediaId):
 def runVideo(request):
     if not videoPid.is_alive():
         videoPid.start()
+        HttpResponse("Success!")
+    HttpResponse("already run!")

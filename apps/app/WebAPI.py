@@ -14,6 +14,7 @@ from .models import *
 from .constant import *
 from .mediaProvider import *
 from .controlVideo import *
+from .view import videoPid
 
 
 @login_required(login_url="/login/")
@@ -123,17 +124,5 @@ def removeGPIOSetting(request,gpioId):
 
 @login_required(login_url="/login/")
 def sendChime(request,category,mediaId):
-    if request.method == "POST":
-        try:
-            selectDeviceIP = request.POST['device']
-            response = requests.post(f"http://{selectDeviceIP}:8080/{category}/{mediaId}/run",data=request.POST)
-            if response.text == "Success!":
-                messages.info(request, f"{response.text}")
-            else:
-                messages.warning(request, "전송 실패!")
-            return redirect(f"/{category}")
-        except :
-            messages.warning(request, "전송 실패!")
-    if request.method == "GET":
-        videoPid.chime(category, mediaId)
+    videoPid.chime(category, mediaId)
     return redirect(f"/{category}")
