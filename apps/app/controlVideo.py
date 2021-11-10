@@ -130,6 +130,7 @@ class videoThread(threading.Thread):
 
     def run(self):
         self.blackScreen = f"{settings.MEDIA_ROOT}/blackscreen.mp4"
+        self.nowPlay = self.blackScreen
         self.player.play(self.blackScreen)
         while True:
             nowDay= datetime.datetime.today().weekday()
