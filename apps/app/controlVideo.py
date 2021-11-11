@@ -111,6 +111,7 @@ class videoThread(threading.Thread):
                     Q(endTime__lte=nowTime) |
                     Q(startTime__gte=nowTime)
                 )
+                logger.info(f"schedule occur {nowTime}")
             except Schedule.DoesNotExist:
                 pass
         if day is None and time is None and mediaId is not None:
