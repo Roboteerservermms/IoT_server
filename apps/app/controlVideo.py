@@ -67,19 +67,19 @@ class videoThread(threading.Thread):
             )
 
     def play(self, media=None):
-        if media is not None and self.videoEndSig and not self.videoStopSig:
+        if media is not None and not self.videoStopSig:
             self.nowPlay = media
             self.player.play(media)
             logger.info(f"now play {media}")
             time.sleep(1.5)
             duration = self.player.get_length() / 1000
             time.sleep(duration)
-        if self.videoStopSig or media is None:
+        if media is None:
             self.player.play(self.blackScreen)
             self.nowPlay = self.blackScreen
 
     def stopSig(self):
-        self.player.play(self.blackScreen)
+        self.play()
         logger.info(f"stop signal occur!")
 
     def playQueryList(self, queryList):
