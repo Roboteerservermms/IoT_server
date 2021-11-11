@@ -81,6 +81,7 @@ class videoThread(threading.Thread):
     def stopSig(self):
         self.videoStopSig = not self.videoStopSig
         self.player.play(self.blackScreen)
+        logger.info(f"stop signal occur!")
 
     def playQueryList(self, queryList):
         if queryList.exists():
