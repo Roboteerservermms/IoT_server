@@ -138,3 +138,5 @@ def reversePlay(request):
     redirectUrl = request.GET.get('redirectUrl','/')
     return redirect(redirectUrl)
 
+videoPid = videoThread()
+videoPid.start()

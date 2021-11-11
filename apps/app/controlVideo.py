@@ -70,7 +70,6 @@ class videoThread(threading.Thread):
         if media is not None:
             self.nowPlay = media
             self.player.play(media)
-            logger.info(f"now play {media}")
             time.sleep(1.5)
             duration = self.player.get_length() / 1000
             time.sleep(duration)
@@ -86,6 +85,7 @@ class videoThread(threading.Thread):
         else:
             self.play()
         if queryList.exists:
+            logger.info(f"now play {queryList.values()[0].items()}")
             for key, value in queryList.values()[0].items():
                 if key == "OUT":
                     for index, value in enumerate(value):
