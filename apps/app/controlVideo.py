@@ -112,7 +112,6 @@ class videoThread(threading.Thread):
                     & Q(startTime__lte = nowTime)
                     & Q(endTime__gte = nowTime)
                 )
-                logger.info(f"schedule playlist occer!{self.scheduleQ.values()[0].items()}")
             except Schedule.DoesNotExist:
                 pass
         else:
@@ -141,7 +140,6 @@ class videoThread(threading.Thread):
             if not self.videoStopSig:
                 nowDay= datetime.datetime.today().weekday()
                 nowTime =  datetime.datetime.now()
-                logger.info(f"check this time {nowTime}")
                 self.scheduleAdd(day=nowDay, time=nowTime)
                 for pinNum, originNum in INPIN.items():
                     inCommand = f"cat /sys/class/gpio/gpio{originNum}/value"
