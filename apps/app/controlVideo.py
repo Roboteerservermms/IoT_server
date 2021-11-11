@@ -78,10 +78,6 @@ class videoThread(threading.Thread):
             self.player.play(self.blackScreen)
             self.nowPlay = self.blackScreen
 
-    def stopSig(self):
-        self.play()
-        logger.info(f"stop signal occur!")
-
     def playQueryList(self):
         if self.scheduleQ.exists():
             queryList = self.scheduleQ
@@ -90,7 +86,6 @@ class videoThread(threading.Thread):
         else:
             self.play()
         if queryList.exists:
-            logger.info(f"play {queryList.values()[0].items()}")
             for key, value in queryList.values()[0].items():
                 if key == "OUT":
                     for index, value in enumerate(value):
