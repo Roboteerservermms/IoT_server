@@ -82,8 +82,14 @@ class videoThread(threading.Thread):
         self.play()
         logger.info(f"stop signal occur!")
 
-    def playQueryList(self, queryList):
-        if queryList.exists():
+    def playQueryList(self):
+        if self.scheduleQ.exists():
+            queryList = self.scheduleQ
+        elif self.gpioQ.exists():
+            queryList = self.gpioQ
+        else:
+            self.play()
+        if queryList.exists:
             for key, value in queryList.values()[0].items():
                 if key == "OUT":
                     for index, value in enumerate(value):
@@ -98,8 +104,7 @@ class videoThread(threading.Thread):
                 elif key == "TTS":
                     if value != "":
                         self.play(TTS(value,settings.MEDIA_ROOT))
-        else:
-            self.play()
+
 
     def scheduleAdd(self, day=None, time=None, mediaId=None):
         if not mediaId:
@@ -140,24 +145,17 @@ class videoThread(threading.Thread):
             nowDay= datetime.datetime.today().weekday()
             nowTime =  datetime.datetime.now()
             self.scheduleAdd(day=nowDay, time=nowTime)
-            if self.scheduleQ.exists():
-                for key, value in self.scheduleQ.values()[0].items():
-                    if key == "IN":
-                        self.gpioRise(pin=value)
-                        self.playQueryList(self.gpioQ)
-                self.playQueryList(self.scheduleQ)
-            else:
-                for pinNum, originNum in INPIN.items():
-                    inCommand = f"cat /sys/class/gpio/gpio{originNum}/value"
-                    retGPIOIN=subprocess.getoutput(inCommand)
-                    if str2bool(retGPIOIN):
-                        if pinNum == 0:
-                            self.stopSig()
-                            break
-                        else:
-                            self.gpioRise(pin=pinNum)
-                            break
-                self.playQueryList(self.gpioQ)
+            for pinNum, originNum in INPIN.items():
+                inCommand = f"cat /sys/class/gpio/gpio{originNum}/value"
+                retGPIOIN=subprocess.getoutput(inCommand)
+                if str2bool(retGPIOIN):
+                    if pinNum == 0:
+                        self.stopSig()
+                        break
+                    else:
+                        self.gpioRise(pin=pinNum)
+                        break
+            self.playQueryList()
 
 
 
