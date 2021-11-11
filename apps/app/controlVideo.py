@@ -79,7 +79,6 @@ class videoThread(threading.Thread):
             self.nowPlay = self.blackScreen
 
     def stopSig(self):
-        self.videoStopSig = not self.videoStopSig
         self.player.play(self.blackScreen)
         logger.info(f"stop signal occur!")
 
