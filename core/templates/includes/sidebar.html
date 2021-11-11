@@ -25,7 +25,11 @@
                         </ul>
                     </li>
                     <li data-username="video play&stop" class="nav-item">
-                        {% if "blackscreen.mp4" in nowPlay %}
+                        {% if videoPidAlive %}
+                                <a href={% url 'runvideo' %}?redirectUrl={{request.path}} class="nav-link">
+                                    <span class="pcoded-micon"><i class="feather icon-alert-triangle"></i></span><span class="pcoded-mtext" name="reverseUrl" value="{{ redirectUrl }}">현재 재생목록없음</span>
+                                </a>
+                        {% elif "blackscreen.mp4" in nowPlay %}
                                 <a href={% url 'reversePlay' %}?redirectUrl={{request.path}} class="nav-link">
                                     <span class="pcoded-micon"><i class="feather icon-alert-triangle"></i></span><span class="pcoded-mtext" name="reverseUrl" value="{{ redirectUrl }}">현재 재생목록없음</span>
                                 </a>
