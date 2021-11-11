@@ -49,10 +49,15 @@ def addSchedule(request,scheduleDay):
         recvOutList = ['0','0','0','0','0','0','0']
         for i in request.POST.getlist("OUTPIN"):
             recvOutList[int(i)-1] = '1'
+        try:
+            recvEndTime = request.POST["endTime"]
+        except MultiValueDictKeyError as e:
+            recvEndTime = ""
+
         newSchedule = Schedule.objects.create(
             day = scheduleDay,
             startTime = request.POST["startTime"],
-            endTime = request.POST["endTime"],
+            endTime = recvEndTime,
             IN=  int(request.POST["INPIN"]),
             OUT= ''.join(recvOutList),
             TTS=recvTTS,
