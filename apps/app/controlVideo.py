@@ -108,8 +108,8 @@ class videoThread(threading.Thread):
             nowTime = time
             try:
                 self.scheduleQ = Schedule.objects.filter(
-                    Q(endTime__lte=nowTime) |
-                    Q(startTime__gte=nowTime)
+                    Q(endTime__gte=nowTime) |
+                    Q(startTime__lte=nowTime)
                 )
                 logger.info(f"schedule occur {nowTime}")
             except Schedule.DoesNotExist:
@@ -138,7 +138,7 @@ class videoThread(threading.Thread):
         self.player.play(self.blackScreen)
         while True:
             nowDay= datetime.datetime.today().weekday()
-            nowTime =  localtime().time()
+            nowTime =  datetime.datetime.now()
             self.scheduleAdd(day=nowDay, time=nowTime)
             if self.scheduleQ.exists():
                 for key, value in self.scheduleQ.values()[0].items():
