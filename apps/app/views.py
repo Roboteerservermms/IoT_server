@@ -21,7 +21,7 @@ from django.utils.decorators import method_decorator
 from django.core.files.storage import default_storage
 from django.conf import settings
 from django.utils.datastructures import MultiValueDictKeyError
-
+from .WebAPI import videoPid
 
 
 #detectAIPid = detectThread()
