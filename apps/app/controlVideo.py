@@ -25,6 +25,7 @@ from django.utils.datastructures import MultiValueDictKeyError
 from .config import *
 from django.db.models.query_utils import Q
 import datetime
+from django.utils.timezone import now, localtime
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -137,7 +138,7 @@ class videoThread(threading.Thread):
         self.player.play(self.blackScreen)
         while True:
             nowDay= datetime.datetime.today().weekday()
-            nowTime =  datetime.datetime.now()
+            nowTime =  localtime.time()
             self.scheduleAdd(day=nowDay, time=nowTime)
             if self.scheduleQ.exists():
                 for key, value in self.scheduleQ.values()[0].items():
