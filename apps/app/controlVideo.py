@@ -90,6 +90,7 @@ class videoThread(threading.Thread):
         else:
             self.play()
         if queryList.exists:
+            logger.info(f"play {queryList.values()[0].items()}")
             for key, value in queryList.values()[0].items():
                 if key == "OUT":
                     for index, value in enumerate(value):
@@ -144,6 +145,7 @@ class videoThread(threading.Thread):
         while True:
             nowDay= datetime.datetime.today().weekday()
             nowTime =  datetime.datetime.now()
+            logger.info(f"check this time {nowTime}")
             self.scheduleAdd(day=nowDay, time=nowTime)
             for pinNum, originNum in INPIN.items():
                 inCommand = f"cat /sys/class/gpio/gpio{originNum}/value"
