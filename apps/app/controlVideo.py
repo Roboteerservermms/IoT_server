@@ -67,7 +67,7 @@ class videoThread(threading.Thread):
             )
 
     def play(self, media=None):
-        if media is not None and not self.videoStopSig:
+        if media is not None:
             self.nowPlay = media
             self.player.play(media)
             logger.info(f"now play {media}")
@@ -143,21 +143,22 @@ class videoThread(threading.Thread):
         self.nowPlay = self.blackScreen
         self.player.play(self.blackScreen)
         while True:
-            nowDay= datetime.datetime.today().weekday()
-            nowTime =  datetime.datetime.now()
-            logger.info(f"check this time {nowTime}")
-            self.scheduleAdd(day=nowDay, time=nowTime)
-            for pinNum, originNum in INPIN.items():
-                inCommand = f"cat /sys/class/gpio/gpio{originNum}/value"
-                retGPIOIN=subprocess.getoutput(inCommand)
-                if str2bool(retGPIOIN):
-                    if pinNum == 0:
-                        self.stopSig()
-                        break
-                    else:
-                        self.gpioRise(pin=pinNum)
-                        break
-            self.playQueryList()
+            if not self.videoStopSig:
+                nowDay= datetime.datetime.today().weekday()
+                nowTime =  datetime.datetime.now()
+                logger.info(f"check this time {nowTime}")
+                self.scheduleAdd(day=nowDay, time=nowTime)
+                for pinNum, originNum in INPIN.items():
+                    inCommand = f"cat /sys/class/gpio/gpio{originNum}/value"
+                    retGPIOIN=subprocess.getoutput(inCommand)
+                    if str2bool(retGPIOIN):
+                        if pinNum == 0:
+                            self.stopSig()
+                            break
+                        else:
+                            self.gpioRise(pin=pinNum)
+                            break
+                self.playQueryList()
 
 
 

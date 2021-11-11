@@ -132,12 +132,9 @@ def scheduleRunChime(request, mediaId):
     videoPid.chime("Schedule", mediaId)
     return redirect("/Schedule")
 
-videoPid.videoStopSig
 @login_required(login_url="/login/")
 def reversePlay(request):
-    if videoPid.videoStopSig:
-        videoPid.start()
-    else:
-        videoPid.stopSig()
+    videoPid.videoStopSig = not videoPid.videoStopSig
     redirectUrl = request.GET.get('redirectUrl','/')
     return redirect(redirectUrl)
+

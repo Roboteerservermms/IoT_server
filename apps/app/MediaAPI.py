@@ -150,10 +150,3 @@ def runVideo(request):
         videoPid.start()
         HttpResponse("Success!")
     HttpResponse("already run!")
-
-@method_decorator(csrf_exempt, name="dispatch")
-def runVideo(request):
-    if not videoPid.is_alive():
-        videoPid.start()
-        HttpResponse("Success!")
-    HttpResponse("already run!")
