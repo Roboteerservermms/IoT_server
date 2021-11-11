@@ -24,6 +24,7 @@ from django.utils.datastructures import MultiValueDictKeyError
 
 
 videoPid = videoThread()
+videoPid.start()
 #detectAIPid = detectThread()
 
 @login_required(login_url="/login/")
