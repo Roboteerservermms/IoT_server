@@ -102,7 +102,7 @@ class videoThread(threading.Thread):
             self.play()
 
     def scheduleAdd(self, day=None, time=None, mediaId=None):
-        if day is not None and time is not None and mediaId is None:
+        if mediaId is None:
             nowDay= day
             nowTime = time
             try:
@@ -140,6 +140,10 @@ class videoThread(threading.Thread):
             nowTime =  datetime.datetime.now()
             self.scheduleAdd(day=nowDay, time=nowTime)
             if self.scheduleQ.exists():
+                for key, value in self.scheduleQ.values()[0].items():
+                    if key == "IN":
+                        self.gpioRise(pin=value)
+                        self.playQueryList(self.gpioQ)
                 self.playQueryList(self.scheduleQ)
             else:
                 for pinNum, originNum in INPIN.items():
