@@ -17,7 +17,7 @@ from django.utils.decorators import method_decorator
 from django.core.files.storage import default_storage
 from django.conf import settings
 from django.utils.datastructures import MultiValueDictKeyError
-from .views import videoPid
+from .WebAPI import videoPid
 
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')

@@ -14,7 +14,6 @@ from .models import *
 from .constant import *
 from .mediaProvider import *
 from .controlVideo import *
-from .views import videoPid
 
 
 @login_required(login_url="/login/")
