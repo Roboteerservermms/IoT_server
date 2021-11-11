@@ -25,7 +25,6 @@ from django.utils.datastructures import MultiValueDictKeyError
 from .config import *
 from django.db.models.query_utils import Q
 import datetime
-from django.utils.timezone import now, localtime
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -103,18 +102,18 @@ class videoThread(threading.Thread):
             self.play()
 
     def scheduleAdd(self, day=None, time=None, mediaId=None):
-        if mediaId is None:
+        if not mediaId:
             nowDay= day
             nowTime = time
             try:
                 self.scheduleQ = Schedule.objects.filter(
-                    Q(endTime__gte=nowTime) |
-                    Q(startTime__lte=nowTime)
+                    Q(day__contains = nowDay)
+                    & Q(startTime__lte = nowTime)
+                    & Q(endTime__gte = nowTime)
                 )
-                logger.info(f"schedule occur {nowTime}")
             except Schedule.DoesNotExist:
                 pass
-        if day is None and time is None and mediaId is not None:
+        else:
             try:
                 self.scheduleQ = Schedule.objects.filter(
                     Q(id=mediaId)
