@@ -29,10 +29,10 @@
                                 <a href={% url 'reversePlay' %}?redirectUrl={{request.path}} class="nav-link">
                                     <span class="pcoded-micon"><i class="feather icon-alert-triangle"></i></span><span class="pcoded-mtext" name="reverseUrl" value="{{ redirectUrl }}">현재 재생목록없음</span>
                                 </a>
-{% comment %}                         {% elif videoStopSig %}
+                        {% elif videoStopSig %}
                                 <a href={% url 'reversePlay' %}?redirectUrl={{request.path}} class="nav-link">
                                     <span class="pcoded-micon"><i class="feather icon-play"></i></span><span class="pcoded-mtext" name="reverseUrl" value="{{ redirectUrl }}" >{{ nowPlay }} 재생</span>
-                                </a> {% endcomment %}
+                                </a>
                         {% else %}
                                 <a href={% url 'reversePlay' %}?redirectUrl={{request.path}} class="nav-link">
                                     <span class="pcoded-micon"><i class="feather icon-stop-circle"></i></span><span class="pcoded-mtext" name="reverseUrl" value="{{ redirectUrl }}">정지</span>
