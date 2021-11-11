@@ -111,6 +111,7 @@ class videoThread(threading.Thread):
                     & Q(startTime__lte = nowTime)
                     & Q(endTime__gte = nowTime)
                 )
+                logger.info(f"schedule playlist occer!{self.scheduleQ.values()[0].items()}")
             except Schedule.DoesNotExist:
                 pass
         else:
