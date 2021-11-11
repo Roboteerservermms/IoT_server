@@ -33,10 +33,10 @@
                                 <a href={% url 'reversePlay' %}?redirectUrl={{request.path}} class="nav-link">
                                     <span class="pcoded-micon"><i class="feather icon-play"></i></span><span class="pcoded-mtext" name="reverseUrl" value="{{ redirectUrl }}" >{{ nowPlay }} 재생</span>
                                 </a>
-                        {% else %}
+{% comment %}                         {% else %}
                                 <a href={% url 'reversePlay' %}?redirectUrl={{request.path}} class="nav-link">
                                     <span class="pcoded-micon"><i class="feather icon-stop-circle"></i></span><span class="pcoded-mtext" name="reverseUrl" value="{{ redirectUrl }}">정지</span>
-                                </a>
+                                </a> {% endcomment %}
                         {% endif %}
                     </li>
                     <li data-username="Disabled Menu" class="nav-item">
