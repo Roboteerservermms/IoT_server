@@ -36,7 +36,6 @@ def index(request):
         'gpioSettingList':gpioSettingList,
         'scheduleList':scheduleList,
         "deviceList" : deviceList,
-        "videoPidAlive" : videoPid.is_alive(),
         "nowPlay": videoPid.nowPlay,
         "videoStopSig" : videoPid.videoStopSig
     }
@@ -51,7 +50,6 @@ def schedulePage(request):
         'segment': 'index',
         'deviceList': deviceList,
         "scheduleList" : scheduleList,
-        "videoPidAlive" : videoPid.is_alive(),
         "nowPlay": videoPid.nowPlay,
         "videoStopSig" : videoPid.videoStopSig
     }
@@ -66,7 +64,6 @@ def GPIOSettingPage(request):
         'segment': 'index',
         'deviceList':deviceList,
         "gpioSettingList" : gpioSettingList,
-        "videoPidAlive" : videoPid.is_alive(),
         "nowPlay": videoPid.nowPlay,
         "videoStopSig" : videoPid.videoStopSig
     }
