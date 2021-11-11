@@ -138,7 +138,7 @@ class videoThread(threading.Thread):
         self.player.play(self.blackScreen)
         while True:
             nowDay= datetime.datetime.today().weekday()
-            nowTime =  localtime.time()
+            nowTime =  localtime().time()
             self.scheduleAdd(day=nowDay, time=nowTime)
             if self.scheduleQ.exists():
                 for key, value in self.scheduleQ.values()[0].items():
