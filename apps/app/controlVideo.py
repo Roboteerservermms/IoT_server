@@ -74,13 +74,13 @@ class videoThread(threading.Thread):
             time.sleep(1.5)
             duration = self.player.get_length() / 1000
             time.sleep(duration)
-        if self.videoStopSig:
+        if self.videoStopSig or media is None:
             self.player.play(self.blackScreen)
             self.nowPlay = self.blackScreen
 
     def stopSig(self):
         self.videoStopSig = not self.videoStopSig
-        self.player.play()
+        self.player.play(self.blackScreen)
 
     def playQueryList(self, queryList):
         if queryList.exists():
