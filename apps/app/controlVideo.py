@@ -132,11 +132,11 @@ class videoThread(threading.Thread):
         if category == "Schedule":
             self.player.pause()
             self.scheduleAdd(mediaId=mediaId)
-            self.playQueryList(self.scheduleQ)
+            self.playQueryList()
         elif category == "GPIOSetting":
             self.player.pause()
             self.gpioRise(mediaId=mediaId)
-            self.playQueryList(self.gpioQ)
+            self.playQueryList()
 
     def run(self):
         self.blackScreen = f"{settings.MEDIA_ROOT}/blackscreen.mp4"
