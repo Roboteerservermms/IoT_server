@@ -89,11 +89,13 @@ class videoThread(threading.Thread):
                         out_command = f'echo {value} > /sys/class/gpio/gpio{OUTPIN[index+1]}/value'
                         subprocess.getoutput(out_command)
                 elif key == "File":
-                    self.play(value)
+                    if value != "":
+                        self.play(value)
                 elif key == "RTSP":
-                    self.play(value)
+                    if value != "":
+                        self.play(value)
                 elif key == "TTS":
-                    if value is not None:
+                    if value != "":
                         self.play(TTS(value,settings.MEDIA_ROOT))
         else:
             self.play()
