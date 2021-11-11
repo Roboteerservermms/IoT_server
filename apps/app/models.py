@@ -22,7 +22,7 @@ class Rboard(models.Model):
 class Schedule(models.Model):
     day = models.IntegerField(null=True)
     startTime = models.TimeField(auto_now_add=False)
-    endTime = models.TimeField(auto_now_add=False)
+    endTime = models.TimeField(null=True,auto_now_add=False)
     IN = models.IntegerField(null=True)
     OUT = models.CharField(null=True,max_length=15)
     TTS = models.CharField(default="",null=True,max_length=500)
