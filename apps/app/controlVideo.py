@@ -120,6 +120,7 @@ class videoThread(threading.Thread):
                         Q(day__contains = nowDay)
                         & Q(startTime__lte = nowTime)
                         & Q(endTime__gt = nowTime)
+                        & ~Q(endTime = None)
                     )
             except Schedule.DoesNotExist:
                 pass
