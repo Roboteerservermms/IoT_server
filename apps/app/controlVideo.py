@@ -53,6 +53,7 @@ class videoThread(threading.Thread):
         self.videoStopSig = False
         self.videoEndSig = False
         self.scheduleRepeat = True
+        self.scheduleGpioRun = True
 
     def videoEndHandler(self,event):
         self.videoEndSig = True
@@ -116,11 +117,12 @@ class videoThread(threading.Thread):
                         self.play(TTS(value,settings.MEDIA_ROOT))
 
     def schedulePlay(self):
-        if self.scheduleQ.exists():
+        if self.scheduleQ.exists() and self.scheduleRepeat:
             self.scheduleRepeat = False
             logger.info(f"now play {self.scheduleQ.values()[0].items()}")
             for key, value in self.scheduleQ.values()[0].items():
-                if key=="IN":
+                if key=="IN" and self.scheduleGpioRun:
+                    self.scheduleGpioRun = False
                     self.gpioQ = GPIOSetting.objects.filter(
                         Q(IN = value)
                     )
@@ -162,6 +164,9 @@ class videoThread(threading.Thread):
                     self.scheduleRepeat = True
                 elif playOnceSchedule.exists():
                     self.scheduleQ = playOnceSchedule
+                else:
+                    self.scheduleGpioRun = True
+                    self.scheduleRepeat = True
 
             except Schedule.DoesNotExist:
                 pass
