@@ -121,26 +121,28 @@ class videoThread(threading.Thread):
             nowTime =  datetime.time(now.hour,now.minute)
             self.scheduleQ = Schedule.objects.none()
             try:
-                self.scheduleQ = Schedule.objects.filter(
+                playOnceSchedule = Schedule.objects.filter(
                     Q(day__contains = nowDay)
                     & Q(startTime = nowTime)
                     & Q(endTime=None)
                 )
-
-                if self.scheduleQ.exists():
-                    if self.scheduleOncePlayed:
-                        self.scheduleQ = Schedule.objects.none()
-                    else:
-                        self.scheduleOncePlayed = True
-                else:
-                    if self.scheduleOncePlayed:
-                        self.scheduleOncePlayed = False
-                    self.scheduleQ = Schedule.objects.filter(
+                playRepeatSchedule = Schedule.objects.filter(
                         Q(day__contains = nowDay)
                         & Q(startTime__lte = nowTime)
                         & Q(endTime__gte = nowTime)
                         & ~Q(endTime = None)
-                    )
+                )
+                if playRepeatSchedule.exists():
+                    self.scheduleQ = playRepeatSchedule
+                elif playOnceSchedule.exists() and not self.scheduleOncePlayed:
+                    self.scheduleQ = playOnceSchedule
+                    self.scheduleOncePlayed = True
+                elif not playOnceSchedule.exists() and self.scheduleOncePlayed:
+                    self.scheduleOncePlayed = False
+                else:
+                    self.scheduleOncePlayed = False
+                    self.scheduleQ = Schedule.objects.none()
+
             except Schedule.DoesNotExist:
                 pass
         else:
