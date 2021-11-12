@@ -51,19 +51,27 @@ def addSchedule(request,scheduleDay):
             recvOutList[int(i)-1] = '1'
         try:
             recvEndTime = request.POST["endTime"]
+            newSchedule = Schedule.objects.create(
+                day = scheduleDay,
+                startTime = request.POST["startTime"],
+                endTime = recvEndTime,
+                IN=  int(request.POST["INPIN"]),
+                OUT= ''.join(recvOutList),
+                TTS=recvTTS,
+                RTSP=recvRTSP,
+                File=recvFileRet
+            )
         except MultiValueDictKeyError as e:
-            recvEndTime = None
+            newSchedule = Schedule.objects.create(
+                day = scheduleDay,
+                startTime = request.POST["startTime"],
+                IN=  int(request.POST["INPIN"]),
+                OUT= ''.join(recvOutList),
+                TTS=recvTTS,
+                RTSP=recvRTSP,
+                File=recvFileRet
+            )
 
-        newSchedule = Schedule.objects.create(
-            day = scheduleDay,
-            startTime = request.POST["startTime"],
-            endTime = recvEndTime,
-            IN=  int(request.POST["INPIN"]),
-            OUT= ''.join(recvOutList),
-            TTS=recvTTS,
-            RTSP=recvRTSP,
-            File=recvFileRet
-        )
         newSchedule.save()
         return HttpResponse("Success!")
 
