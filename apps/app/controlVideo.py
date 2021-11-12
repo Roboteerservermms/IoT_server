@@ -52,7 +52,7 @@ class videoThread(threading.Thread):
         self.player.play(self.blackScreen)
         self.videoStopSig = False
         self.videoEndSig = False
-        self.scheduleOncePlayed = False
+        self.scheduleRepeat = True
 
     def videoEndHandler(self,event):
         self.videoEndSig = True
@@ -89,16 +89,18 @@ class videoThread(threading.Thread):
             self.player.play(self.blackScreen)
             self.nowPlay = self.blackScreen
 
-    def playQueryList(self):
+    def playCategory(self):
         if self.scheduleQ.exists():
-            queryList = self.scheduleQ
-        elif self.gpioQ.exists() and not self.scheduleOncePlayed:
-            queryList = self.gpioQ
+            self.schedulePlay(self)
+        elif self.gpioQ.exists():
+            self.gpioPlay(self)
         else:
             self.play()
-        if queryList.exists():
-            logger.info(f"now play {queryList.values()[0].items()}")
-            for key, value in queryList.values()[0].items():
+
+    def gpioPlay(self):
+        if self.gpioQ.exists():
+            logger.info(f"now play {self.gpioQ.values()[0].items()}")
+            for key, value in self.gpioQ.values()[0].items():
                 if key == "OUT":
                     for index, value in enumerate(value):
                         out_command = f'echo {value} > /sys/class/gpio/gpio{OUTPIN[index+1]}/value'
@@ -113,6 +115,29 @@ class videoThread(threading.Thread):
                     if value != "":
                         self.play(TTS(value,settings.MEDIA_ROOT))
 
+    def schedulePlay(self):
+        if self.scheduleQ.exists() and self.scheduleRepeat :
+            self.scheduleRepeat = False
+            logger.info(f"now play {self.scheduleQ.values()[0].items()}")
+            for key, value in self.scheduleQ.values()[0].items():
+                if key=="IN":
+                    self.gpioQ = GPIOSetting.objects.filter(
+                        Q(IN = value)
+                    )
+                    self.gpioPlay(self)
+                if key == "OUT":
+                    for index, value in enumerate(value):
+                        out_command = f'echo {value} > /sys/class/gpio/gpio{OUTPIN[index+1]}/value'
+                        subprocess.getoutput(out_command)
+                elif key == "File":
+                    if value != "":
+                        self.play(value)
+                elif key == "RTSP":
+                    if value != "":
+                        self.play(value)
+                elif key == "TTS":
+                    if value != "":
+                        self.play(TTS(value,settings.MEDIA_ROOT))
 
     def scheduleAdd(self, mediaId=None):
         if not mediaId:
@@ -134,14 +159,11 @@ class videoThread(threading.Thread):
                 )
                 if playRepeatSchedule.exists():
                     self.scheduleQ = playRepeatSchedule
-                elif playOnceSchedule.exists() and not self.scheduleOncePlayed:
+                    self.scheduleRepeat = True
+                elif playOnceSchedule.exists() and not self.scheduleRepeat:
                     self.scheduleQ = playOnceSchedule
-                    self.scheduleOncePlayed = True
-                elif not playOnceSchedule.exists() and self.scheduleOncePlayed:
-                    self.scheduleOncePlayed = False
-                else:
-                    self.scheduleOncePlayed = False
-                    self.scheduleQ = Schedule.objects.none()
+                elif not playOnceSchedule.exists() and self.scheduleRepeat:
+                    self.scheduleRepeat = True
 
             except Schedule.DoesNotExist:
                 pass
@@ -157,11 +179,11 @@ class videoThread(threading.Thread):
         if category == "Schedule":
             self.player.pause()
             self.scheduleAdd(mediaId=mediaId)
-            self.playQueryList()
+            self.schedulePlay()
         elif category == "GPIOSetting":
             self.player.pause()
             self.gpioRise(mediaId=mediaId)
-            self.playQueryList()
+            self.gpioPlay()
 
     def run(self):
         self.blackScreen = f"{settings.MEDIA_ROOT}/blackscreen.mp4"
@@ -171,7 +193,7 @@ class videoThread(threading.Thread):
             if not self.videoStopSig:
                 self.scheduleAdd()
                 self.gpioRise()
-                self.playQueryList()
+                self.playCategory()
 
 
 
