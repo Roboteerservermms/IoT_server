@@ -124,7 +124,7 @@ class videoThread(threading.Thread):
                     self.gpioQ = GPIOSetting.objects.filter(
                         Q(IN = value)
                     )
-                    self.gpioPlay(self)
+                    self.gpioPlay()
                 if key == "OUT":
                     for index, value in enumerate(value):
                         out_command = f'echo {value} > /sys/class/gpio/gpio{OUTPIN[index+1]}/value'
