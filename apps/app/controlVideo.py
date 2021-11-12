@@ -57,15 +57,26 @@ class videoThread(threading.Thread):
     def videoEndHandler(self,event):
         self.videoEndSig = True
 
-    def gpioRise(self, pin=None, mediaId=None):
-        if pin is not None and mediaId is None:
+    def gpioRise(self, mediaId=None):
+        self.gpioQ = GPIOSetting.objects.none()
+        if mediaId:
             self.gpioQ = GPIOSetting.objects.filter(
-                Q(IN = pin)
-            )
-        if pin is None and mediaId is not None:
-            self.gpioQ = GPIOSetting.objects.filter(
-                Q(id = mediaId)
-            )
+                            Q(id = mediaId)
+                        )
+        else:
+            for pinNum, originNum in INPIN.items():
+                inCommand = f"cat /sys/class/gpio/gpio{originNum}/value"
+                retGPIOIN=subprocess.getoutput(inCommand)
+                if str2bool(retGPIOIN):
+                    if pinNum == 0:
+                        self.pause()
+                        break
+                    else:
+                            self.gpioQ = GPIOSetting.objects.filter(
+                                Q(IN = pinNum)
+                            )
+                        break
+
 
     def play(self, media=None):
         if media is not None:
@@ -103,23 +114,27 @@ class videoThread(threading.Thread):
                         self.play(TTS(value,settings.MEDIA_ROOT))
 
 
-    def scheduleAdd(self, day=None, time=None, mediaId=None):
+    def scheduleAdd(self, mediaId=None):
         if not mediaId:
-            nowDay= day
-            nowTime = time
+            now = datetime.datetime.now()
+            nowDay= now.weekday()
+            nowTime =  datetime.time(now.hour,now.minute)
+            self.scheduleQ = Schedule.objects.none()
             try:
                 if not self.scheduleOncePlayed:
                     self.scheduleQ = Schedule.objects.filter(
                         Q(day__contains = nowDay)
                         & Q(startTime = nowTime)
+                        & Q(endTime=None)
                     )
                     self.scheduleOncePlayed = True
+
                 if not self.scheduleQ.exists():
                     self.scheduleOncePlayed = False
                     self.scheduleQ = Schedule.objects.filter(
                         Q(day__contains = nowDay)
-                        & Q(startTime__lt = nowTime)
-                        & Q(endTime__gt = nowTime)
+                        & Q(startTime__lte = nowTime)
+                        & Q(endTime__gte = nowTime)
                         & ~Q(endTime = None)
                     )
             except Schedule.DoesNotExist:
@@ -148,20 +163,8 @@ class videoThread(threading.Thread):
         self.player.play(self.blackScreen)
         while True:
             if not self.videoStopSig:
-                now = datetime.datetime.now()
-                nowDay= now.weekday()
-                nowTime =  datetime.time(now.hour,now.minute)
-                self.scheduleAdd(day=nowDay, time=nowTime)
-                for pinNum, originNum in INPIN.items():
-                    inCommand = f"cat /sys/class/gpio/gpio{originNum}/value"
-                    retGPIOIN=subprocess.getoutput(inCommand)
-                    if str2bool(retGPIOIN):
-                        if pinNum == 0:
-                            self.stopSig()
-                            break
-                        else:
-                            self.gpioRise(pin=pinNum)
-                            break
+                self.scheduleAdd()
+                self.gpioRise()
                 self.playQueryList()
 
 
