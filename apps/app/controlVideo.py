@@ -119,7 +119,7 @@ class videoThread(threading.Thread):
                     self.scheduleQ = Schedule.objects.filter(
                         Q(day__contains = nowDay)
                         & Q(startTime__lte = nowTime)
-                        & Q(endTime__gte = nowTime)
+                        & Q(endTime__gt = nowTime)
                     )
             except Schedule.DoesNotExist:
                 pass
