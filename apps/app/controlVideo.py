@@ -96,7 +96,7 @@ class videoThread(threading.Thread):
             queryList = self.gpioQ
         else:
             self.play()
-        if queryList.exists and not self.scheduleOncePlayed:
+        if queryList.exists:
             logger.info(f"now play {queryList.values()[0].items()}")
             for key, value in queryList.values()[0].items():
                 if key == "OUT":
@@ -131,6 +131,7 @@ class videoThread(threading.Thread):
 
                 if self.scheduleQ.exists():
                     self.scheduleOncePlayed = True
+                    self.scheduleQ = Schedule.objects.none()
                 else:
                     self.scheduleOncePlayed = False
                     self.scheduleQ = Schedule.objects.filter(
