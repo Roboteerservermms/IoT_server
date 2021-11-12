@@ -143,8 +143,9 @@ class videoThread(threading.Thread):
         self.player.play(self.blackScreen)
         while True:
             if not self.videoStopSig:
-                nowDay= datetime.datetime.today().weekday()
-                nowTime =  datetime.time(datetime.datetime.now().hour(),datetime.datetime.now().minute())
+                now = datetime.datetime.now()
+                nowDay= now.weekday()
+                nowTime =  datetime.time(now.hour,now.minute)
                 self.scheduleAdd(day=nowDay, time=nowTime)
                 for pinNum, originNum in INPIN.items():
                     inCommand = f"cat /sys/class/gpio/gpio{originNum}/value"
