@@ -96,7 +96,7 @@ class videoThread(threading.Thread):
             queryList = self.gpioQ
         else:
             self.play()
-        if queryList.exists:
+        if queryList.exists():
             logger.info(f"now play {queryList.values()[0].items()}")
             for key, value in queryList.values()[0].items():
                 if key == "OUT":
