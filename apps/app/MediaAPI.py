@@ -51,17 +51,6 @@ def addSchedule(request,scheduleDay):
             recvOutList[int(i)-1] = '1'
         try:
             recvEndTime = request.POST["endTime"]
-            if recvEndTime is None:
-                newSchedule = Schedule.objects.create(
-                    day = scheduleDay,
-                    startTime = request.POST["startTime"],
-                    endTime = None,
-                    IN=  int(request.POST["INPIN"]),
-                    OUT= ''.join(recvOutList),
-                    TTS=recvTTS,
-                    RTSP=recvRTSP,
-                    File=recvFileRet
-                )
             newSchedule = Schedule.objects.create(
                 day = scheduleDay,
                 startTime = request.POST["startTime"],
@@ -76,7 +65,6 @@ def addSchedule(request,scheduleDay):
             newSchedule = Schedule.objects.create(
                 day = scheduleDay,
                 startTime = request.POST["startTime"],
-                endTime = None,
                 IN=  int(request.POST["INPIN"]),
                 OUT= ''.join(recvOutList),
                 TTS=recvTTS,
