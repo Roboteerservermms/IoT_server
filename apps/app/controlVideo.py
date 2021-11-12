@@ -72,9 +72,9 @@ class videoThread(threading.Thread):
                         self.pause()
                         break
                     else:
-                            self.gpioQ = GPIOSetting.objects.filter(
-                                Q(IN = pinNum)
-                            )
+                        self.gpioQ = GPIOSetting.objects.filter(
+                            Q(IN = pinNum)
+                        )
                         break
 
 
