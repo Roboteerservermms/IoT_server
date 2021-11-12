@@ -130,8 +130,10 @@ class videoThread(threading.Thread):
                     self.scheduleOncePlayed = False
 
                 if self.scheduleQ.exists():
-                    self.scheduleOncePlayed = True
-                    self.scheduleQ = Schedule.objects.none()
+                    if not self.scheduleOncePlayed:
+                        self.scheduleOncePlayed = True
+                    else:
+                        self.scheduleQ = Schedule.objects.none()
                 else:
                     self.scheduleOncePlayed = False
                     self.scheduleQ = Schedule.objects.filter(
