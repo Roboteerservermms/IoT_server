@@ -92,11 +92,11 @@ class videoThread(threading.Thread):
     def playQueryList(self):
         if self.scheduleQ.exists():
             queryList = self.scheduleQ
-        elif self.gpioQ.exists():
+        elif self.gpioQ.exists() and not self.scheduleOncePlayed:
             queryList = self.gpioQ
         else:
             self.play()
-        if queryList.exists:
+        if queryList.exists and not self.scheduleOncePlayed:
             logger.info(f"now play {queryList.values()[0].items()}")
             for key, value in queryList.values()[0].items():
                 if key == "OUT":
@@ -121,15 +121,17 @@ class videoThread(threading.Thread):
             nowTime =  datetime.time(now.hour,now.minute)
             self.scheduleQ = Schedule.objects.none()
             try:
-                if not self.scheduleOncePlayed:
-                    self.scheduleQ = Schedule.objects.filter(
-                        Q(day__contains = nowDay)
-                        & Q(startTime = nowTime)
-                        & Q(endTime=None)
-                    )
-                    self.scheduleOncePlayed = True
+                self.scheduleQ = Schedule.objects.filter(
+                    Q(day__contains = nowDay)
+                    & Q(startTime = nowTime)
+                    & Q(endTime=None)
+                )
+                if self.scheduleOncePlayed and not self.scheduleQ.exists():
+                    self.scheduleOncePlayed = False
 
-                if not self.scheduleQ.exists():
+                if self.scheduleQ.exists():
+                    self.scheduleOncePlayed = True
+                else:
                     self.scheduleOncePlayed = False
                     self.scheduleQ = Schedule.objects.filter(
                         Q(day__contains = nowDay)
