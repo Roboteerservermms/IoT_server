@@ -118,7 +118,7 @@ class videoThread(threading.Thread):
                     self.scheduleOncePlayed = False
                     self.scheduleQ = Schedule.objects.filter(
                         Q(day__contains = nowDay)
-                        & Q(startTime__lte = nowTime)
+                        & Q(startTime__lt = nowTime)
                         & Q(endTime__gt = nowTime)
                         & ~Q(endTime = None)
                     )
