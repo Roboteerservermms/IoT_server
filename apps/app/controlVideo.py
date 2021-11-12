@@ -126,16 +126,15 @@ class videoThread(threading.Thread):
                     & Q(startTime = nowTime)
                     & Q(endTime=None)
                 )
-                if self.scheduleOncePlayed and not self.scheduleQ.exists():
-                    self.scheduleOncePlayed = False
 
                 if self.scheduleQ.exists():
-                    if not self.scheduleOncePlayed:
-                        self.scheduleOncePlayed = True
-                    else:
+                    if self.scheduleOncePlayed:
                         self.scheduleQ = Schedule.objects.none()
+                    else:
+                        pass
                 else:
-                    self.scheduleOncePlayed = False
+                    if self.scheduleOncePlayed:
+                        self.scheduleOncePlayed = False
                     self.scheduleQ = Schedule.objects.filter(
                         Q(day__contains = nowDay)
                         & Q(startTime__lte = nowTime)
