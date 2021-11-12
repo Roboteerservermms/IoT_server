@@ -116,7 +116,7 @@ class videoThread(threading.Thread):
                         self.play(TTS(value,settings.MEDIA_ROOT))
 
     def schedulePlay(self):
-        if self.scheduleQ.exists() and self.scheduleRepeat :
+        if self.scheduleQ.exists():
             self.scheduleRepeat = False
             logger.info(f"now play {self.scheduleQ.values()[0].items()}")
             for key, value in self.scheduleQ.values()[0].items():
@@ -160,10 +160,8 @@ class videoThread(threading.Thread):
                 if playRepeatSchedule.exists():
                     self.scheduleQ = playRepeatSchedule
                     self.scheduleRepeat = True
-                elif playOnceSchedule.exists() and not self.scheduleRepeat:
+                elif playOnceSchedule.exists():
                     self.scheduleQ = playOnceSchedule
-                elif not playOnceSchedule.exists() and self.scheduleRepeat:
-                    self.scheduleRepeat = True
 
             except Schedule.DoesNotExist:
                 pass
