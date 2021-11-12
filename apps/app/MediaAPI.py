@@ -19,16 +19,6 @@ from django.conf import settings
 from django.utils.datastructures import MultiValueDictKeyError
 from .WebAPI import videoPid
 
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
-formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-stream_handler = logging.StreamHandler()
-stream_handler.setFormatter(formatter)
-logger.addHandler(stream_handler)
-file_handler = logging.FileHandler('target.log')
-file_handler.setFormatter(formatter)
-logger.addHandler(file_handler)
-
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
     if x_forwarded_for:
@@ -40,7 +30,7 @@ def get_client_ip(request):
 @method_decorator(csrf_exempt, name="dispatch")
 def addSchedule(request,scheduleDay):
     if request.method == "POST":
-        logger.info(f"{request.POST}")
+        print(request.POST)
         try:
             recvFile = request.FILES['File']
             recvFileName = default_storage.save(recvFile.name,recvFile)
