@@ -91,9 +91,9 @@ class videoThread(threading.Thread):
 
     def playCategory(self):
         if self.scheduleQ.exists():
-            self.schedulePlay(self)
+            self.schedulePlay()
         elif self.gpioQ.exists():
-            self.gpioPlay(self)
+            self.gpioPlay()
         else:
             self.play()
 
