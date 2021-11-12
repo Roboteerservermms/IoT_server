@@ -52,6 +52,7 @@ class videoThread(threading.Thread):
         self.player.play(self.blackScreen)
         self.videoStopSig = False
         self.videoEndSig = False
+        self.scheduleOncePlayed = False
 
     def videoEndHandler(self,event):
         self.videoEndSig = True
@@ -107,11 +108,14 @@ class videoThread(threading.Thread):
             nowDay= day
             nowTime = time
             try:
-                self.scheduleQ = Schedule.objects.filter(
-                    Q(day__contains = nowDay)
-                    & Q(startTime__contains = nowTime)
-                )
+                if not self.scheduleOncePlayed:
+                    self.scheduleQ = Schedule.objects.filter(
+                        Q(day__contains = nowDay)
+                        & Q(startTime__contains = nowTime)
+                    )
+                    self.scheduleOncePlayed = True
                 if not self.scheduleQ.exists():
+                    self.scheduleOncePlayed = False
                     self.scheduleQ = Schedule.objects.filter(
                         Q(day__contains = nowDay)
                         & Q(startTime__lte = nowTime)
