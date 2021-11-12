@@ -168,8 +168,6 @@ class videoThread(threading.Thread):
                 else:
                     self.scheduleGpioRun = True
                     self.scheduleRepeat = True
-                    self.scheduleQ = Schedule.objects.none()
-
             except Schedule.DoesNotExist:
                 pass
         else:
