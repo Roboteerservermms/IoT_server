@@ -52,7 +52,7 @@ def addSchedule(request,scheduleDay):
         try:
             recvEndTime = request.POST["endTime"]
         except MultiValueDictKeyError as e:
-            recvEndTime = ""
+            recvEndTime = None
 
         newSchedule = Schedule.objects.create(
             day = scheduleDay,
