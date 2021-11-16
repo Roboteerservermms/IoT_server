@@ -57,7 +57,9 @@ class videoThread(threading.Thread):
 
     def videoEndHandler(self,event):
         self.videoEndSig = True
-
+    def pause(self):
+        self.videoStopSig = not self.videoStopSig
+        
     def gpioRise(self, mediaId=None):
         self.gpioQ = GPIOSetting.objects.none()
         if mediaId:
