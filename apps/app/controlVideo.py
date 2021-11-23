@@ -151,13 +151,13 @@ class videoThread(threading.Thread):
                 playOnceSchedule = Schedule.objects.filter(
                     Q(day__contains = nowDay)
                     & Q(startTime = nowTime)
-                    & Q(endTime=None)
+                    & Q(endTime__isnull=True)
                 )
                 playRepeatSchedule = Schedule.objects.filter(
                         Q(day__contains = nowDay)
                         & Q(startTime__lte = nowTime)
                         & Q(endTime__gte = nowTime)
-                        & ~Q(endTime = None)
+                        & Q(endTime__isnull = False)
                 )
                 if playRepeatSchedule.exists():
                     self.scheduleQ = playRepeatSchedule
