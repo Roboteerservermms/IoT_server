@@ -162,7 +162,18 @@ class videoThread(threading.Thread):
                 if playRepeatSchedule.exists():
                     self.scheduleQ = playRepeatSchedule
                 elif playOnceSchedule.exists():
-                    self.scheduleQ = playOnceSchedule
+                    if self.scheduleQ != playOnceSchedule:
+                        if self.scheduleQ == Schedule.objects.none():
+                            if self.scheduleRepeat:
+                                self.scheduleQ = playOnceSchedule
+                                self.scheduleRepeat = False
+                            else:
+                                self.scheduleQ = Schedule.objects.none()
+                        else:
+                            self.scheduleQ = playOnceSchedule
+                            self.scheduleRepeat = False
+                    else:
+                        self.scheduleQ = Schedule.objects.none()
                 else:
                     self.scheduleGpioRun = True
                     self.scheduleRepeat = True
