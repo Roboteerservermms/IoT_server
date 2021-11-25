@@ -239,19 +239,3 @@ def getGPIOStates(request):
         retGPIOOUT=subprocess.getoutput(inCommand)
         GPIOStatusJson["OUT"].append(retGPIOOUT)
     return HttpResponse(GPIOStatusJson)
-
-@method_decorator(csrf_exempt, name="dispatch")
-def getPlayList(request):
-    schPlayList = Schedule.objects.all()
-    gpioPlayList = GPIOSetting.objects.all()
-    return HttpResponse(schPlayList, gpioPlayList)
-
-videoStatue = False
-@method_decorator(csrf_exempt, name="dispatch")
-def awakeVideo(request):
-    if not videoStatue:
-        pid = videoThread()
-        pid.start()
-        return HttpResponse(True)
-    else:
-        return HttpResponse("already awake")
