@@ -65,7 +65,10 @@ class videoThread(threading.Thread):
             playList = self.scheduleListCheck(mediaId=mediaId)
             self.classify(playList,category="Schedule")
         elif category == "GPIOSetting":
-            playList = self.gpioListCheck(mediaId=mediaId)
+            if mediaId:
+                playList = self.gpioListCheck(mediaId=mediaId)
+            elif gpioIn:
+                playList = self.gpioListCheck(mediaId=mediaId)
             self.classify(playList)
         return True
 
