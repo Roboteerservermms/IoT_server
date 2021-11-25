@@ -65,7 +65,7 @@ class videoThread(threading.Thread):
     def chime(self,category, mediaId=None, gpioIn=None):
         if category == "Schedule":
             playList = self.scheduleListCheck(mediaId=mediaId)
-            self.classify(playList,category="Schedule")
+            self.classify(playList)
         elif category == "GPIOSetting":
             if mediaId:
                 playList = self.gpioListCheck(mediaId=mediaId)
