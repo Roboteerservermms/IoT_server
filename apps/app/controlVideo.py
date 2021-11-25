@@ -90,7 +90,9 @@ class videoThread(threading.Thread):
                         break
             else:
                 lowGpioCount = 0
-                for pinNum, originNum in INPIN.items():
+                for gpioDict in self.gpioList:
+                    pinNum = gpioDict['IN']
+                    originNum = INPIN[pinNum]
                     inCommand = f"cat /sys/class/gpio/gpio{originNum}/value"
                     retGPIOIN=subprocess.getoutput(inCommand)
                     if str2bool(retGPIOIN):
@@ -116,9 +118,7 @@ class videoThread(threading.Thread):
                 elif self.highPin == 0:
                     return None
                 else:
-                    for gpioDict in self.gpioList:
-                        if self.highPin == gpioDict["IN"]:
-                            retGpioDict =  gpioDict
+                    retGpioDict =  gpioDict
         finally:
             self.playListLock.release()
             return retGpioDict
@@ -215,7 +215,6 @@ class videoThread(threading.Thread):
     def run(self):
         self.playListUpdate()
         self.classify(self.blackScreenList)
-        count = 0
         while True:
             if not self.videoStopSig:
                 schDict = self.scheduleListCheck()
@@ -225,10 +224,7 @@ class videoThread(threading.Thread):
                 elif gpioDict:
                     self.classify(gpioDict)
                 else:
-                    count += 1
-                    if count >= 20:
-                        count = 0
-                        self.classify(self.blackScreenList)
+                    self.classify(self.blackScreenList)
 
     def playListUpdate(self):
         self.playListLock.acquire()
