@@ -141,6 +141,8 @@ class videoThread(threading.Thread):
                         if nowTime > scheduleDict['startTime']:
                             if scheduleDict['endTime']:
                                 if nowTime <= scheduleDict['endTime']:
+                                    if nowTime != self.scheduleTime:
+                                        self.chime("GPIOSetting", gpioIn=scheduleDict['IN'])
                                     retSchDict = scheduleDict
                         elif nowTime == scheduleDict["startTime"]:
                             if scheduleDict['endTime']:
@@ -177,11 +179,8 @@ class videoThread(threading.Thread):
             else:
                 pass
 
-    def classify(self,mediaDict,category=None):
+    def classify(self,mediaDict):
         for key, value in mediaDict.items():
-            if category == "Schedule":
-                    if key == "IN":
-                        self.chime("GPIOSetting", gpioIn=value)
             if key == "OUT":
                 for index, value in enumerate(value):
                     out_command = f'echo {value} > /sys/class/gpio/gpio{OUTPIN[index+1]}/value'
@@ -216,7 +215,7 @@ class videoThread(threading.Thread):
                 schDict = self.scheduleListCheck()
                 gpioDict = self.gpioListCheck()
                 if schDict:
-                    self.classify(schDict, category="Schedule")
+                    self.classify(schDict)
                 elif gpioDict:
                     self.classify(gpioDict)
 
