@@ -182,7 +182,7 @@ class videoThread(threading.Thread):
                 pass
 
     def classify(self,mediaDict,category=None):
-        for key, value in mediaDict:
+        for key, value in mediaDict.items():
             if category == "Schedule":
                     if key == "IN":
                         self.chime("GPIOSetting", gpioIn=value)
