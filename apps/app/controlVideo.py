@@ -192,17 +192,17 @@ class videoThread(threading.Thread):
                     subprocess.getoutput(out_command)
             elif key == "File":
                 if value != "":
-                    loop = asyncio.get_event_loop()
+                    loop = asyncio.new_event_loop()
                     loop.run_until_complete(self.playLoop(value))
                     loop.close()
             elif key == "RTSP":
                 if value != "":
-                    loop = asyncio.get_event_loop()
+                    loop = asyncio.new_event_loop()
                     loop.run_until_complete(self.rtspPlayLoop(value))
                     loop.close()
             elif key == "TTS":
                 if value != "":
-                    loop = asyncio.get_event_loop()
+                    loop = asyncio.new_event_loop()
                     loop.run_until_complete(self.rtspPlayLoop(TTS(value)))
                     loop.close()
 
