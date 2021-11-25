@@ -46,6 +46,7 @@ class videoThread(threading.Thread):
         threading.Thread.__init__(self)
         self.player = VlcPlayer('--mouse-hide-timeout=0')
         self.player.add_callback(EventType.MediaPlayerEndReached,self.videoEndHandler)
+        self.player.add_callback(EventType.MediaPlayerPlaying,self.videoPlayingHandler)
         self.blackScreenList = {"OUTPIN":[0,0,0,0,0,0,0] , "File":f"{settings.MEDIA_ROOT}/blackscreen.mp4","RTSP": None, "TTS": None}
         self.nowPlay = ""
         self.scheduleList = list()
@@ -57,17 +58,20 @@ class videoThread(threading.Thread):
         self.gpioOnState = False
         self.videoStopSig = False
         self.videoEndSig = False
-        self.videoChangeSig = False
+        self.chimeSig = False
 
     def chime(self,category, mediaId=None, gpioIn=None):
-        self.videoStopSig = True
+        self.player.stop()
+        self.videoStopSig= True
+        self.chimeSig = True
         if category == "Schedule":
-            self.videoStopSig = True
             playList = self.scheduleListCheck(mediaId=mediaId)
+            self.classify(playList,category="Schedule")
         elif category == "GPIOSetting":
-            self.videoStopSig = True
             playList = self.gpioListCheck(mediaId=mediaId)
-
+            self.classify(playList)
+        self.videoStopSig = False
+        self.chimeSig = False
 
     def gpioListCheck(self, mediaId=None, gpioIn=None):
         self.playListLock.acquire()
@@ -147,15 +151,14 @@ class videoThread(threading.Thread):
             self.playListLock.release()
             return retSchDict
 
+
     async def playLoop(self,media):
         self.nowPlay = media
         self.player.play(media)
-        self.videoEndSig = False
         while not self.videoEndSig:
-            if self.videoStopSig:
-                self.player.stop()
-                break
-            elif self.videoChangeSig:
+            if self.chimeSig:
+                pass
+            elif self.videoStopSig:
                 self.player.stop()
                 break
             else:
@@ -163,9 +166,10 @@ class videoThread(threading.Thread):
     async def rtspPlayLoop(self,url):
         self.nowPlay = url
         self.player.play(url)
-        self.videoEndSig = False
         while not self.videoEndSig:
-            if self.videoStopSig:
+            if self.chimeSig:
+                pass
+            elif self.videoStopSig:
                 self.player.stop()
                 break
             elif self.videoChangeSig:
@@ -178,29 +182,29 @@ class videoThread(threading.Thread):
                 pass
 
     def classify(self,mediaDict,category=None):
-        if category == "Schedule":
-            for key, value in mediaDict:
-                if key == "IN":
-                    self.chime("GPIOSetting", gpioIn=value)
-        if key == "OUT":
-            for index, value in enumerate(value):
-                out_command = f'echo {value} > /sys/class/gpio/gpio{OUTPIN[index+1]}/value'
-                subprocess.getoutput(out_command)
-        elif key == "File":
-            if value != "":
-                loop = asyncio.get_event_loop()
-                loop.run_until_complete(self.playLoop(value))
-                loop.close()
-        elif key == "RTSP":
-            if value != "":
-                loop = asyncio.get_event_loop()
-                loop.run_until_complete(self.rtspPlayLoop(value))
-                loop.close()
-        elif key == "TTS":
-            if value != "":
-                loop = asyncio.get_event_loop()
-                loop.run_until_complete(self.rtspPlayLoop(TTS(value)))
-                loop.close()
+        for key, value in mediaDict:
+            if category == "Schedule":
+                    if key == "IN":
+                        self.chime("GPIOSetting", gpioIn=value)
+            if key == "OUT":
+                for index, value in enumerate(value):
+                    out_command = f'echo {value} > /sys/class/gpio/gpio{OUTPIN[index+1]}/value'
+                    subprocess.getoutput(out_command)
+            elif key == "File":
+                if value != "":
+                    loop = asyncio.get_event_loop()
+                    loop.run_until_complete(self.playLoop(value))
+                    loop.close()
+            elif key == "RTSP":
+                if value != "":
+                    loop = asyncio.get_event_loop()
+                    loop.run_until_complete(self.rtspPlayLoop(value))
+                    loop.close()
+            elif key == "TTS":
+                if value != "":
+                    loop = asyncio.get_event_loop()
+                    loop.run_until_complete(self.rtspPlayLoop(TTS(value)))
+                    loop.close()
 
     def run(self):
         self.playListUpdate()
@@ -226,6 +230,10 @@ class videoThread(threading.Thread):
 
     def videoEndHandler(self,event):
         self.videoEndSig = True
+
+    def videoPlayingHandler(self,event):
+        self.videoEndSig = False
+
 
 
 @method_decorator(csrf_exempt, name="dispatch")
