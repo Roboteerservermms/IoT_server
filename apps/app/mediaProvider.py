@@ -1,7 +1,7 @@
 import time as t
 from gtts import gTTS
 import subprocess
-
+from django.conf import settings
 def File(f,url,fname):
     fileName = f"{url}/{fname}"
     with open(fileName, 'wb+') as destination:
@@ -9,8 +9,8 @@ def File(f,url,fname):
             destination.write(chunk)
     return fileName
 
-def TTS(recvText, path):
-    fileName = f"{path}/{recvText}.mp3"
+def TTS(recvText):
+    fileName = f"{settings.MEDIA_ROOT}/{recvText}.mp3"
     tts = gTTS( text=recvText, lang='ko', slow=False )
     tts.save(fileName)
     return fileName

@@ -16,7 +16,7 @@ from .constant import *
 from .mediaProvider import *
 from .video import VlcPlayer
 from vlc import EventType
-import requests, getmac, socket, json, threading, logging,time, asyncio
+import threading, logging,time, asyncio
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
@@ -170,9 +170,6 @@ class videoThread(threading.Thread):
             if self.chimeSig:
                 pass
             elif self.videoStopSig:
-                self.player.stop()
-                break
-            elif self.videoChangeSig:
                 self.player.stop()
                 break
             elif not self.gpioOnState:
