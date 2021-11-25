@@ -46,7 +46,6 @@ class videoThread(threading.Thread):
         threading.Thread.__init__(self)
         self.player = VlcPlayer('--mouse-hide-timeout=0')
         self.player.add_callback(EventType.MediaPlayerEndReached,self.videoEndHandler)
-        self.player.add_callback(EventType.MediaPlayerPlaying,self.videoPlayingHandler)
         self.blackScreenList = {"OUTPIN":[0,0,0,0,0,0,0] , "File":f"{settings.MEDIA_ROOT}/blackscreen.mp4","RTSP": None, "TTS": None}
         self.nowPlay = ""
         self.scheduleList = list()
@@ -221,8 +220,6 @@ class videoThread(threading.Thread):
     def videoEndHandler(self,event):
         self.videoEndSig = True
 
-    def videoPlayingHandler(self,event):
-        self.videoEndSig = False
 
 
 
