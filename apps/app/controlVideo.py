@@ -149,8 +149,6 @@ class videoThread(threading.Thread):
 
 
     async def playLoop(self,media):
-        self.nowPlay = media
-        self.player.play(media)
         while not self.videoEndSig:
             if self.videoStopSig:
                 self.player.stop()
@@ -158,8 +156,6 @@ class videoThread(threading.Thread):
             else:
                 pass
     async def rtspPlayLoop(self,url):
-        self.nowPlay = url
-        self.player.play(url)
         while not self.videoEndSig:
             if self.videoStopSig:
                 self.player.stop()
@@ -181,16 +177,22 @@ class videoThread(threading.Thread):
                     subprocess.getoutput(out_command)
             elif key == "File":
                 if value:
+                    self.nowPlay = value
+                    self.player.play(value)
                     loop = asyncio.new_event_loop()
                     loop.run_until_complete(self.playLoop(value))
                     loop.close()
             elif key == "RTSP":
                 if value:
+                    self.nowPlay = value
+                    self.player.play(value)
                     loop = asyncio.new_event_loop()
                     loop.run_until_complete(self.rtspPlayLoop(value))
                     loop.close()
             elif key == "TTS":
                 if value:
+                    self.nowPlay = value
+                    self.player.play(value)
                     loop = asyncio.new_event_loop()
                     loop.run_until_complete(self.rtspPlayLoop(TTS(value)))
                     loop.close()

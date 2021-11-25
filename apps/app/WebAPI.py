@@ -122,6 +122,7 @@ def removeRboard(request,deviceId):
 def removeSchedule(request,scheduleId):
     targetSchedule = Schedule.objects.get(id=scheduleId)
     targetSchedule.delete()
+    videoPid.playListUpdate()
     return redirect("/Schedule")
 
 
@@ -129,6 +130,7 @@ def removeSchedule(request,scheduleId):
 def removeGPIOSetting(request,gpioId):
     targetSetting = GPIOSetting.objects.get(id=gpioId)
     targetSetting.delete()
+    videoPid.playListUpdate()
     return redirect("/GPIOSetting")
 
 @login_required(login_url="/login/")
