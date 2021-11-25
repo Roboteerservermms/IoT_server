@@ -61,17 +61,13 @@ class videoThread(threading.Thread):
         self.chimeSig = False
 
     def chime(self,category, mediaId=None, gpioIn=None):
-        self.player.stop()
-        self.videoStopSig= True
-        self.chimeSig = True
         if category == "Schedule":
             playList = self.scheduleListCheck(mediaId=mediaId)
             self.classify(playList,category="Schedule")
         elif category == "GPIOSetting":
             playList = self.gpioListCheck(mediaId=mediaId)
             self.classify(playList)
-        self.videoStopSig = False
-        self.chimeSig = False
+        return True
 
     def gpioListCheck(self, mediaId=None, gpioIn=None):
         self.playListLock.acquire()
@@ -156,9 +152,7 @@ class videoThread(threading.Thread):
         self.nowPlay = media
         self.player.play(media)
         while not self.videoEndSig:
-            if self.chimeSig:
-                pass
-            elif self.videoStopSig:
+            if self.videoStopSig:
                 self.player.stop()
                 break
             else:
@@ -167,9 +161,7 @@ class videoThread(threading.Thread):
         self.nowPlay = url
         self.player.play(url)
         while not self.videoEndSig:
-            if self.chimeSig:
-                pass
-            elif self.videoStopSig:
+            if self.videoStopSig:
                 self.player.stop()
                 break
             elif not self.gpioOnState:
