@@ -48,8 +48,8 @@ class videoThread(threading.Thread):
         self.player.add_callback(EventType.MediaPlayerEndReached,self.videoEndHandler)
         self.blackScreenList = {"OUTPIN":[0,0,0,0,0,0,0] , "File":f"{settings.MEDIA_ROOT}/blackscreen.mp4","RTSP": None, "TTS": None}
         self.nowPlay = ""
-        self.scheduleList = Schedule.objects.all().values()
-        self.gpioList = GPIOSetting.objects.all().values()
+        self.scheduleList = list()
+        self.gpioList = list()
         self.playListLock = threading.Lock()
 
         self.highPin = 7
@@ -203,6 +203,7 @@ class videoThread(threading.Thread):
                 loop.close()
 
     def run(self):
+        self.playListUpdate()
         while True:
             if not self.videoStopSig:
                 schDict = self.scheduleListCheck()
