@@ -25,7 +25,7 @@ $('input[type="checkbox"]').on('change', function(e){
                     <!-- [ Main Content ] start -->
                     <div class="row">
                         <!--[ daily sales section ] start-->
-                        <form action="/registerDevice" method="post", class="post-form my-3">
+                        <form action="/Rboard/add" method="post", class="post-form my-3">
                             {% csrf_token %}
                             <div class="col-xl-8 col-md-12 m-b-30">
                                 <div class="card deviceRegister">
@@ -68,7 +68,7 @@ $('input[type="checkbox"]').on('change', function(e){
                                                 <tr>
                                                     <th>deviceName</th>
                                                     <th>deviceIP</th>
-                                                    <th>macAddress</th>                                                 
+                                                    <th>macAddress</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -83,7 +83,11 @@ $('input[type="checkbox"]').on('change', function(e){
                                                     <td>
                                                         <h6 class="text-muted"><i class="fas fa-circle text-c-green f-10 m-r-15"></i>{{ device.macAddress}}</h6>
                                                     </td>
-                                                    <td><a href="/registerGPIOSetting" class="label theme-bg2 text-white f-12">GPIOSetting</a><a href="/registerSchedule" class="label theme-bg text-white f-12">registerSchedule</a></td>
+                                                    <td>
+                                                        <a href="http://{{device.ip}}:8080/GPIOSetting" class="label theme-bg2 text-white f-12">GPIOSetting</a>
+                                                        <a href="http://{{device.ip}}:8080/Schedule" class="label theme-bg text-white f-12">Schedule</a>
+                                                        <a href="/Rboard/{{device.id}}/remove" class="label theme-bg text-white f-12">삭제</a>
+                                                    </td>
                                                 </tr>
                                                 {% endfor %}
                                             </tbody>
@@ -106,39 +110,30 @@ $('input[type="checkbox"]').on('change', function(e){
                                                     <th>day</th>
                                                     <th>startTime</th>
                                                     <th>endTime</th>
-                                                    <th>OUTPUT1</th>
-                                                    <th>OUTPUT2</th>
-                                                    <th>OUTPUT3</th>
-                                                    <th>OUTPUT4</th>
-                                                    <th>OUTPUT5</th>
-                                                    <th>OUTPUT6</th>
-                                                    <th>OUTPUT7</th> 
+                                                    <th>INPUT</th>
+                                                    <th>OUTPUT</th>
                                                     <th>TTS</th>
                                                     <th>RTSP</th>
-                                                    <th>File</th>                                                   
+                                                    <th>File</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 {% for setting in scheduleList %}
                                                     <tr>
-                                                        <th scope="row">{{setting.device}}</th>
-                                                        <td>{{setting.day}}</td>
+                                                        <th scope="row">{{setting.day}}<</th>
                                                         <td>{{setting.startTime}}</td>
                                                         <td>{{setting.endTime}}</td>
-                                                        <td>{{setting.OUTPUT1}}</td>
-                                                        <td>{{setting.OUTPUT2}}</td>
-                                                        <td>{{setting.OUTPUT3}}</td>
-                                                        <td>{{setting.OUTPUT4}}</td>
-                                                        <td>{{setting.OUTPUT5}}</td>
-                                                        <td>{{setting.OUTPUT6}}</td>
-                                                        <td>{{setting.OUTPUT7}}</td>
+                                                        <td>{{setting.IN}}</td>
+                                                        <td>{{setting.OUT}}</td>
                                                         <td>{{setting.TTS}}</td>
                                                         <td>{{setting.RTSP}}</td>
                                                         <td>{{setting.File}}</td>
+                                                        <td>
+                                                            <a href="/Schedule/{{setting.id}}/remove" class="label theme-bg text-white f-12">삭제</a>
+                                                        </td>
                                                     </tr>
                                                 {% endfor %}
                                             </tbody>
-                                        {{ gpioSettingList.as_table}}
                                         </table>
                                     </div>
                                 </div>
@@ -155,39 +150,27 @@ $('input[type="checkbox"]').on('change', function(e){
                                         <table class="table table-hover">
                                             <thead>
                                                 <tr>
-                                                    <th>device</th>
                                                     <th>INPIN</th>
-                                                    <th>OUTPUT1</th>
-                                                    <th>OUTPUT2</th>
-                                                    <th>OUTPUT3</th>
-                                                    <th>OUTPUT4</th>
-                                                    <th>OUTPUT5</th>
-                                                    <th>OUTPUT6</th>
-                                                    <th>OUTPUT7</th> 
+                                                    <th>OUTPUT</th>
                                                     <th>TTS</th>
                                                     <th>RTSP</th>
-                                                    <th>File</th>                                                   
+                                                    <th>File</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 {% for setting in gpioSettingList %}
                                                     <tr>
-                                                        <th scope="row">{{setting.device}}</th>
-                                                        <td>{{setting.INPIN}}</td>
-                                                        <td>{{setting.OUTPUT1}}</td>
-                                                        <td>{{setting.OUTPUT2}}</td>
-                                                        <td>{{setting.OUTPUT3}}</td>
-                                                        <td>{{setting.OUTPUT4}}</td>
-                                                        <td>{{setting.OUTPUT5}}</td>
-                                                        <td>{{setting.OUTPUT6}}</td>
-                                                        <td>{{setting.OUTPUT7}}</td>
+                                                        <th scope="row">{{setting.INPIN}}</th>
+                                                        <td>{{setting.OUT}}</td>
                                                         <td>{{setting.TTS}}</td>
                                                         <td>{{setting.RTSP}}</td>
                                                         <td>{{setting.File}}</td>
+                                                        <td>
+                                                            <a href="/GPIOSetting/{{setting.id}}/remove" class="label theme-bg text-white f-12">삭제</a>
+                                                        </td>
                                                     </tr>
                                                 {% endfor %}
                                             </tbody>
-                                        {{ gpioSettingList.as_table}}
                                         </table>
                                     </div>
                                 </div>

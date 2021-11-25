@@ -6,7 +6,6 @@ class Media:
         self.order = orderNumber
         self.data = mediaData
         self.gpio = gpio
-
     def __lt__(self,other): 
         return self.order < other.order #객체의 name을 비교한다!
 

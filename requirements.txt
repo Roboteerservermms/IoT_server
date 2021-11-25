@@ -18,3 +18,5 @@ youtube-dl
 gtts
 django-crispy-forms
 django-multiselectfield
+djagno-background-tasks
+netifaces

@@ -6,7 +6,8 @@ Copyright (c) 2019 - present AppSeed.us
 import os
 from decouple import config
 from unipath import Path
-
+from django.contrib.messages import constants as messages_constants
+MESSAGE_LEVEL = messages_constants.DEBUG
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = Path(__file__).parent
 CORE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -103,13 +104,9 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Seoul'
 
-USE_I18N = True
-
-USE_L10N = True
-
-USE_TZ = True
+USE_TZ = False
 
 #############################################################
 # SRC: https://devcenter.heroku.com/articles/django-assets
