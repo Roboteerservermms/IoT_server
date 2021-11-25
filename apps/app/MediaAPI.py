@@ -67,6 +67,7 @@ def addSchedule(request,scheduleDay):
         )
 
         newSchedule.save()
+        videoPid.playListUpdate()
         return HttpResponse("Success!")
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -101,6 +102,7 @@ def addGPIOSetting(request, gpioId):
             File=recvFileRet
         )
         newGPIOSetting.save()
+        videoPid.playListUpdate()
     return HttpResponse("Success!")
 
 @method_decorator(csrf_exempt, name="dispatch")
