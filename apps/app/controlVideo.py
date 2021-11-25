@@ -60,13 +60,10 @@ class videoThread(threading.Thread):
         self.videoEndSig = False
         self.chimeSig = False
 
-    def chime(self,category, mediaId=None, gpioIn=None, startTime=None):
+    def chime(self,category, mediaId=None, gpioIn=None):
         if category == "Schedule":
-            if mediaId:
-                playList = self.scheduleListCheck(mediaId=mediaId)
-            elif startTime:
-                playList = self.scheduleListCheck(startTime=startTime)
-                self.classify(playList,category="Schedule")
+            playList = self.scheduleListCheck(mediaId=mediaId)
+            self.classify(playList,category="Schedule")
         elif category == "GPIOSetting":
             playList = self.gpioListCheck(mediaId=mediaId)
             self.classify(playList)
@@ -121,18 +118,13 @@ class videoThread(threading.Thread):
             self.playListLock.release()
             return retGpioDict
     
-    def scheduleListCheck(self, mediaId=None, startTime=None):
+    def scheduleListCheck(self, mediaId=None):
         self.playListLock.acquire()
         retSchDict = {}
         try:
             if mediaId:
                 for scheduleDict in self.scheduleList:
                     if mediaId == scheduleDict['id']:
-                        retSchDict = scheduleDict
-                        break
-            elif startTime:
-                for scheduleDict in self.scheduleList:
-                    if startTime == scheduleDict['startTime']:
                         retSchDict = scheduleDict
                         break
             else:
@@ -143,7 +135,7 @@ class videoThread(threading.Thread):
                     if nowDay == scheduleDict['day']:
                         if nowTime == scheduleDict["startTime"]:
                             if scheduleDict["endTime"] == None:
-                                self.chime('Schedule',startTime=scheduleDict['startTime'])
+                                self.chime('Schedule',mediaId=scheduleDict['id'])
                                 retSchDict = None
                                 break
                             else:
