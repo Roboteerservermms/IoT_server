@@ -70,7 +70,7 @@ class videoThread(threading.Thread):
             if mediaId:
                 playList = self.gpioListCheck(mediaId=mediaId)
             elif gpioIn:
-                playList = self.gpioListCheck(mediaId=mediaId)
+                playList = self.gpioListCheck(gpioIn=gpioIn)
             self.classify(playList)
         return True
 
