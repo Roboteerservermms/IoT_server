@@ -139,8 +139,9 @@ class videoThread(threading.Thread):
                 for scheduleDict in self.scheduleList:
                     if nowDay == scheduleDict['day']:
                         if nowTime > scheduleDict['startTime']:
-                            if nowTime <= scheduleDict['endTime']:
-                                retSchDict = scheduleDict
+                            if scheduleDict['endTime']:
+                                if nowTime <= scheduleDict['endTime']:
+                                    retSchDict = scheduleDict
                         elif nowTime == scheduleDict["startTime"]:
                             if scheduleDict['endTime']:
                                 retSchDict = scheduleDict
