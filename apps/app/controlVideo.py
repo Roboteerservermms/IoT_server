@@ -134,7 +134,7 @@ class videoThread(threading.Thread):
                 for scheduleDict in self.scheduleList:
                     if nowDay == scheduleDict['day']:
                         if nowTime == scheduleDict["startTime"]:
-                            if scheduleDict["endTime"] == None:
+                            if not scheduleDict["endTime"]:
                                 self.chime('Schedule',mediaId=scheduleDict['id'])
                                 retSchDict = None
                                 break
