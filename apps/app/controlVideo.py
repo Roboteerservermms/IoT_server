@@ -75,7 +75,6 @@ class videoThread(threading.Thread):
         return True
 
     def gpioListCheck(self, mediaId=None, gpioIn=None):
-        self.playListLock.acquire()
         retGpioDict = {}
         try:
             if mediaId:
@@ -120,11 +119,9 @@ class videoThread(threading.Thread):
                 else:
                     retGpioDict =  gpioDict
         finally:
-            self.playListLock.release()
             return retGpioDict
     
     def scheduleListCheck(self, mediaId=None):
-        self.playListLock.acquire()
         retSchDict = {}
         try:
             if mediaId:
@@ -143,18 +140,14 @@ class videoThread(threading.Thread):
                                 if nowTime <= scheduleDict['endTime']:
                                     retSchDict = scheduleDict
                                     if nowTime != self.scheduleTime:
-                                        self.playListLock.release()
                                         self.chime("GPIOSetting", gpioIn=scheduleDict['IN'])
-                                        self.playListLock.acquire()
                                         self.scheduleTime = nowTime
                         elif nowTime == scheduleDict["startTime"]:
                             if scheduleDict['endTime']:
                                 retSchDict = scheduleDict
                             else:
                                 if nowTime != self.scheduleTime:
-                                    self.playListLock.release()
                                     self.chime('Schedule',mediaId=scheduleDict['id'])
-                                    self.playListLock.acquire()
                                     retSchDict = None
                                     self.scheduleTime = nowTime
                                     break
@@ -162,7 +155,6 @@ class videoThread(threading.Thread):
                                     retSchDict = None
                         
         finally:
-            self.playListLock.release()
             return retSchDict
 
 
