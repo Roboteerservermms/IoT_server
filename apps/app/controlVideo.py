@@ -54,6 +54,8 @@ class videoThread(threading.Thread):
         self.playListLock = threading.Lock()
 
         self.highPin = 7
+        now = datetime.datetime.now()
+        self.scheduleTime = datetime.time(now.hour,now.minute)
 
         self.gpioOnState = False
         self.videoStopSig = False
@@ -136,16 +138,21 @@ class videoThread(threading.Thread):
                 nowTime =  datetime.time(now.hour,now.minute)
                 for scheduleDict in self.scheduleList:
                     if nowDay == scheduleDict['day']:
-                        if nowTime == scheduleDict["startTime"]:
-                            if not scheduleDict["endTime"]:
-                                self.chime('Schedule',mediaId=scheduleDict['id'])
-                                retSchDict = None
-                                break
-                            else:
-                                retSchDict = scheduleDict
-                        elif nowTime > scheduleDict['startTime']:
+                        if nowTime > scheduleDict['startTime']:
                             if nowTime <= scheduleDict['endTime']:
                                 retSchDict = scheduleDict
+                        elif nowTime == scheduleDict["startTime"]:
+                            if scheduleDict['endTime']:
+                                retSchDict = scheduleDict
+                            else:
+                                if nowTime != self.scheduleTime:
+                                    self.chime('Schedule',mediaId=scheduleDict['id'])
+                                    retSchDict = None
+                                    self.scheduleTime = nowTime
+                                    break
+                                else:
+                                    retSchDict = None
+                        
         finally:
             self.playListLock.release()
             return retSchDict
