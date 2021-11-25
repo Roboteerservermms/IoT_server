@@ -148,14 +148,14 @@ class videoThread(threading.Thread):
             return retSchDict
 
 
-    async def playLoop(self,media):
+    async def playLoop(self):
         while not self.videoEndSig:
             if self.videoStopSig:
                 self.player.stop()
                 break
             else:
                 pass
-    async def rtspPlayLoop(self,url):
+    async def rtspPlayLoop(self):
         while not self.videoEndSig:
             if self.videoStopSig:
                 self.player.stop()
@@ -180,21 +180,21 @@ class videoThread(threading.Thread):
                     self.nowPlay = value
                     self.player.play(value)
                     loop = asyncio.new_event_loop()
-                    loop.run_until_complete(self.playLoop(value))
+                    loop.run_until_complete(self.playLoop())
                     loop.close()
             elif key == "RTSP":
                 if value:
                     self.nowPlay = value
                     self.player.play(value)
                     loop = asyncio.new_event_loop()
-                    loop.run_until_complete(self.rtspPlayLoop(value))
+                    loop.run_until_complete(self.PlayLoop())
                     loop.close()
             elif key == "TTS":
                 if value:
                     self.nowPlay = value
-                    self.player.play(value)
+                    self.player.play(TTS(value))
                     loop = asyncio.new_event_loop()
-                    loop.run_until_complete(self.rtspPlayLoop(TTS(value)))
+                    loop.run_until_complete(self.PlayLoop())
                     loop.close()
 
     def run(self):
