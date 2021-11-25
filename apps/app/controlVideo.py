@@ -47,7 +47,7 @@ class videoThread(threading.Thread):
         self.player = VlcPlayer('--mouse-hide-timeout=0')
         self.player.add_callback(EventType.MediaPlayerEndReached,self.videoEndHandler)
         self.player.add_callback(EventType.MediaPlayerOpening,self.videoPlayingHandler)
-        self.blackScreenList = {"OUTPIN":[0,0,0,0,0,0,0] , "File":f"{settings.MEDIA_ROOT}/blackscreen.mp4","RTSP": None, "TTS": None}
+        self.blackScreenList = {"OUT":[0,0,0,0,0,0,0] , "File":f"{settings.MEDIA_ROOT}/blackscreen.mp4","RTSP": None, "TTS": None}
         self.nowPlay = ""
         self.scheduleList = list()
         self.gpioList = list()
@@ -218,6 +218,8 @@ class videoThread(threading.Thread):
                     self.classify(schDict)
                 elif gpioDict:
                     self.classify(gpioDict)
+                else:
+                    self.classify(self.blackScreenList)
 
     def playListUpdate(self):
         self.playListLock.acquire()
