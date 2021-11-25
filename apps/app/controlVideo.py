@@ -150,8 +150,7 @@ class videoThread(threading.Thread):
                                 retSchDict = scheduleDict
                             else:
                                 if nowTime != self.scheduleTime:
-                                    self.chime('Schedule',mediaId=scheduleDict['id'])
-                                    retSchDict = None
+                                    retSchDict = scheduleDict
                                     self.scheduleTime = nowTime
                                     break
                                 else:
