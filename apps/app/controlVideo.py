@@ -3,8 +3,6 @@
 Copyright (c) 2019 - present AppSeed.us
 """
 
-import re
-from typing_extensions import TypeVarTuple
 from django import template
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -49,7 +47,7 @@ class videoThread(threading.Thread):
         self.player = VlcPlayer('--mouse-hide-timeout=0')
         self.player.add_callback(EventType.MediaPlayerEndReached,self.videoEndHandler)
         self.blackScreenList = {"OUTPIN":[0,0,0,0,0,0,0] , "File":f"{settings.MEDIA_ROOT}/blackscreen.mp4","RTSP": None, "TTS": None}
-        self.playDict = {}
+        self.nowPlay = ""
         self.scheduleList = Schedule.objects.all().values()
         self.gpioList = GPIOSetting.objects.all().values()
         self.playListLock = threading.Lock()
@@ -150,6 +148,7 @@ class videoThread(threading.Thread):
             return retSchDict
 
     async def playLoop(self,media):
+        self.nowPlay = media
         self.player.play(media)
         self.videoEndSig = False
         while not self.videoEndSig:
@@ -162,6 +161,7 @@ class videoThread(threading.Thread):
             else:
                 pass
     async def rtspPlayLoop(self,url):
+        self.nowPlay = url
         self.player.play(url)
         self.videoEndSig = False
         while not self.videoEndSig:
@@ -194,12 +194,12 @@ class videoThread(threading.Thread):
         elif key == "RTSP":
             if value != "":
                 loop = asyncio.get_event_loop()
-                loop.run_until_complete(self.playLoop(value))
+                loop.run_until_complete(self.rtspPlayLoop(value))
                 loop.close()
         elif key == "TTS":
             if value != "":
                 loop = asyncio.get_event_loop()
-                loop.run_until_complete(self.playLoop(TTS(value)))
+                loop.run_until_complete(self.rtspPlayLoop(TTS(value)))
                 loop.close()
 
     def run(self):
