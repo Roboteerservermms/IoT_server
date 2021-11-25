@@ -187,14 +187,14 @@ class videoThread(threading.Thread):
                     self.nowPlay = value
                     self.player.play(value)
                     loop = asyncio.new_event_loop()
-                    loop.run_until_complete(self.PlayLoop())
+                    loop.run_until_complete(self.rtspPlayLoop())
                     loop.close()
             elif key == "TTS":
                 if value:
                     self.nowPlay = value
                     self.player.play(TTS(value))
                     loop = asyncio.new_event_loop()
-                    loop.run_until_complete(self.PlayLoop())
+                    loop.run_until_complete(self.playLoop())
                     loop.close()
 
     def run(self):
