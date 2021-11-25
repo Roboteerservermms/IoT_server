@@ -141,9 +141,10 @@ class videoThread(threading.Thread):
                         if nowTime > scheduleDict['startTime']:
                             if scheduleDict['endTime']:
                                 if nowTime <= scheduleDict['endTime']:
+                                    retSchDict = scheduleDict
                                     if nowTime != self.scheduleTime:
                                         self.chime("GPIOSetting", gpioIn=scheduleDict['IN'])
-                                    retSchDict = scheduleDict
+                                        self.scheduleTime = nowTime
                         elif nowTime == scheduleDict["startTime"]:
                             if scheduleDict['endTime']:
                                 retSchDict = scheduleDict
