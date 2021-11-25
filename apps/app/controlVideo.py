@@ -197,6 +197,7 @@ class videoThread(threading.Thread):
 
     def run(self):
         self.playListUpdate()
+        self.classify(self.blackScreenList)
         while True:
             if not self.videoStopSig:
                 schDict = self.scheduleListCheck()
@@ -205,8 +206,6 @@ class videoThread(threading.Thread):
                     self.classify(schDict, category="Schedule")
                 elif gpioDict:
                     self.classify(gpioDict)
-                else:
-                    self.classify(self.blackScreenList)
 
     def playListUpdate(self):
         self.playListLock.acquire()
