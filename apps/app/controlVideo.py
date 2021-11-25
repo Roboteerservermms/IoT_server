@@ -188,17 +188,17 @@ class videoThread(threading.Thread):
                     out_command = f'echo {value} > /sys/class/gpio/gpio{OUTPIN[index+1]}/value'
                     subprocess.getoutput(out_command)
             elif key == "File":
-                if value != "":
+                if value:
                     loop = asyncio.new_event_loop()
                     loop.run_until_complete(self.playLoop(value))
                     loop.close()
             elif key == "RTSP":
-                if value != "":
+                if value:
                     loop = asyncio.new_event_loop()
                     loop.run_until_complete(self.rtspPlayLoop(value))
                     loop.close()
             elif key == "TTS":
-                if value != "":
+                if value:
                     loop = asyncio.new_event_loop()
                     loop.run_until_complete(self.rtspPlayLoop(TTS(value)))
                     loop.close()
