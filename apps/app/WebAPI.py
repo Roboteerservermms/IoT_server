@@ -149,5 +149,11 @@ def reversePlay(request):
     redirectUrl = request.GET.get('redirectUrl','/')
     return redirect(redirectUrl)
 
+@login_required(login_url="/login/")
+def GPIORUNComm(request, gpioIn):
+    videoPid.chime("GPIOSetting", gpioIn=gpioIn)
+    return redirect("/")
+
+
 videoPid = videoThread()
 videoPid.start()

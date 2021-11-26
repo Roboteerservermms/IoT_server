@@ -26,7 +26,7 @@ urlpatterns = [
     path('Schedule/<int:scheduleDay>/add', MediaAPI.addSchedule, name='setGPIOSetting'),
 
     path('getMacAddress', MediaAPI.getMacAddress, name='getMacAddress'),
-
+    path('gpioCOMM/<int:gpioIn>/chime/run', WebAPI.GPIORUNComm, name='runChime'),
     path('GPIOSetting/<int:mediaId>/chime/run', WebAPI.GPIORunChime, name='runChime'),
     path('Schedule/<int:mediaId>/chime/run', WebAPI.scheduleRunChime, name='runChime'),
     path('runVideo', MediaAPI.runVideo, name='runVideo'),

@@ -99,6 +99,30 @@ $('input[type="checkbox"]').on('change', function(e){
                         <div class="col-xl-12">
                             <div class="card">
                                 <div class="card-header">
+                                    <h5>chime 버튼</h5>
+                                </div>
+                                <div class="input-group mb-3">
+                                <a class="btn btn-outline-primary" href="/gpioCOMM/1/chime/run" role="button">chime1</a>
+                                <a class="btn btn-outline-primary" href="/gpioCOMM/2/chime/run" role="button">chime2</a>
+                                <a class="btn btn-outline-primary" href="/gpioCOMM/3/chime/run" role="button">chime3</a>
+                                <a class="btn btn-outline-primary" href="/gpioCOMM/4/chime/run" role="button">chime4</a>
+                                <a class="btn btn-outline-primary" href="/gpioCOMM/5/chime/run" role="button">chime5</a>
+                                <a class="btn btn-outline-primary" href="/gpioCOMM/6/chime/run" role="button">chime6</a>
+                                <a class="btn btn-outline-primary" href="/gpioCOMM/7/chime/run" role="button">chime7</a>
+                                {% if "blackscreen.mp4" in nowPlay %}
+                                        <a href={% url 'reversePlay' %}?redirectUrl={{request.path}} class="btn btn-outline-primary">현재 재생목록없음</a>
+                                {% elif videoStopSig %}
+                                        <a href={% url 'reversePlay' %}?redirectUrl={{request.path}} class="btn btn-outline-primary">{{ nowPlay }} 재생 </a>
+                                {% else %}
+                                        <a href={% url 'reversePlay' %}?redirectUrl={{request.path}} class="btn btn-outline-primary">정지 </a>
+                                {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-12">
+                            <div class="card">
+                                <div class="card-header">
                                     <h5>스케줄 설정리스트</h5>
                                 </div>
                                 <div class="card-block table-border-style">
